@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.data.firebase.FirebaseModule
-import co.netguru.chatroulette.data.net.NetModule
 import com.squareup.leakcanary.LeakCanary
 import org.webrtc.Logging
 import timber.log.Timber
@@ -25,7 +24,6 @@ class App : Application() {
     val applicationComponent: ApplicationComponent by lazy {
         DaggerApplicationComponent.builder()
                 .applicationModule(ApplicationModule(this))
-                .netModule(NetModule())
                 .firebaseModule(FirebaseModule())
                 .build()
     }

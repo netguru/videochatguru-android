@@ -54,14 +54,6 @@ dependencies {
 
     compile libs.timber
 
-    compile libs.moshi
-
-    compile libs.retrofit
-    compile libs.retrofitMoshiConverter
-    compile libs.retrofitRxJava2Adapter
-    compile libs.okHttp
-    compile libs.okHttpLoggingInterceptor
-
     compile libs.firebaseDatabase
 }
 

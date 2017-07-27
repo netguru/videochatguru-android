@@ -24,10 +24,6 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         fun newInstance() = VideoFragment()
     }
 
-    override fun getLayoutId() = R.layout.fragment_video
-
-    override fun retrievePresenter() = App.getApplicationComponent(context).getVideoFragmentComponet().videoFragmentPresenter()
-
     private lateinit var localAudioTrack: AudioTrack
 
     private lateinit var localVideoTrack: VideoTrack
@@ -35,6 +31,10 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     private lateinit var sdpConstraints: MediaConstraints
 
     private lateinit var factory: PeerConnectionFactory
+
+    override fun getLayoutId() = R.layout.fragment_video
+
+    override fun retrievePresenter() = App.getApplicationComponent(context).getVideoFragmentComponet().videoFragmentPresenter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
