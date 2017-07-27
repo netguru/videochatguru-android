@@ -4,7 +4,6 @@ import com.google.firebase.database.*
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Maybe
 import io.reactivex.Single
-import timber.log.Timber
 
 interface ChildEvent<out T> {
     val data: T
@@ -17,8 +16,6 @@ data class ChildEventChanged<out T>(override val data: T, val previousChildName:
 data class ChildEventAdded<out T>(override val data: T, val previousChildName: String?) : ChildEvent<T>
 
 data class ChildEventRemoved<out T>(override val data: T) : ChildEvent<T>
-
-data class Optional<out T>(val value: T?)
 
 fun DatabaseReference.rxChildEvents() = createFlowable<ChildEvent<DataSnapshot>>(BackpressureStrategy.BUFFER) {
 
