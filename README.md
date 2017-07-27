@@ -36,6 +36,7 @@ Create firebase instance and put google-services.json in to app.
 
 ### Integrations
 <!-- Describe external service and hardware integrations, link to reference docs, use #### headings -->
+- Firebase - WebRTC signaling solution based on firebase real time database -https://firebase.google.com/
 
 ### Coding guidelines
 [Netguru Android code style guide](https://netguru.atlassian.net/wiki/display/ANDROID/Android+best+practices)

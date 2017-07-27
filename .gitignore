@@ -51,6 +51,8 @@ captures/
 .idea/jsLibraryMappings.xml
 .idea/sonarlint/
 .idea/inspectionProfiles
+.idea/markdown-navigator
+.idea/markdown-navigator.xml
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
