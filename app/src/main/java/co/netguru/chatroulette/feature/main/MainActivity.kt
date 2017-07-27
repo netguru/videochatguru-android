@@ -10,11 +10,6 @@ import co.netguru.chatroulette.feature.main.video.VideoFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-fun Context.startMainActivity() {
-    val intent = Intent(this, MainActivity::class.java)
-    this.startActivity(intent)
-}
-
 class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
 
     val videoFragment = VideoFragment.newInstance()
@@ -22,6 +17,11 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
     override fun retrievePresenter() = App.getApplicationComponent(this).mainComponent().mainPresenter()
 
     override fun getLayoutId() = R.layout.activity_main
+
+    fun Context.startMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        this.startActivity(intent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
