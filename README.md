@@ -36,7 +36,8 @@ Create firebase instance and put google-services.json in to app.
 
 ### Integrations
 <!-- Describe external service and hardware integrations, link to reference docs, use #### headings -->
-- Firebase - WebRTC signaling solution based on firebase real time database -https://firebase.google.com/
+- Firebase - WebRTC signaling solution based on firebase real time database - https://firebase.google.com/
+- STUN/TURN servers - STUN and TURN servers are used by WebRTC for traversal and relaying media if p2p connection fails, there are many free STUN servers available as they are cheap to host. TURN servers are obtainable mostly through paid services or you could host your own using [Coturn](https://github.com/coturn/coturn) which is quite easy to setup - there is ready to install [package](https://launchpad.net/ubuntu/+source/coturn) available - take in mind that having one server might introduce big lag if participants are far from each other.
 
 ### Coding guidelines
 [Netguru Android code style guide](https://netguru.atlassian.net/wiki/display/ANDROID/Android+best+practices)
