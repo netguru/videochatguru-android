@@ -34,7 +34,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun getLayoutId() = R.layout.fragment_video
 
-    override fun retrievePresenter() = App.getApplicationComponent(context).getVideoFragmentComponet().videoFragmentPresenter()
+    override fun retrievePresenter() = App.getApplicationComponent(context).videoFragmentComponent().videoFragmentPresenter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

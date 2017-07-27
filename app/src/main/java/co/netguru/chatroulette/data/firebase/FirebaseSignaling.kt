@@ -40,28 +40,26 @@ class FirebaseSignaling @Inject constructor(private val firebaseDatabase: Fireba
             override fun doTransaction(mutableData: MutableData): Transaction.Result {
                 lastUuid = null
                 val genericTypeIndicator = object : GenericTypeIndicator<MutableMap<String, RouletteConnection>>() {}
-                val connections = mutableData.getValue(genericTypeIndicator) ?: return Transaction.success(mutableData)
+                val availableDevices = mutableData.getValue(genericTypeIndicator) ?:
+                        return Transaction.success(mutableData)
 
-                Timber.d("Fireabase transaction connections data : $connections")
-                with(connections) {
-                    val removedValue = remove(App.DEVICE_UUID)
-                    Timber.d("Own uuid removed? $removedValue")
-                    if (removedValue != null) {
-                        val count = count()
-                        if (count > 0) {
-                            val random = SecureRandom().nextInt(count)
-                            val remoteUuidToRemove = keys.toList()[random]
-                            Timber.d("Device number $random from $count devices was choosen ")
-                            remove(remoteUuidToRemove)
-                            //if all went fine we replace data
-                            mutableData.value = connections
-                            Timber.d("Passed mutable data $mutableData")
-                            lastUuid = remoteUuidToRemove
-                        }
-                    }
+                val removedSelfValue = availableDevices.remove(App.DEVICE_UUID)
+
+                if (removedSelfValue != null && !availableDevices.isEmpty()) {
+                    lastUuid = deleteRandomDevice(availableDevices)
+                    mutableData.value = availableDevices
                 }
 
                 return Transaction.success(mutableData)
+            }
+
+            fun deleteRandomDevice(availableDevices: MutableMap<String, RouletteConnection>): String {
+                val devicesCount = availableDevices.count()
+                val randomDevicePosition = SecureRandom().nextInt(devicesCount)
+                val randomDeviceToRemoveUuid = availableDevices.keys.toList()[randomDevicePosition]
+                Timber.d("Device number $randomDevicePosition from $devicesCount devices was chosen.")
+                availableDevices.remove(randomDeviceToRemoveUuid)
+                return randomDeviceToRemoveUuid
             }
 
             override fun onComplete(databaseError: DatabaseError?, completed: Boolean, p2: DataSnapshot?) {

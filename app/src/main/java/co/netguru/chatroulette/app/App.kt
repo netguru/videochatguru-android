@@ -37,6 +37,7 @@ class App : Application() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
+            //Enables WebRTC Logging
             Logging.enableLogToDebugOutput(Logging.Severity.LS_ERROR)
         }
     }

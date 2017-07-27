@@ -19,7 +19,7 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
 
     val videoFragment = VideoFragment.newInstance()
 
-    override fun retrievePresenter() = App.getApplicationComponent(this).getMainComponent().mainPresenter()
+    override fun retrievePresenter() = App.getApplicationComponent(this).mainComponent().mainPresenter()
 
     override fun getLayoutId() = R.layout.activity_main
 

@@ -10,7 +10,7 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(ApplicationModule::class, FirebaseModule::class))
 interface ApplicationComponent {
 
-    fun getMainComponent(): MainComponent
+    fun mainComponent(): MainComponent
 
-    fun getVideoFragmentComponet(): VideoFragmentComponent
+    fun videoFragmentComponent(): VideoFragmentComponent
 }
