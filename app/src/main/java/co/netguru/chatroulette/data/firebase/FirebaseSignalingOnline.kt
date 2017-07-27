@@ -17,9 +17,11 @@ class FirebaseSignalingOnline @Inject constructor(private val firebaseDatabase: 
         private const val ONLINE_DEVICES_PATH = "online_devices/"
     }
 
+    private fun deviceOnlinePath(deviceUuid: String) = ONLINE_DEVICES_PATH.plus(deviceUuid)
+
     fun connectAndRetrieveRandomDevice(): Maybe<String> = Completable.create {
         firebaseDatabase.goOnline()
-        val firebaseOnlineReference = firebaseDatabase.getReference("online_devices/${App.CURRENT_DEVICE_UUID}")
+        val firebaseOnlineReference = firebaseDatabase.getReference(deviceOnlinePath(App.CURRENT_DEVICE_UUID))
         with(firebaseOnlineReference) {
             onDisconnect().removeValue()
             setValue(RouletteConnectionFirebase())
@@ -27,13 +29,11 @@ class FirebaseSignalingOnline @Inject constructor(private val firebaseDatabase: 
         it.onComplete()
     }.andThen(chooseRandomDevice())
 
-    fun disconnect(): Completable = Completable.create {
+    fun disconnect(): Completable = Completable.fromAction {
         firebaseDatabase.goOffline()
-
-        it.onComplete()
     }
 
-    fun chooseRandomDevice(): Maybe<String> = Maybe.create {
+    private fun chooseRandomDevice(): Maybe<String> = Maybe.create {
         var lastUuid: String? = null
 
         firebaseDatabase.getReference("online_devices").runTransaction(object : Transaction.Handler {
@@ -53,7 +53,7 @@ class FirebaseSignalingOnline @Inject constructor(private val firebaseDatabase: 
                 return Transaction.success(mutableData)
             }
 
-            fun deleteRandomDevice(availableDevices: MutableMap<String, RouletteConnectionFirebase>): String {
+            private fun deleteRandomDevice(availableDevices: MutableMap<String, RouletteConnectionFirebase>): String {
                 val devicesCount = availableDevices.count()
                 val randomDevicePosition = SecureRandom().nextInt(devicesCount)
                 val randomDeviceToRemoveUuid = availableDevices.keys.toList()[randomDevicePosition]

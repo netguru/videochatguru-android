@@ -50,6 +50,7 @@ captures/
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
 .idea/sonarlint/
+.idea/inspectionProfiles
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
@@ -134,3 +135,6 @@ Temporary Items
 
 # Google Services
 app/google-services.json
+.idea/inspectionProfiles/
+app/src/androidTest/
+app/src/test/
