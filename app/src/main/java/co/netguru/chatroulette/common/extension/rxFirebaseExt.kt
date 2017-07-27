@@ -1,7 +1,9 @@
-package co.netguru.chatroulette.common.util
+package co.netguru.chatroulette.common.extension
 
+import co.netguru.chatroulette.common.util.RxUtils
 import com.google.firebase.database.*
 import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -17,7 +19,9 @@ data class ChildEventAdded<out T>(override val data: T, val previousChildName: S
 
 data class ChildEventRemoved<out T>(override val data: T) : ChildEvent<T>
 
-fun DatabaseReference.rxChildEvents() = createFlowable<ChildEvent<DataSnapshot>>(BackpressureStrategy.BUFFER) {
+data class DataChangeEvent<out T>(override val data: T) : ChildEvent<T>
+
+fun DatabaseReference.rxChildEvents() = RxUtils.createFlowable<ChildEvent<DataSnapshot>>(BackpressureStrategy.BUFFER) {
 
     val listener = object : ChildEventListener {
         override fun onChildMoved(ds: DataSnapshot, previousChildName: String?) {
@@ -46,7 +50,7 @@ fun DatabaseReference.rxChildEvents() = createFlowable<ChildEvent<DataSnapshot>>
 }
 
 fun <T> DatabaseReference.rxChildEvents(genericTypeIndicator: GenericTypeIndicator<T>)
-        = createFlowable<ChildEvent<T?>>(BackpressureStrategy.BUFFER) {
+        = RxUtils.createFlowable<ChildEvent<T?>>(BackpressureStrategy.BUFFER) {
 
     val listener = object : ChildEventListener {
         override fun onChildMoved(ds: DataSnapshot, previousChildName: String?) {
@@ -74,11 +78,13 @@ fun <T> DatabaseReference.rxChildEvents(genericTypeIndicator: GenericTypeIndicat
         }
     }
     it.setCancellable { removeEventListener(listener) }
+
+    addChildEventListener(listener)
 }
 
 
 fun DatabaseReference.rxSingleValue(): Single<DataSnapshot> = Single.create {
-    addListenerForSingleValueEvent(object : ValueEventListener {
+    val listener = object : ValueEventListener {
         override fun onCancelled(databaseError: DatabaseError) {
             it.onError(databaseError.toException())
         }
@@ -87,7 +93,10 @@ fun DatabaseReference.rxSingleValue(): Single<DataSnapshot> = Single.create {
             it.onSuccess(dataSnapshot)
         }
 
-    })
+    }
+    it.setCancellable { removeEventListener(listener) }
+
+    addListenerForSingleValueEvent(listener)
 }
 
 fun <T> DatabaseReference.rxSingleValue(clazz: Class<T>): Maybe<T> = rxSingleValue()
@@ -100,4 +109,32 @@ fun <T> DatabaseReference.rxSingleValue(genericTypeIndicator: GenericTypeIndicat
         .flatMapMaybe {
             val data = it.getValue(genericTypeIndicator)
             if (data == null) Maybe.empty() else Maybe.just(data)
+        }
+
+fun DatabaseReference.rxValueEvents() = RxUtils.createFlowable<DataSnapshot>(BackpressureStrategy.BUFFER) {
+    val listener = object : ValueEventListener {
+        override fun onCancelled(databaseError: DatabaseError) {
+            it.onError(databaseError.toException())
+        }
+
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            it.onNext(dataSnapshot)
+        }
+
+    }
+    it.setCancellable { removeEventListener(listener) }
+
+    addValueEventListener(listener)
+}
+
+fun <T> DatabaseReference.rxValueEvents(clazz: Class<T>): Flowable<DataChangeEvent<T?>> = rxValueEvents()
+        .map {
+            val data = it.getValue(clazz)
+            DataChangeEvent(data)
+        }
+
+fun <T> DatabaseReference.rxValueEvents(genericTypeIndicator: GenericTypeIndicator<T>): Flowable<DataChangeEvent<T?>> = rxValueEvents()
+        .map {
+            val data = it.getValue(genericTypeIndicator)
+            DataChangeEvent(data)
         }

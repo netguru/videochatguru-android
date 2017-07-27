@@ -1,8 +1,7 @@
 package co.netguru.chatroulette.feature.main
 
-import co.netguru.chatroulette.common.util.applyCompletableIoSchedulers
-import co.netguru.chatroulette.common.util.applyMaybeIoSchedulers
-import co.netguru.chatroulette.data.firebase.FirebaseSignaling
+import co.netguru.chatroulette.common.util.RxUtils
+import co.netguru.chatroulette.data.firebase.FirebaseSignalingOnline
 import co.netguru.chatroulette.feature.base.BasePresenter
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -11,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class MainPresenter @Inject constructor(private val firebaseSignaling: FirebaseSignaling) : BasePresenter<MainView>() {
+class MainPresenter @Inject constructor(private val firebaseSignalingOnline: FirebaseSignalingOnline) : BasePresenter<MainView>() {
 
     private val disposables = CompositeDisposable()
 
@@ -22,8 +21,8 @@ class MainPresenter @Inject constructor(private val firebaseSignaling: FirebaseS
 
     fun startSearching() {
         Timber.d("Start searching")
-        disposables += firebaseSignaling.connectAndRetrieveRandomDevice()
-                .compose(applyMaybeIoSchedulers())
+        disposables += firebaseSignalingOnline.connectAndRetrieveRandomDevice()
+                .compose(RxUtils.applyMaybeIoSchedulers())
                 .subscribeBy(
                         onSuccess = {
                             Timber.d("Next $it")
@@ -35,8 +34,8 @@ class MainPresenter @Inject constructor(private val firebaseSignaling: FirebaseS
     }
 
     fun stop() {
-        disposables += firebaseSignaling.disconnect()
-                .compose(applyCompletableIoSchedulers())
+        disposables += firebaseSignalingOnline.disconnect()
+                .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onError = {
                             Timber.d(it)

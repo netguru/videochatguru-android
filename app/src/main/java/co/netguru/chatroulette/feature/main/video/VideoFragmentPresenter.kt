@@ -1,11 +1,8 @@
 package co.netguru.chatroulette.feature.main.video
 
-import co.netguru.chatroulette.common.util.ChildEventAdded
-import co.netguru.chatroulette.common.util.applyCompletableIoSchedulers
-import co.netguru.chatroulette.common.util.applyFlowableIoSchedulers
-import co.netguru.chatroulette.data.firebase.FirebaseIceHandlers
-import co.netguru.chatroulette.data.firebase.FirebaseIceServers
-import co.netguru.chatroulette.data.firebase.FirebaseSignaling
+import co.netguru.chatroulette.common.extension.ChildEventAdded
+import co.netguru.chatroulette.common.util.RxUtils
+import co.netguru.chatroulette.data.firebase.*
 import co.netguru.chatroulette.data.model.IceCandidateFirebase
 import co.netguru.chatroulette.feature.base.BasePresenter
 import io.reactivex.disposables.CompositeDisposable
@@ -17,7 +14,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class VideoFragmentPresenter @Inject constructor(private val firebaseSignaling: FirebaseSignaling,
+class VideoFragmentPresenter @Inject constructor(private val firebaseSignalingOnline: FirebaseSignalingOnline,
+                                                 private val firebaseSignalingAnswers: FirebaseSignalingAnswers,
+                                                 private val firebaseSignalingOffers: FirebaseSignalingOffers,
                                                  private val firebaseIceHandlers: FirebaseIceHandlers,
                                                  private val firebaseIceServers: FirebaseIceServers) : BasePresenter<VideoFragmentView>() {
     val disposables = CompositeDisposable()
@@ -41,7 +40,7 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignaling: 
 
     fun sendIceCandidates(iceCandidate: IceCandidate) {
         disposables += firebaseIceHandlers.sendIceCandidate(IceCandidateFirebase.createFromIceCandidate(iceCandidate))
-                .compose(applyCompletableIoSchedulers())
+                .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onError = {
                             Timber.e(it, "Error while sending message")
@@ -54,7 +53,7 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignaling: 
 
     fun removeIceCandidates(iceCandidates: Array<IceCandidate>) {
         disposables += firebaseIceHandlers.removeIceCandidates(IceCandidateFirebase.createFromIceCandidates(iceCandidates))
-                .compose(applyCompletableIoSchedulers())
+                .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onComplete = {
                             Timber.d("Ice candidates successfully removed")
@@ -67,7 +66,7 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignaling: 
 
     fun listenForIceCandidates(remoteUuid: String) {
         disposables += firebaseIceHandlers.getIceCandidates(remoteUuid)
-                .compose(applyFlowableIoSchedulers())
+                .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onNext = {
                             Timber.d("Next ice: $it")
@@ -84,8 +83,8 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignaling: 
     }
 
     fun sendOffer(deviceUuid: String, localDescription: SessionDescription) {
-        disposables += firebaseSignaling.createOffer(deviceUuid, localDescription)
-                .compose(applyCompletableIoSchedulers())
+        disposables += firebaseSignalingOffers.create(deviceUuid, localDescription)
+                .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onComplete = {
                             Timber.d("description set")
@@ -97,12 +96,17 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignaling: 
     }
 
     fun listenForOffers() {
-        disposables += firebaseSignaling.listenForOffers()
-                .compose(applyFlowableIoSchedulers())
+        disposables += firebaseSignalingOffers.listen()
+                .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onNext = {
-                            listenForIceCandidates(it.senderUuid)
-                            mvpView?.handleRemoteDescription(it)
+                            val data = it.data
+                            if (data != null) {
+                                listenForIceCandidates(data.senderUuid)
+                                mvpView?.handleRemoteDescription(data)
+                            } else {
+                                //todo
+                            }
                         },
                         onError = {
                             Timber.e(it, "Error while listening for offers")
@@ -116,8 +120,8 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignaling: 
     }
 
     fun sendAnswer(deviceUuid: String, localDescription: SessionDescription) {
-        disposables += firebaseSignaling.createAnswer(deviceUuid, localDescription)
-                .compose(applyCompletableIoSchedulers())
+        disposables += firebaseSignalingAnswers.create(deviceUuid, localDescription)
+                .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onComplete = {
                             Timber.d("sending answer completed")
@@ -129,15 +133,20 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignaling: 
     }
 
     fun listenForAnswers() {
-        disposables += firebaseSignaling.listenForAnswers()
-                .compose(applyFlowableIoSchedulers())
+        disposables += firebaseSignalingAnswers.listen()
+                .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onError = {
                             Timber.d("Error while listening for answers")
                         },
                         onNext = {
                             Timber.d("Next answer $it")
-                            mvpView?.handleAnswer(it)
+                            val data = it.data
+                            if (data != null) {
+                                mvpView?.handleAnswer(data)
+                            } else {
+                                //todo
+                            }
                         },
                         onComplete = {
                             Timber.d("Completed")

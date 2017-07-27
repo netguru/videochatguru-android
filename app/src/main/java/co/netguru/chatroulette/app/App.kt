@@ -12,7 +12,8 @@ import java.util.*
 class App : Application() {
 
     companion object Factory {
-        val DEVICE_UUID = UUID.randomUUID().toString()
+
+        val CURRENT_DEVICE_UUID = UUID.randomUUID().toString()
 
         fun get(context: Context): App = context.applicationContext as App
 

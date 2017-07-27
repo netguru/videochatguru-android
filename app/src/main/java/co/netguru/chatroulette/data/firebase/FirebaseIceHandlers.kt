@@ -1,10 +1,10 @@
 package co.netguru.chatroulette.data.firebase
 
 import co.netguru.chatroulette.app.App
-import co.netguru.chatroulette.common.util.ChildEvent
-import co.netguru.chatroulette.common.util.ChildEventAdded
-import co.netguru.chatroulette.common.util.ChildEventRemoved
-import co.netguru.chatroulette.common.util.rxChildEvents
+import co.netguru.chatroulette.common.extension.ChildEvent
+import co.netguru.chatroulette.common.extension.ChildEventAdded
+import co.netguru.chatroulette.common.extension.ChildEventRemoved
+import co.netguru.chatroulette.common.extension.rxChildEvents
 import co.netguru.chatroulette.data.model.IceCandidateFirebase
 import com.google.firebase.database.*
 import io.reactivex.Completable
@@ -16,9 +16,15 @@ import javax.inject.Singleton
 @Singleton
 class FirebaseIceHandlers @Inject constructor(private val firebaseDatabase: FirebaseDatabase) {
 
+    companion object {
+        private const val ICE_CANDIDATES_PATH = "ice_candidates/"
+    }
+
+    private fun deviceIceCandidatesPath(uuid: String) = ICE_CANDIDATES_PATH.plus(uuid)
+
     fun sendIceCandidate(iceCandidateFirebase: IceCandidateFirebase): Completable {
         return Completable.create {
-            val reference = firebaseDatabase.getReference("ice/${App.DEVICE_UUID}")
+            val reference = firebaseDatabase.getReference(deviceIceCandidatesPath(App.CURRENT_DEVICE_UUID))
             with(reference) {
                 onDisconnect().removeValue()
                 push().setValue(iceCandidateFirebase)
@@ -30,7 +36,7 @@ class FirebaseIceHandlers @Inject constructor(private val firebaseDatabase: Fire
     fun removeIceCandidates(iceCandidatesToRemoveFirebase: List<IceCandidateFirebase>): Completable {
         return Completable.create {
             val iceCandidatesToRemoveList = iceCandidatesToRemoveFirebase.toMutableList()
-            val reference = firebaseDatabase.getReference("ice/${App.DEVICE_UUID}")
+            val reference = firebaseDatabase.getReference(deviceIceCandidatesPath(App.CURRENT_DEVICE_UUID))
             reference.runTransaction(object : Transaction.Handler {
 
                 override fun doTransaction(mutableData: MutableData): Transaction.Result {
@@ -60,7 +66,7 @@ class FirebaseIceHandlers @Inject constructor(private val firebaseDatabase: Fire
     }
 
     fun getIceCandidates(remoteUuid: String): Flowable<ChildEvent<IceCandidate>> {
-        return firebaseDatabase.getReference("ice/$remoteUuid").rxChildEvents()
+        return firebaseDatabase.getReference(deviceIceCandidatesPath(remoteUuid)).rxChildEvents()
                 .filter { it is ChildEventAdded || it is ChildEventRemoved }
                 .map {
                     val iceCandidateFirebase: IceCandidateFirebase = it.data.getValue(IceCandidateFirebase::class.java) as IceCandidateFirebase

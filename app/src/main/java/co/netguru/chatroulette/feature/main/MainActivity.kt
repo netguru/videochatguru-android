@@ -25,7 +25,7 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        thisDeviceUuidText.text = App.DEVICE_UUID
+        thisDeviceUuidText.text = App.CURRENT_DEVICE_UUID
         connectButton.setOnClickListener { connectToDevice() }
         disconnectButton.setOnClickListener { disconnectDevice() }
         getReplaceFragmentTransaction(R.id.fragmentContainer, videoFragment, VideoFragment.TAG)
