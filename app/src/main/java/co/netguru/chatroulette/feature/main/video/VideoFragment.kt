@@ -156,7 +156,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
             override fun onCreateSuccess(sessionDescription: SessionDescription) {
                 peer.setLocalDescription(object : SdpObserver {
-                    override fun onSetFailure(p0: String?) {
+                    override fun onSetFailure(error: String) {
                         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
 
@@ -168,7 +168,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
                         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
 
-                    override fun onCreateFailure(p0: String?) {
+                    override fun onCreateFailure(error: String?) {
                         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
 
