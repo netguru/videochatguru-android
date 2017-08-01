@@ -137,6 +137,5 @@ Temporary Items
 
 # Google Services
 app/google-services.json
-.idea/inspectionProfiles/
 app/src/androidTest/
 app/src/test/

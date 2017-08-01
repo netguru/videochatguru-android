@@ -19,7 +19,8 @@
         <!--todo enable orientation changing-->
         <activity
             android:name="co.netguru.chatroulette.feature.main.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

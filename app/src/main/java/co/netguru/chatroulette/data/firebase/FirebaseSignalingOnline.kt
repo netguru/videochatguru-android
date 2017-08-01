@@ -36,7 +36,7 @@ class FirebaseSignalingOnline @Inject constructor(private val firebaseDatabase: 
     private fun chooseRandomDevice(): Maybe<String> = Maybe.create {
         var lastUuid: String? = null
 
-        firebaseDatabase.getReference("online_devices").runTransaction(object : Transaction.Handler {
+        firebaseDatabase.getReference(ONLINE_DEVICES_PATH).runTransaction(object : Transaction.Handler {
             override fun doTransaction(mutableData: MutableData): Transaction.Result {
                 lastUuid = null
                 val genericTypeIndicator = object : GenericTypeIndicator<MutableMap<String, RouletteConnectionFirebase>>() {}

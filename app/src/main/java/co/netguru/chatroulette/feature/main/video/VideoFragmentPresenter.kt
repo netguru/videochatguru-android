@@ -2,7 +2,10 @@ package co.netguru.chatroulette.feature.main.video
 
 import co.netguru.chatroulette.common.extension.ChildEventAdded
 import co.netguru.chatroulette.common.util.RxUtils
-import co.netguru.chatroulette.data.firebase.*
+import co.netguru.chatroulette.data.firebase.FirebaseIceHandlers
+import co.netguru.chatroulette.data.firebase.FirebaseIceServers
+import co.netguru.chatroulette.data.firebase.FirebaseSignalingAnswers
+import co.netguru.chatroulette.data.firebase.FirebaseSignalingOffers
 import co.netguru.chatroulette.data.model.IceCandidateFirebase
 import co.netguru.chatroulette.feature.base.BasePresenter
 import io.reactivex.disposables.CompositeDisposable
@@ -14,8 +17,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class VideoFragmentPresenter @Inject constructor(private val firebaseSignalingOnline: FirebaseSignalingOnline,
-                                                 private val firebaseSignalingAnswers: FirebaseSignalingAnswers,
+class VideoFragmentPresenter @Inject constructor(private val firebaseSignalingAnswers: FirebaseSignalingAnswers,
                                                  private val firebaseSignalingOffers: FirebaseSignalingOffers,
                                                  private val firebaseIceHandlers: FirebaseIceHandlers,
                                                  private val firebaseIceServers: FirebaseIceServers) : BasePresenter<VideoFragmentView>() {

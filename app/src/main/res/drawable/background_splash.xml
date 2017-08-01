@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@color/primary"/>
+
+    <item
+        android:drawable="@drawable/ic_videocam_white_72dp"
+        android:gravity="center"/>
+
+</layer-list>

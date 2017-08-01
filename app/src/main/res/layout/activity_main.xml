@@ -5,32 +5,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary"
     android:orientation="vertical"
     tools:context="co.netguru.chatroulette.feature.main.MainActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_large"
+        android:src="@drawable/ic_videocam_white_72dp"/>
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/buttonPanel"/>
 
     <TextView
-        android:background="#fff"
         android:id="@+id/thisDeviceUuidText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentTop="true"
+        android:background="#fff"/>
 
-    <Button
-        android:id="@+id/connectButton"
+    <LinearLayout
+        android:id="@+id/buttonPanel"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:text="connect"/>
-
-    <Button
-        android:id="@+id/disconnectButton"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/connectButton"
-        android:text="disconnect"/>
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/connectButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="connect"/>
+
+        <Button
+            android:id="@+id/disconnectButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="disconnect"/>
+
+    </LinearLayout>
 </RelativeLayout>

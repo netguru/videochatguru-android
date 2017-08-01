@@ -1,4 +1,4 @@
-package co.netguru.chatroulette.feature.main
+package co.netguru.chatroulette.feature.main.video
 
 import co.netguru.chatroulette.common.di.FragmentScope
 import co.netguru.chatroulette.feature.main.video.VideoFragment

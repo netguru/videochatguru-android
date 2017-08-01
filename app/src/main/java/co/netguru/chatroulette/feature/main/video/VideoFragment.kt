@@ -185,12 +185,15 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun handleAnswer(answer: SessionDescriptionFirebase) {
         //todo beautify sdp observer
-        peer.setRemoteDescription(object : BaseSdpObserver() {
+        peer.setRemoteDescription(object : SdpSetObserver() {
+            override fun onSetFailure(error: String) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
             override fun onSetSuccess() {
-                super.onSetSuccess()
                 Timber.d("setRemoteDescription from answer success")
             }
-        }, answer.toSessionDescription())
+        }.toSdpObserver(), answer.toSessionDescription())
     }
 
     override fun addIceCandidate(data: IceCandidate) {
