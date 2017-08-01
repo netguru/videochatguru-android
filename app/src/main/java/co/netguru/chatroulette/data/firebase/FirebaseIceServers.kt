@@ -14,7 +14,7 @@ class FirebaseIceServers @Inject constructor(firebaseDatabase: FirebaseDatabase)
         private const val ICE_SERVERS_PATH = "ice_servers"
     }
 
-    private val firebaseIceServersReference = firebaseDatabase.getReference(ICE_SERVERS_PATH)
+    private val firebaseIceServersReference by lazy { firebaseDatabase.getReference(ICE_SERVERS_PATH) }
 
     fun getIceServers(): Maybe<List<PeerConnection.IceServer>> = firebaseIceServersReference
             .rxSingleValue(object : GenericTypeIndicator<List<@JvmSuppressWildcards IceServerFirebase>>() {})

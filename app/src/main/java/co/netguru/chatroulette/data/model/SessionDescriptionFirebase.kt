@@ -4,9 +4,9 @@ import co.netguru.chatroulette.app.App
 import org.webrtc.SessionDescription
 
 
-data class SessionDescriptionFirebase(var senderUuid: String = App.CURRENT_DEVICE_UUID,
-                                      var type: SessionDescription.Type? = null,
-                                      var description: String? = null) {
+data class SessionDescriptionFirebase(val senderUuid: String = App.CURRENT_DEVICE_UUID,
+                                      val type: SessionDescription.Type? = null,
+                                      val description: String? = null) {
     companion object {
         fun fromSessionDescriptionWithDefaultSenderUuid(sessionDescription: SessionDescription): SessionDescriptionFirebase {
             return SessionDescriptionFirebase(type = sessionDescription.type, description = sessionDescription.description)
