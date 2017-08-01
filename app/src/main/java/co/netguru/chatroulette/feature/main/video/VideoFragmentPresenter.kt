@@ -2,7 +2,7 @@ package co.netguru.chatroulette.feature.main.video
 
 import co.netguru.chatroulette.common.extension.ChildEventAdded
 import co.netguru.chatroulette.common.util.RxUtils
-import co.netguru.chatroulette.data.firebase.FirebaseIceHandlers
+import co.netguru.chatroulette.data.firebase.FirebaseIceCandidates
 import co.netguru.chatroulette.data.firebase.FirebaseIceServers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingAnswers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingOffers
@@ -17,11 +17,13 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class VideoFragmentPresenter @Inject constructor(private val firebaseSignalingAnswers: FirebaseSignalingAnswers,
-                                                 private val firebaseSignalingOffers: FirebaseSignalingOffers,
-                                                 private val firebaseIceHandlers: FirebaseIceHandlers,
-                                                 private val firebaseIceServers: FirebaseIceServers) : BasePresenter<VideoFragmentView>() {
-    val disposables = CompositeDisposable()
+class VideoFragmentPresenter @Inject constructor(
+        private val firebaseSignalingAnswers: FirebaseSignalingAnswers,
+        private val firebaseSignalingOffers: FirebaseSignalingOffers,
+        private val firebaseIceCandidates: FirebaseIceCandidates,
+        private val firebaseIceServers: FirebaseIceServers) : BasePresenter<VideoFragmentView>() {
+
+    val disposables by lazy { CompositeDisposable() }
 
     override fun detachView() {
         super.detachView()
@@ -41,7 +43,7 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignalingAn
     }
 
     fun sendIceCandidates(iceCandidate: IceCandidate) {
-        disposables += firebaseIceHandlers.sendIceCandidate(IceCandidateFirebase.createFromIceCandidate(iceCandidate))
+        disposables += firebaseIceCandidates.send(IceCandidateFirebase.createFromIceCandidate(iceCandidate))
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onError = {
@@ -54,7 +56,7 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignalingAn
     }
 
     fun removeIceCandidates(iceCandidates: Array<IceCandidate>) {
-        disposables += firebaseIceHandlers.removeIceCandidates(IceCandidateFirebase.createFromIceCandidates(iceCandidates))
+        disposables += firebaseIceCandidates.remove(IceCandidateFirebase.createFromIceCandidates(iceCandidates))
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onComplete = {
@@ -67,7 +69,7 @@ class VideoFragmentPresenter @Inject constructor(private val firebaseSignalingAn
     }
 
     fun listenForIceCandidates(remoteUuid: String) {
-        disposables += firebaseIceHandlers.getIceCandidates(remoteUuid)
+        disposables += firebaseIceCandidates.get(remoteUuid)
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onNext = {

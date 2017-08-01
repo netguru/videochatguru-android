@@ -14,7 +14,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FirebaseIceHandlers @Inject constructor(private val firebaseDatabase: FirebaseDatabase) {
+class FirebaseIceCandidates @Inject constructor(private val firebaseDatabase: FirebaseDatabase) {
 
     companion object {
         private const val ICE_CANDIDATES_PATH = "ice_candidates/"
@@ -22,7 +22,7 @@ class FirebaseIceHandlers @Inject constructor(private val firebaseDatabase: Fire
 
     private fun deviceIceCandidatesPath(uuid: String) = ICE_CANDIDATES_PATH.plus(uuid)
 
-    fun sendIceCandidate(iceCandidateFirebase: IceCandidateFirebase): Completable {
+    fun send(iceCandidateFirebase: IceCandidateFirebase): Completable {
         return Completable.create {
             val reference = firebaseDatabase.getReference(deviceIceCandidatesPath(App.CURRENT_DEVICE_UUID))
             with(reference) {
@@ -33,7 +33,7 @@ class FirebaseIceHandlers @Inject constructor(private val firebaseDatabase: Fire
         }
     }
 
-    fun removeIceCandidates(iceCandidatesToRemoveFirebase: List<IceCandidateFirebase>): Completable {
+    fun remove(iceCandidatesToRemoveFirebase: List<IceCandidateFirebase>): Completable {
         return Completable.create {
             val iceCandidatesToRemoveList = iceCandidatesToRemoveFirebase.toMutableList()
             val reference = firebaseDatabase.getReference(deviceIceCandidatesPath(App.CURRENT_DEVICE_UUID))
@@ -65,7 +65,7 @@ class FirebaseIceHandlers @Inject constructor(private val firebaseDatabase: Fire
         }
     }
 
-    fun getIceCandidates(remoteUuid: String): Flowable<ChildEvent<IceCandidate>> {
+    fun get(remoteUuid: String): Flowable<ChildEvent<IceCandidate>> {
         return firebaseDatabase.getReference(deviceIceCandidatesPath(remoteUuid)).rxChildEvents()
                 .filter { it is ChildEventAdded || it is ChildEventRemoved }
                 .map {
