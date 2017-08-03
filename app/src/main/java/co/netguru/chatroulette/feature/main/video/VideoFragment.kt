@@ -39,12 +39,12 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //todo Create webrtc client that will handle setup
-        PeerConnectionFactory.initializeInternalTracer()
-        PeerConnectionFactory.initializeFieldTrials("")
+        //PeerConnectionFactory.initializeInternalTracer()
+        //PeerConnectionFactory.initializeFieldTrials("")
         //todo check on device with support
-        WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true /* enable */)
+        WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(false)
         WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(false)
-        WebRtcAudioUtils.setWebRtcBasedAutomaticGainControl(false)
+        WebRtcAudioUtils.setWebRtcBasedAutomaticGainControl(false)//deprecated
         WebRtcAudioUtils.setWebRtcBasedNoiseSuppressor(false)
 
         if (!PeerConnectionFactory.initializeAndroidGlobals(context, true, true, false)) {
@@ -53,14 +53,9 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
         factory = PeerConnectionFactory(PeerConnectionFactory.Options())
 
-        val videoCapturer = createCameraCapturer(
-                if (Camera2Enumerator.isSupported(context)) Camera2Enumerator(context) else Camera1Enumerator()
-        )
-
+        val videoCapturer = WebRtcUtils.createFrontCameraCapturer(context)
 
         val mediaConstraints = MediaConstraints()
-        mediaConstraints.optional.add(
-                MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"))
         eglBase = EglBase.create()
         factory.setVideoHwAccelerationOptions(eglBase.eglBaseContext, eglBase.eglBaseContext)
         initVideoViews()
@@ -68,13 +63,13 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         localVideoTrack = factory.createVideoTrack("100", videoSource)
         videoCapturer?.startCapture(1280, 720, 30)
         //todo check if really needed
-        localVideoTrack.setEnabled(true)
         localVideoTrack.addRenderer(VideoRenderer(localVideoView))
 
         val audioSource = factory.createAudioSource(mediaConstraints)
         localAudioTrack = factory.createAudioTrack("101", audioSource)
 
         sdpConstraints = MediaConstraints()
+        sdpConstraints.optional.add(MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"))
         sdpConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
         sdpConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
 
@@ -86,12 +81,9 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     private fun initVideoViews() {
         localVideoView.init(eglBase.eglBaseContext, null)
         localVideoView.setEnableHardwareScaler(true)
-        //todo check if really needed
-        localVideoView.setZOrderMediaOverlay(true)
+
         remoteVideoView.init(eglBase.eglBaseContext, null)
         remoteVideoView.setEnableHardwareScaler(true)
-        //todo check if really needed
-        remoteVideoView.setZOrderMediaOverlay(true)
     }
 
     override fun onDestroyView() {
@@ -102,18 +94,6 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     fun disconnect() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun createCameraCapturer(enumerator: CameraEnumerator): VideoCapturer? {
-        val (frontFacingDevices, backFacingDevices) = enumerator.deviceNames.partition {
-            enumerator.isFrontFacing(it)
-        }
-
-        frontFacingDevices.mapNotNull { enumerator.createCapturer(it, null) }
-                .forEach { return it }
-
-        return backFacingDevices.map { enumerator.createCapturer(it, null) }
-                .firstOrNull { it != null }
     }
 
     fun offerDevice(deviceUuid: String) {
@@ -227,6 +207,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
                     return
                 }
                 if (mediaStream.videoTracks.size == 1) {
+                    mediaStream.preservedVideoTracks
                     val remoteVideoTrack = mediaStream.videoTracks[0]
                     remoteVideoTrack.setEnabled(true)
 
