@@ -1,7 +1,6 @@
 package co.netguru.chatroulette.feature.main
 
 import android.os.Bundle
-import android.os.Handler
 import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
 import co.netguru.chatroulette.feature.base.BaseMvpActivity
@@ -34,8 +33,6 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
     }
 
     override fun passOfferDevice(deviceUuid: String) {
-        //TODO REMOVE!
-        Handler().postDelayed({ videoFragment.connectToDevice(deviceUuid) }, 2000)
-
+        videoFragment.connectToDevice(deviceUuid)
     }
 }

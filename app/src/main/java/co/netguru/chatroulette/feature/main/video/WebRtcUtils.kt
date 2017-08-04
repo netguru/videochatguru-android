@@ -11,7 +11,6 @@ internal object WebRtcUtils {
             if (WebRtcCameraUtils.isCamera2Supported(context)) Camera2Enumerator(context) else Camera1Enumerator()
     )
 
-
     internal fun createBackCameraCapturer(context: Context) = createBackCameraCapturer(
             if (WebRtcCameraUtils.isCamera2Supported(context)) Camera2Enumerator(context) else Camera1Enumerator()
     )
