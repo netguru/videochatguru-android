@@ -32,7 +32,6 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //todo use client instead
         webRtcClient.attachLocalView(localVideoView)
         webRtcClient.attachRemoteView(remoteVideoView)
         //todo remove
@@ -55,7 +54,6 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     }
 
     override fun handleRemoteAnswer(answer: SessionDescriptionFirebase) {
-        //todo beautify sdp observer
         webRtcClient.handleRemoteAnswer(answer.toSessionDescription())
     }
 
