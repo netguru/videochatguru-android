@@ -8,11 +8,13 @@ package co.netguru.chatroulette.feature.main.video
  */
 enum class AudioMediaConstraints(override val constraintString: String) : WebRtcConstraint {
 
-    AUDIO_ECHO_CANCELLATION_CONSTRAINT("googEchoCancellation"),
-    AUDIO_AUTO_GAIN_CONTROL_CONSTRAINT("googAutoGainControl"),
-    AUDIO_NOISE_SUPPRESSION_CONSTRAINT("googNoiseSuppression"),
-    AUDIO_HIGH_PASS_FILTER_CONSTRAINT("googHighpassFilter"),
-    AUDIO_TYPING_NOISE_DETECTION("googTypingNoiseDetection"),
+    DISABLE_AUDIO_PROCESSING("echoCancellation"),
+    ECHO_CANCELLATION("googEchoCancellation"),
+    AUTO_GAIN_CONTROL("googAutoGainControl"),
+    NOISE_SUPPRESSION("googNoiseSuppression"),
+    INTELLIGIBILITY_ENHANCER("intelligibilityEnhancer"),
+    HIGH_PASS_FILTER("googHighpassFilter"),
+    TYPING_NOISE_DETECTION("googTypingNoiseDetection"),
     AUDIO_LEVEL_CONTROL_CONSTRAINT("levelControl");
 
 }
