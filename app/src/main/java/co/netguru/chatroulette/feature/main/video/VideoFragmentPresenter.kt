@@ -23,17 +23,26 @@ class VideoFragmentPresenter @Inject constructor(
         private val firebaseIceCandidates: FirebaseIceCandidates,
         private val firebaseIceServers: FirebaseIceServers) : BasePresenter<VideoFragmentView>() {
 
-    val disposables by lazy { CompositeDisposable() }
+    private val disposables by lazy { CompositeDisposable() }
+
+    private lateinit var remoteUuid: String
 
     override fun detachView() {
         super.detachView()
         disposables.dispose()
     }
 
+    fun offerDevice(deviceUuid: String) {
+        this.remoteUuid = deviceUuid
+        listenForIceCandidates()
+        mvpView?.createOffer()
+    }
+
     fun loadIceServers() {
         disposables += firebaseIceServers.getIceServers()
                 .subscribeBy(
                         onSuccess = {
+                            listenForOffers()
                             mvpView?.addIceServers(it)
                         },
                         onError = {
@@ -68,7 +77,7 @@ class VideoFragmentPresenter @Inject constructor(
                 )
     }
 
-    fun listenForIceCandidates(remoteUuid: String) {
+    fun listenForIceCandidates() {
         disposables += firebaseIceCandidates.get(remoteUuid)
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
@@ -86,8 +95,8 @@ class VideoFragmentPresenter @Inject constructor(
                 )
     }
 
-    fun sendOffer(deviceUuid: String, localDescription: SessionDescription) {
-        disposables += firebaseSignalingOffers.create(deviceUuid, localDescription)
+    fun sendOffer(localDescription: SessionDescription) {
+        disposables += firebaseSignalingOffers.create(remoteUuid, localDescription)
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onComplete = {
@@ -106,8 +115,9 @@ class VideoFragmentPresenter @Inject constructor(
                         onNext = {
                             val data = it.data
                             if (data != null) {
-                                listenForIceCandidates(data.senderUuid)
-                                mvpView?.handleRemoteDescription(data)
+                                remoteUuid = it.data.senderUuid
+                                listenForIceCandidates()
+                                mvpView?.handleRemoteOffer(data)
                             } else {
                                 //todo
                             }
@@ -123,8 +133,8 @@ class VideoFragmentPresenter @Inject constructor(
                 )
     }
 
-    fun sendAnswer(deviceUuid: String, localDescription: SessionDescription) {
-        disposables += firebaseSignalingAnswers.create(deviceUuid, localDescription)
+    fun sendAnswer(localDescription: SessionDescription) {
+        disposables += firebaseSignalingAnswers.create(remoteUuid, localDescription)
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onComplete = {
@@ -141,13 +151,13 @@ class VideoFragmentPresenter @Inject constructor(
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onError = {
-                            Timber.d("Error while listening for answers")
+                            Timber.e(it, "Error while listening for answers")
                         },
                         onNext = {
                             Timber.d("Next answer $it")
                             val data = it.data
                             if (data != null) {
-                                mvpView?.handleAnswer(data)
+                                mvpView?.handleRemoteAnswer(data)
                             } else {
                                 //todo
                             }

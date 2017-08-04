@@ -3,16 +3,20 @@ package co.netguru.chatroulette.feature.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
 import co.netguru.chatroulette.feature.base.BaseMvpActivity
 import co.netguru.chatroulette.feature.main.video.VideoFragment
+import co.netguru.chatroulette.feature.main.video.VideoFragmentOld
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
 
     val videoFragment = VideoFragment.newInstance()
+    //val videoFragment = VideoFragmentOld.newInstance()
+
 
     override fun retrievePresenter() = App.getApplicationComponent(this).mainComponent().mainPresenter()
 
@@ -28,8 +32,7 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
         thisDeviceUuidText.text = App.CURRENT_DEVICE_UUID
         connectButton.setOnClickListener { connectToDevice() }
         disconnectButton.setOnClickListener { disconnectDevice() }
-        getReplaceFragmentTransaction(R.id.fragmentContainer, videoFragment, VideoFragment.TAG)
-                .commit()
+        getReplaceFragmentTransaction(R.id.fragmentContainer, videoFragment, VideoFragment.TAG).commit()
     }
 
     private fun connectToDevice() {
@@ -41,6 +44,8 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
     }
 
     override fun passOfferDevice(deviceUuid: String) {
-        videoFragment.offerDevice(deviceUuid)
+        //TODO REMOVE!
+        Handler().postDelayed({ videoFragment.connectToDevice(deviceUuid) }, 2000)
+
     }
 }

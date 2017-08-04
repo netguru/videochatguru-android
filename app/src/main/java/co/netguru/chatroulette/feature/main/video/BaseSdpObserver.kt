@@ -25,54 +25,24 @@ abstract class BaseSdpObserver : SdpObserver {
 
 }
 
-abstract class SdpSetObserver {
+interface SdpSetObserver : SdpObserver {
 
-    abstract fun onSetFailure(error: String)
+    override fun onCreateSuccess(sessionDescription: SessionDescription?) {
+        throw IllegalStateException("onCreateSuccess called in set listener")
+    }
 
-    abstract fun onSetSuccess()
-
-    fun toSdpObserver() = object : SdpObserver {
-        override fun onSetFailure(error: String) {
-            this@SdpSetObserver.onSetFailure(error)
-        }
-
-        override fun onSetSuccess() {
-            this@SdpSetObserver.onSetSuccess()
-        }
-
-        override fun onCreateSuccess(sessionDescription: SessionDescription?) {
-            throw IllegalStateException("onCreateSuccess called in set listener")
-        }
-
-        override fun onCreateFailure(error: String?) {
-            throw IllegalStateException("onCreateFailure called in set listener")
-        }
-
+    override fun onCreateFailure(error: String?) {
+        throw IllegalStateException("onCreateFailure called in set listener")
     }
 }
 
-abstract class SdpCreateObserver {
+interface SdpCreateObserver : SdpObserver {
 
-    abstract fun onCreateSuccess(sessionDescription: SessionDescription)
+    override fun onSetFailure(error: String) {
+        throw IllegalStateException("onSetFailure called in set listener")
+    }
 
-    abstract fun onCreateFailure(error: String)
-
-    fun toSdpObserver() = object : SdpObserver {
-        override fun onSetFailure(error: String) {
-            throw IllegalStateException("onSetFailure called in set listener")
-        }
-
-        override fun onSetSuccess() {
-            throw IllegalStateException("onSetSuccess called in set listener")
-        }
-
-        override fun onCreateSuccess(sessionDescription: SessionDescription) {
-            this@SdpCreateObserver.onCreateSuccess(sessionDescription)
-        }
-
-        override fun onCreateFailure(error: String) {
-            this@SdpCreateObserver.onCreateFailure(error)
-        }
-
+    override fun onSetSuccess() {
+        throw IllegalStateException("onSetSuccess called in set listener")
     }
 }
