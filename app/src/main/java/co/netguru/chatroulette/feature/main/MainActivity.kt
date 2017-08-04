@@ -1,7 +1,5 @@
 package co.netguru.chatroulette.feature.main
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
@@ -18,18 +16,12 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
 
     override fun getLayoutId() = R.layout.activity_main
 
-    fun Context.startMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        this.startActivity(intent)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         thisDeviceUuidText.text = App.CURRENT_DEVICE_UUID
         connectButton.setOnClickListener { connectToDevice() }
         disconnectButton.setOnClickListener { disconnectDevice() }
-        getReplaceFragmentTransaction(R.id.fragmentContainer, videoFragment, VideoFragment.TAG)
-                .commit()
+        getReplaceFragmentTransaction(R.id.fragmentContainer, videoFragment, VideoFragment.TAG).commit()
     }
 
     private fun connectToDevice() {
@@ -41,6 +33,6 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
     }
 
     override fun passOfferDevice(deviceUuid: String) {
-        videoFragment.offerDevice(deviceUuid)
+        videoFragment.connectToDevice(deviceUuid)
     }
 }
