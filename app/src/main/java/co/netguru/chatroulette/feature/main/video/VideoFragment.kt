@@ -1,4 +1,3 @@
-
 package co.netguru.chatroulette.feature.main.video
 
 import android.os.Bundle
@@ -15,9 +14,7 @@ import org.webrtc.SessionDescription
 
 class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>(), VideoFragmentView {
 
-    val webRtcClient by lazy {
-        WebRtcClient(context)
-    }
+    val webRtcClient by lazy { WebRtcClient(context) }
 
     companion object {
         val TAG: String = VideoFragment::class.java.name

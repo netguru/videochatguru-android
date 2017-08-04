@@ -20,19 +20,27 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     private var remoteVideoRenderer: VideoRenderer? = null
     private var localVideoRenderer: VideoRenderer? = null
 
-    private val eglBase by lazy { EglBase.create() }
+    private val eglBase = EglBase.create()
     private val peerConnectionFactory by lazy { PeerConnectionFactory(PeerConnectionFactory.Options()) }
 
-    private val audioConstraints by lazy { MediaConstraints() }
-    private val offerAnswerConstraints by lazy {
-        MediaConstraints()
+    private val audioConstraints by lazy {
+        val audioConstraints = MediaConstraints()
+        audioConstraints.mandatory.add(AudioMediaConstraints.DISABLE_AUDIO_PROCESSING.toKeyValuePair(true))
+        audioConstraints
     }
+
+    private val offerAnswerConstraints by lazy {
+        val offerAnswerConstraints = MediaConstraints()
+        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
+        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
+        offerAnswerConstraints
+    }
+
     private val peerConnectionConstraints by lazy {
-        val sdpConstraints = MediaConstraints()
-        sdpConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
-        sdpConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
-        sdpConstraints
-        //todo dtls srtp
+        val peerConnectionConstraitns = MediaConstraints()
+        peerConnectionConstraitns.mandatory.add(PeerConnectionConstraints.DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT.toKeyValuePair(true))
+        peerConnectionConstraitns.mandatory.add(PeerConnectionConstraints.GOOG_CPU_OVERUSE_DETECTION.toKeyValuePair(true))
+        peerConnectionConstraitns
     }
 
     private val frontCameraCapturer = WebRtcUtils.createFrontCameraCapturer(context)
@@ -74,7 +82,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     fun initialize(iceServers: List<PeerConnection.IceServer>, peerConnectionListener: PeerConnectionListener) {
         this.peerConnectionListener = peerConnectionListener
         val rtcConfig = PeerConnection.RTCConfiguration(iceServers)
-        peer = peerConnectionFactory.createPeerConnection(rtcConfig, audioConstraints, videoPeerConnectionListener)
+        peer = peerConnectionFactory.createPeerConnection(rtcConfig, peerConnectionConstraints, videoPeerConnectionListener)
 
         val stream = peerConnectionFactory.createLocalMediaStream("102")
         stream.addTrack(localAudioTrack)
@@ -132,7 +140,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-        }, peerConnectionConstraints)
+        }, offerAnswerConstraints)
     }
 
     private fun setLocalDescription(localSessionDescription: SessionDescription) {
@@ -187,7 +195,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-        }, peerConnectionConstraints)
+        }, offerAnswerConstraints)
     }
 
     fun setLocalADescription(sessionDescription: SessionDescription) {
