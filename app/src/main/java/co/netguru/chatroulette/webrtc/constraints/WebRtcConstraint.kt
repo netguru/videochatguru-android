@@ -1,9 +1,9 @@
-package co.netguru.chatroulette.feature.main.video
+package co.netguru.chatroulette.webrtc.constraints
 
 import org.webrtc.MediaConstraints
 
 
-interface WebRtcConstraint {
+internal interface WebRtcConstraint {
 
     val constraintString: String
 

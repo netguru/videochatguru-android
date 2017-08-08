@@ -1,4 +1,4 @@
-package co.netguru.chatroulette.feature.main.video
+package co.netguru.chatroulette.webrtc
 
 import android.content.Context
 import org.webrtc.Camera2Enumerator

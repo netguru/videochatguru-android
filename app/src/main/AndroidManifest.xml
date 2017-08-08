@@ -16,16 +16,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--todo enable orientation changing-->
         <activity
             android:name="co.netguru.chatroulette.feature.main.MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <service
+            android:name=".webrtc.service.WebRtcService"
+            android:enabled="true"/>
+
     </application>
 
 </manifest>

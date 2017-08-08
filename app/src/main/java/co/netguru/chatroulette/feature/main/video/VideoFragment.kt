@@ -1,20 +1,21 @@
 package co.netguru.chatroulette.feature.main.video
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.media.AudioManager
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
-import co.netguru.chatroulette.data.model.SessionDescriptionFirebase
 import co.netguru.chatroulette.feature.base.BaseMvpFragment
+import co.netguru.chatroulette.webrtc.service.WebRtcService
 import kotlinx.android.synthetic.main.fragment_video.*
-import org.webrtc.IceCandidate
-import org.webrtc.PeerConnection
-import org.webrtc.SessionDescription
 
 
-class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>(), VideoFragmentView {
-
-    val webRtcClient by lazy { WebRtcClient(context) }
+class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>(), VideoFragmentView, ServiceConnection {
 
     companion object {
         val TAG: String = VideoFragment::class.java.name
@@ -26,72 +27,43 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun retrievePresenter() = App.getApplicationComponent(context).videoFragmentComponent().videoFragmentPresenter()
 
+    lateinit var service: WebRtcService
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        webRtcClient.attachLocalView(localVideoView)
-        webRtcClient.attachRemoteView(remoteVideoView)
-        //todo remove
-        getPresenter().loadIceServers()
-        //todo permissions
+        val intent = Intent(activity, WebRtcService::class.java)
+        context.startService(intent)
+        context.applicationContext.bindService(intent, this, Context.BIND_AUTO_CREATE)
+        activity.volumeControlStream = AudioManager.STREAM_VOICE_CALL
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        webRtcClient.dispose()
+        service.detachViews()
+        context.applicationContext.unbindService(this)
     }
 
-    fun connectToDevice(deviceUuid: String) {
-        getPresenter().offerDevice(deviceUuid)
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!activity.isChangingConfigurations) {
+            service.stopSelf()
+        }
     }
 
-    override fun handleRemoteOffer(remoteSessionDescription: SessionDescriptionFirebase) {
-        //todo parse in presenter
-        webRtcClient.handleRemoteOffer(remoteSessionDescription.toSessionDescription())
+    override fun onServiceDisconnected(p0: ComponentName) {
+        //no-op
     }
 
-    override fun handleRemoteAnswer(answer: SessionDescriptionFirebase) {
-        webRtcClient.handleRemoteAnswer(answer.toSessionDescription())
+    override fun onServiceConnected(className: ComponentName, iBinder: IBinder) {
+        service = (iBinder as (WebRtcService.LocalBinder)).service
+        service.attachLocalView(localVideoView)
+        service.attachRemoteView(remoteVideoView)
+        connectButton.setOnClickListener {
+            getPresenter().startSearching()
+        }
     }
 
-    override fun addIceCandidate(iceCandidate: IceCandidate) {
-        webRtcClient.addIceCandidate(iceCandidate)
+    override fun connectTo(uuid: String) {
+        service.offerDevice(uuid)
     }
-
-    override fun removeIceCandidate(iceCandidate: IceCandidate) {
-        webRtcClient.removeIceCandidate(iceCandidate)
-    }
-
-    override fun addIceServers(iceServers: List<PeerConnection.IceServer>) {
-        webRtcClient.initialize(iceServers, object : PeerConnectionListener {
-
-            override fun onIceCandidate(iceCandidate: IceCandidate) {
-                getPresenter().sendIceCandidates(iceCandidate)
-            }
-
-            override fun onIceCandidatesRemoved(iceCandidates: Array<IceCandidate>) {
-                getPresenter().removeIceCandidates(iceCandidates)
-            }
-
-            override fun onOffer(sessionDescription: SessionDescription) {
-                getPresenter().sendOffer(sessionDescription)
-                getPresenter().listenForAnswers()
-            }
-
-            override fun onAnswer(sessionDescription: SessionDescription) {
-                getPresenter().sendAnswer(sessionDescription)
-            }
-
-        })
-    }
-
-    override fun showServersRetrievingError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun createOffer() {
-        webRtcClient.createOffer()
-    }
-
 }
-

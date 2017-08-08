@@ -19,20 +19,9 @@ class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         thisDeviceUuidText.text = App.CURRENT_DEVICE_UUID
-        connectButton.setOnClickListener { connectToDevice() }
-        disconnectButton.setOnClickListener { disconnectDevice() }
-        getReplaceFragmentTransaction(R.id.fragmentContainer, videoFragment, VideoFragment.TAG).commit()
+        if (savedInstanceState == null) {
+            getReplaceFragmentTransaction(R.id.fragmentContainer, videoFragment, VideoFragment.TAG).commit()
+        }
     }
 
-    private fun connectToDevice() {
-        getPresenter().startSearching()
-    }
-
-    private fun disconnectDevice() {
-        getPresenter().stop()
-    }
-
-    override fun passOfferDevice(deviceUuid: String) {
-        videoFragment.connectToDevice(deviceUuid)
-    }
 }

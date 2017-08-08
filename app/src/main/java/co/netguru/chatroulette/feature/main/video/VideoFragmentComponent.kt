@@ -1,8 +1,6 @@
 package co.netguru.chatroulette.feature.main.video
 
 import co.netguru.chatroulette.common.di.FragmentScope
-import co.netguru.chatroulette.feature.main.video.VideoFragment
-import co.netguru.chatroulette.feature.main.video.VideoFragmentPresenter
 import dagger.Subcomponent
 
 @FragmentScope

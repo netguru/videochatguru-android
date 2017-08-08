@@ -1,5 +1,8 @@
-package co.netguru.chatroulette.feature.main.video
+package co.netguru.chatroulette.webrtc
 
+import co.netguru.chatroulette.webrtc.CustomPeerConnectionObserver
+import co.netguru.chatroulette.webrtc.PeerConnectionListener
+import co.netguru.chatroulette.webrtc.RemoteVideoListener
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
 import timber.log.Timber
