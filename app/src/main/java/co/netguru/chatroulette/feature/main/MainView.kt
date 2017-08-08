@@ -4,5 +4,4 @@ import co.netguru.chatroulette.feature.base.MvpView
 
 
 interface MainView : MvpView {
-    fun passOfferDevice(deviceUuid: String)
 }

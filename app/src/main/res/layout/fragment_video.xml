@@ -20,4 +20,15 @@
         android:layout_height="match_parent"
         />
 
+    <Button
+        android:textColor="@color/white"
+        android:id="@+id/connectButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="@string/btn_start_roulette"/>
+
 </RelativeLayout>
