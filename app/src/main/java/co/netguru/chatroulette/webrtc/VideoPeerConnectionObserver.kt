@@ -1,20 +1,23 @@
 package co.netguru.chatroulette.webrtc
 
-import co.netguru.chatroulette.webrtc.CustomPeerConnectionObserver
-import co.netguru.chatroulette.webrtc.PeerConnectionListener
-import co.netguru.chatroulette.webrtc.RemoteVideoListener
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
+import org.webrtc.PeerConnection
 import timber.log.Timber
 
 
 internal class VideoPeerConnectionObserver(
         val peerConnectionListener: PeerConnectionListener,
-        val remoteVideoListener: RemoteVideoListener) : CustomPeerConnectionObserver() {
+        val remoteVideoListener: RemoteVideoListener) : CustomPeerConnectionObserver {
 
     override fun onIceCandidate(iceCandidate: IceCandidate) {
         super.onIceCandidate(iceCandidate)
         peerConnectionListener.onIceCandidate(iceCandidate)
+    }
+
+    override fun onIceConnectionChange(iceConnectionState: PeerConnection.IceConnectionState) {
+        super.onIceConnectionChange(iceConnectionState)
+        peerConnectionListener.onIceConnectionChange(iceConnectionState)
     }
 
     override fun onIceCandidatesRemoved(iceCandidates: Array<IceCandidate>) {

@@ -8,10 +8,10 @@ import timber.log.Timber
 
 class WebRtcOfferingPartyHandler(
         private val peer: PeerConnection,
-        private val offerAnswerConstraints: MediaConstraints,
         private val webRtcActionListener: WebRtcOfferingActionListener) {
 
-    fun createOffer() {
+    fun createOffer(offerAnswerConstraints: MediaConstraints) {
+        Timber.d("Creating offer with $offerAnswerConstraints")
         peer.createOffer(object : SdpCreateObserver {
             override fun onCreateSuccess(localSessionDescription: SessionDescription) {
                 setLocalOfferDescription(localSessionDescription)

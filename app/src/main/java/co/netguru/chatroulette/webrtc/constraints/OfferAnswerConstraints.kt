@@ -17,6 +17,10 @@ internal enum class OfferAnswerConstraints(override val constraintString: String
      * ff this behavior. This option allows the application to provide information about whether it
      * wishes this type of processing enabled or disabled.
      */
-    VOICE_ACTIVITY_DETECTION("VoiceActivityDetection")
+    VOICE_ACTIVITY_DETECTION("VoiceActivityDetection"),
+    /**
+     * Tries to restart connection after it was in failed or disconnected state
+     */
+    ICE_RESTART("IceRestart")
 
 }

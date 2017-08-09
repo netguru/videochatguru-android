@@ -6,7 +6,7 @@ import org.webrtc.MediaStream
 import org.webrtc.PeerConnection
 import timber.log.Timber
 
-open class CustomPeerConnectionObserver : PeerConnection.Observer {
+interface CustomPeerConnectionObserver : PeerConnection.Observer {
 
     override fun onSignalingChange(signalingState: PeerConnection.SignalingState) {
         Timber.d("onSignalingChange() called with $signalingState")

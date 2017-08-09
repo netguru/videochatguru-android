@@ -6,7 +6,6 @@ import android.os.Binder
 import android.os.IBinder
 import co.netguru.chatroulette.app.App
 import org.webrtc.SurfaceViewRenderer
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -21,7 +20,6 @@ class WebRtcService : Service() {
     }
 
     override fun onCreate() {
-        Timber.d("SERVICE CREATED")
         super.onCreate()
         App.getApplicationComponent(this).webRtcServiceComponent().inject(this)
     }
@@ -43,7 +41,7 @@ class WebRtcService : Service() {
         webRtcServiceManager.attachLocalView(localView)
     }
 
-    fun detachViews(){
+    fun detachViews() {
         webRtcServiceManager.detachViews()
     }
 

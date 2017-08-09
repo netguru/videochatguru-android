@@ -34,13 +34,14 @@ class WebRtcServiceManager @Inject constructor(
     private lateinit var remoteUuid: String
     private var finishedInitializing = false
     private var shouldCreateOffer = false
+    private var isOfferingParty = false
 
     init {
         loadIceServers()
     }
 
     fun offerDevice(deviceUuid: String) {
-        Timber.d("Offer device called")
+        isOfferingParty = true
         this.remoteUuid = deviceUuid
         listenForIceCandidates()
         if (finishedInitializing) webRtcClient.createOffer() else shouldCreateOffer = true
@@ -54,13 +55,18 @@ class WebRtcServiceManager @Inject constructor(
         webRtcClient.attachLocalView(localView, null)
     }
 
+    fun detachViews() {
+        webRtcClient.detachViews()
+    }
+
     fun destroy() {
         disposables.dispose()
         webRtcClient.detachViews()
+        if (finishedInitializing) webRtcClient.releasePeerConnection()
         webRtcClient.dispose()
     }
 
-    fun loadIceServers() {
+    private fun loadIceServers() {
         disposables += firebaseIceServers.getIceServers()
                 .subscribeBy(
                         onSuccess = {
@@ -74,7 +80,13 @@ class WebRtcServiceManager @Inject constructor(
     }
 
     private fun initializeWebRtc(it: List<PeerConnection.IceServer>) {
-        webRtcClient.initialize(it, object : PeerConnectionListener {
+        webRtcClient.initializePeerConnection(it, object : PeerConnectionListener {
+            override fun onIceConnectionChange(iceConnectionState: PeerConnection.IceConnectionState) {
+                if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED && isOfferingParty) {
+                    webRtcClient.restart()
+                }
+            }
+
             override fun onIceCandidate(iceCandidate: IceCandidate) {
                 sendIceCandidates(iceCandidate)
             }
@@ -85,7 +97,7 @@ class WebRtcServiceManager @Inject constructor(
 
         }, object : WebRtcOfferingActionListener {
             override fun onError(error: String) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                Timber.d("Error in offering party: $error")
             }
 
             override fun onOfferRemoteDescription(localSessionDescription: SessionDescription) {
@@ -95,7 +107,7 @@ class WebRtcServiceManager @Inject constructor(
 
         }, object : WebRtcAnsweringPartyListener {
             override fun onError(error: String) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                Timber.d("Error in answering party: $error")
             }
 
             override fun onSuccess(localSessionDescription: SessionDescription) {
@@ -107,7 +119,7 @@ class WebRtcServiceManager @Inject constructor(
     }
 
 
-    fun listenForIceCandidates() {
+    private fun listenForIceCandidates() {
         disposables += firebaseIceCandidates.get(remoteUuid)
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
@@ -125,7 +137,7 @@ class WebRtcServiceManager @Inject constructor(
                 )
     }
 
-    fun sendIceCandidates(iceCandidate: IceCandidate) {
+    private fun sendIceCandidates(iceCandidate: IceCandidate) {
         disposables += firebaseIceCandidates.send(IceCandidateFirebase.createFromIceCandidate(iceCandidate))
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
@@ -138,7 +150,7 @@ class WebRtcServiceManager @Inject constructor(
                 )
     }
 
-    fun removeIceCandidates(iceCandidates: Array<IceCandidate>) {
+    private fun removeIceCandidates(iceCandidates: Array<IceCandidate>) {
         disposables += firebaseIceCandidates.remove(IceCandidateFirebase.createFromIceCandidates(iceCandidates))
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
@@ -151,7 +163,7 @@ class WebRtcServiceManager @Inject constructor(
                 )
     }
 
-    fun sendOffer(localDescription: SessionDescription) {
+    private fun sendOffer(localDescription: SessionDescription) {
         disposables += firebaseSignalingOffers.create(remoteUuid, localDescription)
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
@@ -164,7 +176,7 @@ class WebRtcServiceManager @Inject constructor(
                 )
     }
 
-    fun listenForOffers() {
+    private fun listenForOffers() {
         disposables += firebaseSignalingOffers.listen()
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
@@ -180,29 +192,21 @@ class WebRtcServiceManager @Inject constructor(
                         },
                         onError = {
                             Timber.e(it, "Error while listening for offers")
-                        },
-                        onComplete = {
-                            //todo
-                            Timber.d("Completed")
                         }
-
                 )
     }
 
-    fun sendAnswer(localDescription: SessionDescription) {
+    private fun sendAnswer(localDescription: SessionDescription) {
         disposables += firebaseSignalingAnswers.create(remoteUuid, localDescription)
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
-                        onComplete = {
-                            Timber.d("sending answer completed")
-                        },
                         onError = {
                             Timber.e(it, "Error occurred while sending answer")
                         }
                 )
     }
 
-    fun listenForAnswers() {
+    private fun listenForAnswers() {
         disposables += firebaseSignalingAnswers.listen()
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
@@ -217,15 +221,8 @@ class WebRtcServiceManager @Inject constructor(
                             } else {
                                 //todo
                             }
-                        },
-                        onComplete = {
-                            Timber.d("Completed")
                         }
                 )
-    }
-
-    fun detachViews() {
-        webRtcClient.detachViews()
     }
 
 }

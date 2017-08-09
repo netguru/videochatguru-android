@@ -48,6 +48,14 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         offerAnswerConstraints
     }
 
+    private val offerAnswerRestartConstraints by lazy {
+        val offerAnswerConstraints = MediaConstraints()
+        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
+        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
+        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.ICE_RESTART.toKeyValuePair(true))
+        offerAnswerConstraints
+    }
+
     private val peerConnectionConstraints by lazy {
         val peerConnectionConstraints = MediaConstraints()
         peerConnectionConstraints.mandatory.add(PeerConnectionConstraints.DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT.toKeyValuePair(true))
@@ -87,10 +95,11 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         localAudioTrack = peerConnectionFactory.createAudioTrack(getCounterStringValueAndIncrement(), audioSource)
     }
 
-    fun initialize(iceServers: List<PeerConnection.IceServer>,
-                   peerConnectionListener: PeerConnectionListener,
-                   webRtcOfferingActionListener: WebRtcOfferingActionListener,
-                   webRtcAnsweringPartyListener: WebRtcAnsweringPartyListener) {
+    fun initializePeerConnection(iceServers: List<PeerConnection.IceServer>,
+                                 peerConnectionListener: PeerConnectionListener,
+                                 webRtcOfferingActionListener: WebRtcOfferingActionListener,
+                                 webRtcAnsweringPartyListener: WebRtcAnsweringPartyListener) {
+
         this.peerConnectionListener = peerConnectionListener
         val rtcConfig = PeerConnection.RTCConfiguration(iceServers)
         peerConnection = peerConnectionFactory.createPeerConnection(rtcConfig, peerConnectionConstraints, videoPeerConnectionListener)
@@ -99,7 +108,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         stream.addTrack(localAudioTrack)
         stream.addTrack(localVideoTrack)
         peerConnection.addStream(stream)
-        offeringPartyHandler = WebRtcOfferingPartyHandler(peerConnection, offerAnswerConstraints, webRtcOfferingActionListener)
+        offeringPartyHandler = WebRtcOfferingPartyHandler(peerConnection, webRtcOfferingActionListener)
         answeringPartyHandler = WebRtcAnsweringPartyHandler(peerConnection, offerAnswerConstraints, webRtcAnsweringPartyListener)
     }
 
@@ -146,12 +155,16 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         peerConnectionFactory.dispose()
     }
 
-    fun disposeInitResources() {
+    /**
+     * If peer connection was initialized make sure that this method is called before [dispose]
+     */
+    fun releasePeerConnection() {
+        peerConnection.close()
         peerConnection.dispose()
     }
 
     fun createOffer() {
-        offeringPartyHandler.createOffer()
+        offeringPartyHandler.createOffer(offerAnswerConstraints)
     }
 
     fun handleRemoteAnswer(remoteSessionDescription: SessionDescription) {
@@ -173,4 +186,8 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     private fun isCameraAvailable() = (frontCameraCapturer != null || backCameraCapturer != null)
 
     private fun getCounterStringValueAndIncrement() = counter.getAndIncrement().toString()
+
+    fun restart() {
+        offeringPartyHandler.createOffer(offerAnswerRestartConstraints)
+    }
 }
