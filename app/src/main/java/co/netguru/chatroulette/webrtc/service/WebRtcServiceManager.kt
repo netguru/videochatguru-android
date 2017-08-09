@@ -127,7 +127,6 @@ class WebRtcServiceManager @Inject constructor(
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onNext = {
-                            Timber.d("Next ice: $it")
                             if (it is ChildEventAdded) {
                                 webRtcClient.addIceCandidate(it.data)
                             } else {
@@ -213,9 +212,6 @@ class WebRtcServiceManager @Inject constructor(
         disposables += firebaseSignalingAnswers.listen()
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
-                        onError = {
-                            Timber.e(it, "Error while listening for answers")
-                        },
                         onNext = {
                             Timber.d("Next answer $it")
                             val data = it.data
@@ -224,6 +220,9 @@ class WebRtcServiceManager @Inject constructor(
                             } else {
                                 //todo
                             }
+                        },
+                        onError = {
+                            Timber.e(it, "Error while listening for answers")
                         }
                 )
     }
