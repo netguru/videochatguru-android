@@ -47,7 +47,6 @@ class WebRtcService : Service() {
         webRtcServiceManager.detachViews()
     }
 
-    //todo think about exporting just manager
     inner class LocalBinder : Binder() {
         val service: WebRtcService
             get() = this@WebRtcService

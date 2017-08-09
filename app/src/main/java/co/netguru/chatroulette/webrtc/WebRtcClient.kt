@@ -19,13 +19,21 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     }
 
     private var remoteVideoStream: VideoTrack? = null
+
+    private var videoSource: VideoSource? = null
     private var localVideoTrack: VideoTrack? = null
 
+    private val audioSource: AudioSource
+    private val localAudioTrack: AudioTrack
+
+    private var remoteView: SurfaceViewRenderer? = null
     private var remoteVideoRenderer: VideoRenderer? = null
+    private var localView: SurfaceViewRenderer? = null
     private var localVideoRenderer: VideoRenderer? = null
 
     private val eglBase = EglBase.create()
-    private val peerConnectionFactory by lazy { PeerConnectionFactory(PeerConnectionFactory.Options()) }
+
+    private val peerConnectionFactory: PeerConnectionFactory
 
     private val audioConstraints by lazy {
         val audioConstraints = MediaConstraints()
@@ -52,8 +60,6 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
 
     var isFrontCameraUsed = true
 
-    private var localAudioTrack: AudioTrack
-
     private lateinit var peerConnectionListener: PeerConnectionListener
 
     private val videoPeerConnectionListener by lazy { VideoPeerConnectionObserver(peerConnectionListener, this) }
@@ -67,16 +73,17 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         if (!PeerConnectionFactory.initializeAndroidGlobals(context.applicationContext, INITIALIZE_AUDIO, INITIALIZE_VIDEO, HW_ACCELERATION)) {
             Timber.d("Failed to initializeAndroidGlobals")
         }
+        peerConnectionFactory = PeerConnectionFactory(PeerConnectionFactory.Options())
 
         if (isCameraAvailable()) {
             val videoCapturer = getCurrentVideoCapturer()
             peerConnectionFactory.setVideoHwAccelerationOptions(eglBase.eglBaseContext, eglBase.eglBaseContext)
-            val source = peerConnectionFactory.createVideoSource(videoCapturer)
-            localVideoTrack = peerConnectionFactory.createVideoTrack(counter.getAndIncrement().toString(), source)
+            videoSource = peerConnectionFactory.createVideoSource(videoCapturer)
+            localVideoTrack = peerConnectionFactory.createVideoTrack(counter.getAndIncrement().toString(), videoSource)
             videoCapturer?.startCapture(1280, 720, 30)
         }
 
-        val audioSource = peerConnectionFactory.createAudioSource(audioConstraints)
+        audioSource = peerConnectionFactory.createAudioSource(audioConstraints)
         localAudioTrack = peerConnectionFactory.createAudioTrack(getCounterStringValueAndIncrement(), audioSource)
     }
 
@@ -111,33 +118,38 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
 
     fun attachRemoteView(remoteView: SurfaceViewRenderer, renderListener: RendererCommon.RendererEvents? = null) {
         remoteView.init(eglBase.eglBaseContext, renderListener)
-        remoteView.setEnableHardwareScaler(true)
+        this.remoteView = remoteView
         remoteVideoRenderer = VideoRenderer(remoteView)
         remoteVideoStream?.addRenderer(remoteVideoRenderer)
     }
 
     fun attachLocalView(localView: SurfaceViewRenderer, renderListener: RendererCommon.RendererEvents? = null) {
         localView.init(eglBase.eglBaseContext, renderListener)
-        localView.setEnableHardwareScaler(true)
+        this.localView = localView
         localVideoRenderer = VideoRenderer(localView)
         localVideoTrack?.addRenderer(localVideoRenderer)
     }
 
     fun detachViews() {
+        remoteView?.release()
         remoteVideoRenderer?.let { remoteVideoStream?.removeRenderer(it) }
+        localView?.release()
         localVideoRenderer?.let { localVideoTrack?.removeRenderer(localVideoRenderer) }
     }
 
     fun dispose() {
         eglBase.release()
-        peerConnection.dispose()
-        peerConnectionFactory.dispose()
+        audioSource.dispose()
         frontCameraCapturer?.dispose()
         backCameraCapturer?.dispose()
-        localAudioTrack.dispose()
+        videoSource?.dispose()
+        peerConnectionFactory.dispose()
     }
 
-    //offering party
+    fun disposeInitResources() {
+        peerConnection.dispose()
+    }
+
     fun createOffer() {
         offeringPartyHandler.createOffer()
     }
@@ -146,7 +158,6 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         offeringPartyHandler.handleRemoteAnswer(remoteSessionDescription)
     }
 
-    //answering party
     fun handleRemoteOffer(remoteSessionDescription: SessionDescription) {
         answeringPartyHandler.handleRemoteOffer(remoteSessionDescription)
     }

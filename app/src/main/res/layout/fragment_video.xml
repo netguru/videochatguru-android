@@ -9,15 +9,18 @@
         android:id="@+id/localVideoView"
         android:layout_width="200dp"
         android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/buttonPanel"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_margin="@dimen/margin_medium"
-        />
+        android:visibility="gone"/>
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/remoteVideoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/buttonPanel"
+        android:visibility="gone"
         />
 
     <Button
@@ -28,42 +31,57 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_margin="@dimen/margin_medium"
         android:text="@string/btn_start_roulette"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
 
     <LinearLayout
         android:id="@+id/buttonPanel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/accent"
+
+        android:gravity="center"
+        android:visibility="gone">
 
         <ImageButton
             android:id="@+id/disconnectButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/ic_call_end_white_24dp"
+            android:layout_width="@dimen/button_panel_button_width_height"
+            android:layout_height="@dimen/button_panel_button_width_height"
+            android:layout_margin="@dimen/margin_small"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_call_end_white_24dp"
             />
 
-        <ImageButton
+        <ToggleButton
             android:id="@+id/switchCameraButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/ic_switch_video_white_24dp"/>
+            style="@style/ToggleButtonBorderlessTextless"
+            android:layout_width="@dimen/button_panel_button_width_height"
+            android:layout_height="@dimen/button_panel_button_width_height"
+            android:layout_margin="@dimen/margin_small"
+            android:button="@drawable/ic_videocam_front_rear_toggle"
+            />
 
         <ToggleButton
-            android:id="@+id/buttonCamera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:id="@+id/microphoneToggle"
+            style="@style/ToggleButtonBorderlessTextless"
+            android:layout_width="@dimen/button_panel_button_width_height"
+            android:layout_height="@dimen/button_panel_button_width_height"
+            android:layout_margin="@dimen/margin_small"
             android:button="@drawable/ic_microphone_toggle"/>
 
         <ToggleButton
-            android:id="@+id/buttonCamera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:button="@drawable/ic_microphone_toggle"/>
+            android:id="@+id/cameraToggle"
+            style="@style/ToggleButtonBorderlessTextless"
+            android:layout_width="@dimen/button_panel_button_width_height"
+            android:layout_height="@dimen/button_panel_button_width_height"
+            android:layout_margin="@dimen/margin_small"
+            android:background="?selectableItemBackgroundBorderless"
+            android:button="@drawable/ic_videocam_on_off_toggle"/>
     </LinearLayout>
 
 </RelativeLayout>

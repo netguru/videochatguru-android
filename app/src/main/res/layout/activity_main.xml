@@ -12,6 +12,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:padding="@dimen/margin_large"
         android:src="@drawable/ic_videocam_white_72dp"/>
 
@@ -20,12 +21,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-
-    <TextView
-        android:id="@+id/thisDeviceUuidText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="#fff"/>
 
 </RelativeLayout>

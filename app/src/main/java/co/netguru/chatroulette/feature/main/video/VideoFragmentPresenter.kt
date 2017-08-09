@@ -20,7 +20,8 @@ class VideoFragmentPresenter @Inject constructor(
         disposables.dispose()
     }
 
-    fun startSearching() {
+    fun startRoulette() {
+        mvpView?.showCamViews()
         Timber.d("Start searching")
         disposables += firebaseSignalingOnline.connectAndRetrieveRandomDevice()
                 .compose(RxUtils.applyMaybeIoSchedulers())
@@ -43,6 +44,15 @@ class VideoFragmentPresenter @Inject constructor(
                         },
                         onComplete = {}
                 )
+    }
+
+    fun disconnect() {
+        mvpView?.disconnect()
+        mvpView?.showStartRouletteView()
+    }
+
+    fun connect() {
+        mvpView?.attachService()
     }
 
 

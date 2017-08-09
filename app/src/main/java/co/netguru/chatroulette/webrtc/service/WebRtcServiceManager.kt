@@ -56,6 +56,7 @@ class WebRtcServiceManager @Inject constructor(
 
     fun destroy() {
         disposables.dispose()
+        webRtcClient.detachViews()
         webRtcClient.dispose()
     }
 

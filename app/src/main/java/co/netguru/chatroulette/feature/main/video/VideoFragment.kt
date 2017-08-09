@@ -13,9 +13,11 @@ import co.netguru.chatroulette.app.App
 import co.netguru.chatroulette.feature.base.BaseMvpFragment
 import co.netguru.chatroulette.webrtc.service.WebRtcService
 import kotlinx.android.synthetic.main.fragment_video.*
+import timber.log.Timber
 
 
 class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>(), VideoFragmentView, ServiceConnection {
+
 
     companion object {
         val TAG: String = VideoFragment::class.java.name
@@ -31,10 +33,13 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val intent = Intent(activity, WebRtcService::class.java)
-        context.startService(intent)
-        context.applicationContext.bindService(intent, this, Context.BIND_AUTO_CREATE)
         activity.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+        connectButton.setOnClickListener {
+            getPresenter().connect()
+        }
+        disconnectButton.setOnClickListener {
+            getPresenter().disconnect()
+        }
     }
 
     override fun onDestroyView() {
@@ -50,20 +55,45 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         }
     }
 
-    override fun onServiceDisconnected(p0: ComponentName) {
-        //no-op
+    override fun onServiceDisconnected(componentName: ComponentName) {
+        Timber.d("Service disconnected")
     }
 
     override fun onServiceConnected(className: ComponentName, iBinder: IBinder) {
+        Timber.d("Service connected")
         service = (iBinder as (WebRtcService.LocalBinder)).service
         service.attachLocalView(localVideoView)
         service.attachRemoteView(remoteVideoView)
-        connectButton.setOnClickListener {
-            getPresenter().startSearching()
-        }
+        getPresenter().startRoulette()
+
     }
 
     override fun connectTo(uuid: String) {
         service.offerDevice(uuid)
+    }
+
+    override fun attachService() {
+        val intent = Intent(activity, WebRtcService::class.java)
+        context.startService(intent)
+        context.applicationContext.bindService(intent, this, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun disconnect() {
+        context.applicationContext.unbindService(this)
+        service.stopSelf()
+    }
+
+    override fun showCamViews() {
+        remoteVideoView.visibility = View.VISIBLE
+        localVideoView.visibility = View.VISIBLE
+        buttonPanel.visibility = View.VISIBLE
+        connectButton.visibility = View.GONE
+    }
+
+    override fun showStartRouletteView() {
+        remoteVideoView.visibility = View.GONE
+        localVideoView.visibility = View.GONE
+        buttonPanel.visibility = View.GONE
+        connectButton.visibility = View.VISIBLE
     }
 }
