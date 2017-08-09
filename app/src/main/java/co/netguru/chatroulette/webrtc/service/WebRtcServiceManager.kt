@@ -79,41 +79,44 @@ class WebRtcServiceManager @Inject constructor(
                 )
     }
 
-    private fun initializeWebRtc(it: List<PeerConnection.IceServer>) {
-        webRtcClient.initializePeerConnection(it, object : PeerConnectionListener {
-            override fun onIceConnectionChange(iceConnectionState: PeerConnection.IceConnectionState) {
-                if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED && isOfferingParty) {
-                    webRtcClient.restart()
-                }
-            }
+    private fun initializeWebRtc(iceServers: List<PeerConnection.IceServer>) {
+        webRtcClient.initializePeerConnection(iceServers,
+                peerConnectionListener = object : PeerConnectionListener {
+                    override fun onIceConnectionChange(iceConnectionState: PeerConnection.IceConnectionState) {
+                        if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED && isOfferingParty) {
+                            webRtcClient.restart()
+                        }
+                    }
 
-            override fun onIceCandidate(iceCandidate: IceCandidate) {
-                sendIceCandidates(iceCandidate)
-            }
+                    override fun onIceCandidate(iceCandidate: IceCandidate) {
+                        sendIceCandidates(iceCandidate)
+                    }
 
-            override fun onIceCandidatesRemoved(iceCandidates: Array<IceCandidate>) {
-                removeIceCandidates(iceCandidates)
-            }
+                    override fun onIceCandidatesRemoved(iceCandidates: Array<IceCandidate>) {
+                        removeIceCandidates(iceCandidates)
+                    }
 
-        }, object : WebRtcOfferingActionListener {
-            override fun onError(error: String) {
-                Timber.d("Error in offering party: $error")
-            }
+                },
+                webRtcOfferingActionListener = object : WebRtcOfferingActionListener {
+                    override fun onError(error: String) {
+                        Timber.d("Error in offering party: $error")
+                    }
 
-            override fun onOfferRemoteDescription(localSessionDescription: SessionDescription) {
-                listenForAnswers()
-                sendOffer(localSessionDescription)
-            }
+                    override fun onOfferRemoteDescription(localSessionDescription: SessionDescription) {
+                        listenForAnswers()
+                        sendOffer(localSessionDescription)
+                    }
 
-        }, object : WebRtcAnsweringPartyListener {
-            override fun onError(error: String) {
-                Timber.d("Error in answering party: $error")
-            }
+                },
+                webRtcAnsweringPartyListener = object : WebRtcAnsweringPartyListener {
+                    override fun onError(error: String) {
+                        Timber.d("Error in answering party: $error")
+                    }
 
-            override fun onSuccess(localSessionDescription: SessionDescription) {
-                sendAnswer(localSessionDescription)
-            }
-        })
+                    override fun onSuccess(localSessionDescription: SessionDescription) {
+                        sendAnswer(localSessionDescription)
+                    }
+                })
         if (shouldCreateOffer) webRtcClient.createOffer()
         finishedInitializing = true
     }
