@@ -45,6 +45,8 @@ class WebRtcService : Service() {
         webRtcServiceManager.detachViews()
     }
 
+    fun getRemoteUuid() = webRtcServiceManager.remoteUuid
+
     inner class LocalBinder : Binder() {
         val service: WebRtcService
             get() = this@WebRtcService

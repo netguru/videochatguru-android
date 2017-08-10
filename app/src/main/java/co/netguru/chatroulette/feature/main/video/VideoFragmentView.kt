@@ -8,4 +8,9 @@ interface VideoFragmentView : MvpView {
     fun showStartRouletteView()
     fun disconnect()
     fun attachService()
+    fun getRemoteUuid(): String?
+    fun showErrorWhileChoosingRandom()
+    fun showNoOneAvailable()
+    fun showLookingForPartnerMessage()
+    fun showOtherPartyFinished()
 }

@@ -2,6 +2,7 @@ package co.netguru.chatroulette.app
 
 import android.app.Application
 import android.content.Context
+import android.widget.Toast
 import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.data.firebase.FirebaseModule
 import com.squareup.leakcanary.LeakCanary
@@ -40,6 +41,7 @@ class App : Application() {
             Timber.plant(Timber.DebugTree())
             //Enables WebRTC Logging
             Logging.enableLogToDebugOutput(Logging.Severity.LS_ERROR)
+            Toast.makeText(this, "Uuid: ${App.CURRENT_DEVICE_UUID}", Toast.LENGTH_LONG).show()
         }
     }
 }

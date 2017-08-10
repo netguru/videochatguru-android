@@ -1,6 +1,8 @@
 package co.netguru.chatroulette.feature.main
 
 import android.os.Bundle
+import android.widget.Toast
+import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
 import co.netguru.chatroulette.feature.base.BaseMvpActivity

@@ -20,10 +20,10 @@ class FirebaseSignalingOffers @Inject constructor(private val firebaseDatabase: 
 
     private fun deviceOffersPath(deviceUuid: String) = OFFERS_PATH.plus(deviceUuid)
 
-    fun create(recipientUuid: String, localDescription: SessionDescription): Completable = Completable.create {
+    fun create(recipientUuid: String, localSessionDescription: SessionDescription): Completable = Completable.create {
         val reference = firebaseDatabase.getReference(deviceOffersPath(recipientUuid))
         reference.onDisconnect().removeValue()
-        reference.setValue(SessionDescriptionFirebase.fromSessionDescriptionWithDefaultSenderUuid(localDescription))
+        reference.setValue(SessionDescriptionFirebase.fromSessionDescriptionWithDefaultSenderUuid(localSessionDescription))
         it.onComplete()
     }
 

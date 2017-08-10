@@ -11,7 +11,6 @@ import co.netguru.chatroulette.webrtc.WebRtcClient
 import co.netguru.chatroulette.webrtc.service.WebRtcServiceManager
 import dagger.Module
 import dagger.Provides
-import java.util.*
 import javax.inject.Singleton
 
 @Module
@@ -36,7 +35,8 @@ class ApplicationModule(val application: Application) {
     fun provideWebRtcServiceManager(webRtcClient: WebRtcClient, firebaseSignalingAnswers: FirebaseSignalingAnswers,
                                     firebaseSignalingOffers: FirebaseSignalingOffers, firebaseIceCandidates: FirebaseIceCandidates,
                                     firebaseIceServers: FirebaseIceServers): WebRtcServiceManager {
-
-        return WebRtcServiceManager(webRtcClient, firebaseSignalingAnswers, firebaseSignalingOffers, firebaseIceCandidates, firebaseIceServers)
+        return WebRtcServiceManager(
+                webRtcClient, firebaseSignalingAnswers, firebaseSignalingOffers,
+                firebaseIceCandidates, firebaseIceServers)
     }
 }

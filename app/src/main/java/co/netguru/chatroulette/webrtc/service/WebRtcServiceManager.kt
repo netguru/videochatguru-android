@@ -31,7 +31,7 @@ class WebRtcServiceManager @Inject constructor(
 
     private val disposables = CompositeDisposable()
 
-    private lateinit var remoteUuid: String
+    var remoteUuid: String? = null
     private var finishedInitializing = false
     private var shouldCreateOffer = false
     private var isOfferingParty = false
@@ -43,7 +43,7 @@ class WebRtcServiceManager @Inject constructor(
     fun offerDevice(deviceUuid: String) {
         isOfferingParty = true
         this.remoteUuid = deviceUuid
-        listenForIceCandidates()
+        listenForIceCandidates(deviceUuid)
         if (finishedInitializing) webRtcClient.createOffer() else shouldCreateOffer = true
     }
 
@@ -122,7 +122,7 @@ class WebRtcServiceManager @Inject constructor(
     }
 
 
-    private fun listenForIceCandidates() {
+    private fun listenForIceCandidates(remoteUuid: String) {
         disposables += firebaseIceCandidates.get(remoteUuid)
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
@@ -166,7 +166,10 @@ class WebRtcServiceManager @Inject constructor(
     }
 
     private fun sendOffer(localDescription: SessionDescription) {
-        disposables += firebaseSignalingOffers.create(remoteUuid, localDescription)
+        disposables += firebaseSignalingOffers.create(
+                recipientUuid = remoteUuid ?: throw IllegalArgumentException("Remote uuid should be set first"),
+                localSessionDescription = localDescription
+        )
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onComplete = {
@@ -185,8 +188,9 @@ class WebRtcServiceManager @Inject constructor(
                         onNext = {
                             val data = it.data
                             if (data != null) {
-                                remoteUuid = it.data.senderUuid
-                                listenForIceCandidates()
+                                val senderUuid = it.data.senderUuid
+                                remoteUuid = senderUuid
+                                listenForIceCandidates(senderUuid)
                                 webRtcClient.handleRemoteOffer(it.data.toSessionDescription())
                             } else {
                                 //todo
@@ -199,7 +203,10 @@ class WebRtcServiceManager @Inject constructor(
     }
 
     private fun sendAnswer(localDescription: SessionDescription) {
-        disposables += firebaseSignalingAnswers.create(remoteUuid, localDescription)
+        disposables += firebaseSignalingAnswers.create(
+                recipientUuid = remoteUuid ?: throw IllegalArgumentException("Remote uuid should be set first"),
+                localSessionDescription = localDescription
+        )
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onError = {

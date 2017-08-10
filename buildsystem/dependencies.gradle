@@ -9,7 +9,7 @@ ext {
     okHttpVersion = '3.8.1'
     retrofitVersion = '2.3.0'
     moshiVersion = '1.5.0'
-    firebaseVersion = '11.0.2'
+    firebaseVersion = '11.0.4'
 
     libs = [
             kotlinStdlib            : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion",

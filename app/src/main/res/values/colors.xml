@@ -3,6 +3,7 @@
     <color name="primary">#4CAF50</color>
     <color name="primary_dark">#388E3C</color>
     <color name="accent">#FF9800</color>
+    <color name="accent_panel">#77FF9800</color>
     <color name="white">#fff</color>
     <color name="form_icon_color">#8a000000</color>
 </resources>

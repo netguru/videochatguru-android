@@ -1,52 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <org.webrtc.SurfaceViewRenderer
-        android:id="@+id/localVideoView"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:layout_above="@+id/buttonPanel"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/margin_medium"
-        android:visibility="gone"/>
-
-    <org.webrtc.SurfaceViewRenderer
-        android:id="@+id/remoteVideoView"
+    <RelativeLayout
+        android:id="@+id/camView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonPanel"
         android:visibility="gone"
-        />
+        >
 
-    <Button
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/localVideoView"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/local_video_bottom_margin"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:layout_marginRight="@dimen/margin_medium"/>
+
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/remoteVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/connectButton"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_gravity="center|bottom"
         android:layout_margin="@dimen/margin_medium"
-        android:text="@string/btn_start_roulette"
-        android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:src="@drawable/ic_call_white_24dp"/>
 
     <LinearLayout
         android:id="@+id/buttonPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="@color/accent"
-
+        android:layout_gravity="center|bottom"
+        android:background="@color/accent_panel"
         android:gravity="center"
-        android:visibility="gone">
+        android:visibility="gone"
+        >
 
         <ImageButton
             android:id="@+id/disconnectButton"
@@ -84,4 +85,4 @@
             android:button="@drawable/ic_videocam_on_off_toggle"/>
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

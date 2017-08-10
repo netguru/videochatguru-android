@@ -5,5 +5,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="btn_start_roulette">Start roulette</string>
-
+    <string name="error_choosing_random_partner">Error occurred while choosing random partner try again later</string>
+    <string name="msg_no_one_available">No one is available at the moment. This might take some time…</string>
+    <string name="msg_looking_for_partner">Looking for partner…</string>
+    <string name="msg_other_party_finished">Other party finished the call</string>
 </resources>
