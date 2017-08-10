@@ -9,7 +9,7 @@ package co.netguru.chatroulette.webrtc.constraints
 internal enum class PeerConnectionConstraints(override val constraintString: String) : WebRtcConstraint {
 
     /**
-     * Enabling allows to streaming between firefox and chrome
+     * Enabling allows to stream between firefox and chrome
      */
     DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT("DtlsSrtpKeyAgreement"),
     /**
