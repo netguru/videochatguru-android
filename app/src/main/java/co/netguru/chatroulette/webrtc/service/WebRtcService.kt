@@ -6,6 +6,7 @@ import android.os.Binder
 import android.os.IBinder
 import co.netguru.chatroulette.app.App
 import org.webrtc.SurfaceViewRenderer
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -21,11 +22,13 @@ class WebRtcService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        Timber.d("WebRtc service created")
         App.getApplicationComponent(this).webRtcServiceComponent().inject(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        Timber.d("WebRtc service destroyed")
         webRtcServiceManager.destroy()
     }
 

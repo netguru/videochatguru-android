@@ -52,7 +52,7 @@ class VideoFragmentPresenter @Inject constructor(
 
     }
 
-    private fun listenForDisconnectOrders() {
+    fun listenForDisconnectOrders() {
         disconnectOrdersSubscription = firebaseSignalingDisconnect.cleanDisconnectOrders()
                 .andThen(firebaseSignalingDisconnect.listenForDisconnectOrders())
                 .compose(RxUtils.applyFlowableIoSchedulers())
@@ -101,6 +101,4 @@ class VideoFragmentPresenter @Inject constructor(
         }
 
     }
-
-
 }

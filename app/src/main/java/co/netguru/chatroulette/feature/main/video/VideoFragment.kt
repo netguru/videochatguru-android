@@ -24,13 +24,17 @@ import kotlinx.android.synthetic.main.fragment_video.*
 import timber.log.Timber
 
 
-class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>(), VideoFragmentView, ServiceConnection {
+class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>(), VideoFragmentView {
 
     companion object {
         val TAG: String = VideoFragment::class.java.name
 
         fun newInstance() = VideoFragment()
+
+        private const val KEY_SERVICE_RUNNING = "key:service_running"
     }
+
+    lateinit var serviceConnection: ServiceConnection
 
     override fun getLayoutId() = R.layout.fragment_video
 
@@ -42,6 +46,10 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         super.onViewCreated(view, savedInstanceState)
         (buttonPanel.layoutParams as CoordinatorLayout.LayoutParams).behavior = MoveUpBehavior()
         activity.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+
+        if (savedInstanceState?.getBoolean(KEY_SERVICE_RUNNING, false) == true) {
+            initAlreadyRunningConnection()
+        }
         connectButton.setOnClickListener {
             checkPermissionsAndConnect()
         }
@@ -50,26 +58,44 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         }
     }
 
-    private fun checkPermissionsAndConnect() {
-        Dexter.withActivity(activity).withPermissions(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO
-        ).withListener(CompositeMultiplePermissionsListener(
-                object : BaseMultiplePermissionsListener() {
-                    override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                        if (report.areAllPermissionsGranted()) getPresenter().connect()
-                    }
-                },
-                SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
-                        .with(coordinatorLayout, R.string.msg_permissions)
-                        .withOpenSettingsButton(R.string.action_settings)
-                        .withDuration(Snackbar.LENGTH_LONG)
-                        .build())
-        ).check()
+    private fun initAlreadyRunningConnection() {
+        showCamViews()
+        val intent = Intent(activity, WebRtcService::class.java)
+        serviceConnection = object : ServiceConnection {
+            override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
+                onWebRtcServiceConnected((iBinder as (WebRtcService.LocalBinder)).service)
+                getPresenter().listenForDisconnectOrders()
+            }
+
+            override fun onServiceDisconnected(componentName: ComponentName) {
+                onWebRtcServiceDisconnected()
+            }
+        }
+        context.applicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    private fun checkPermissionsAndConnect() {
+        Dexter.withActivity(activity)
+                .withPermissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+                .withListener(CompositeMultiplePermissionsListener(
+                        object : BaseMultiplePermissionsListener() {
+                            override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                                if (report.areAllPermissionsGranted()) getPresenter().connect()
+                            }
+                        },
+                        SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
+                                .with(coordinatorLayout, R.string.msg_permissions)
+                                .withOpenSettingsButton(R.string.action_settings)
+                                .withDuration(Snackbar.LENGTH_LONG)
+                                .build())
+                ).check()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        service?.let {
+            outState.putBoolean(KEY_SERVICE_RUNNING, true)
+        }
     }
 
     override fun onDestroyView() {
@@ -82,40 +108,50 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!activity.isChangingConfigurations) service?.stopSelf()
+        if (!activity.isChangingConfigurations) disconnect()
     }
 
-    override fun onServiceDisconnected(componentName: ComponentName) {
-        Timber.d("Service disconnected")
+    override fun attachService() {
+        val intent = Intent(activity, WebRtcService::class.java)
+        context.startService(intent)
+        serviceConnection = object : ServiceConnection {
+            override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
+                onWebRtcServiceConnected((iBinder as (WebRtcService.LocalBinder)).service)
+                getPresenter().startRoulette()
+            }
+
+            override fun onServiceDisconnected(componentName: ComponentName) {
+                onWebRtcServiceDisconnected()
+            }
+        }
+        context.applicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    override fun onServiceConnected(className: ComponentName, iBinder: IBinder) {
+    fun onWebRtcServiceConnected(service: WebRtcService) {
         Timber.d("Service connected")
-        service = (iBinder as (WebRtcService.LocalBinder)).service
-        service?.attachLocalView(localVideoView)
-        service?.attachRemoteView(remoteVideoView)
-        getPresenter().startRoulette()
+        this.service = service
+        service.attachLocalView(localVideoView)
+        service.attachRemoteView(remoteVideoView)
+    }
+
+    fun onWebRtcServiceDisconnected() {
+        Timber.d("Service disconnected")
     }
 
     override fun connectTo(uuid: String) {
         service?.offerDevice(uuid)
     }
 
-    override fun attachService() {
-        val intent = Intent(activity, WebRtcService::class.java)
-        context.startService(intent)
-        context.applicationContext.bindService(intent, this, Context.BIND_AUTO_CREATE)
-    }
-
     override fun disconnect() {
         service?.let {
             it.stopSelf()
             unbindService()
+            service = null
         }
     }
 
     private fun unbindService() {
-        context.applicationContext.unbindService(this)
+        context.applicationContext.unbindService(serviceConnection)
     }
 
     override fun showCamViews() {
