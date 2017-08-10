@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Toast
 import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.data.firebase.FirebaseModule
+import com.karumi.dexter.Dexter
 import com.squareup.leakcanary.LeakCanary
 import org.webrtc.Logging
 import timber.log.Timber
@@ -36,7 +37,6 @@ class App : Application() {
             return
         }
         LeakCanary.install(this)
-
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             //Enables WebRTC Logging

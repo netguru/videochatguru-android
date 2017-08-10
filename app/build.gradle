@@ -53,6 +53,8 @@ dependencies {
     compile libs.timber
 
     compile libs.firebaseDatabase
+
+    compile libs.dexter
 }
 
 apply plugin: 'com.google.gms.google-services'

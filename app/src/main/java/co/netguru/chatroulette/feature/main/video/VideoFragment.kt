@@ -1,5 +1,6 @@
 package co.netguru.chatroulette.feature.main.video
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,11 @@ import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
 import co.netguru.chatroulette.feature.base.BaseMvpFragment
 import co.netguru.chatroulette.webrtc.service.WebRtcService
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
+import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener
+import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener
 import kotlinx.android.synthetic.main.fragment_video.*
 import timber.log.Timber
 
@@ -37,11 +43,29 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         (buttonPanel.layoutParams as CoordinatorLayout.LayoutParams).behavior = MoveUpBehavior()
         activity.volumeControlStream = AudioManager.STREAM_VOICE_CALL
         connectButton.setOnClickListener {
-            getPresenter().connect()
+            checkPermissionsAndConnect()
         }
         disconnectButton.setOnClickListener {
             getPresenter().disconnectByUser()
         }
+    }
+
+    private fun checkPermissionsAndConnect() {
+        Dexter.withActivity(activity).withPermissions(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO
+        ).withListener(CompositeMultiplePermissionsListener(
+                object : BaseMultiplePermissionsListener() {
+                    override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                        if (report.areAllPermissionsGranted()) getPresenter().connect()
+                    }
+                },
+                SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
+                        .with(coordinatorLayout, R.string.msg_permissions)
+                        .withOpenSettingsButton(R.string.action_settings)
+                        .withDuration(Snackbar.LENGTH_LONG)
+                        .build())
+        ).check()
     }
 
     override fun onDestroyView() {

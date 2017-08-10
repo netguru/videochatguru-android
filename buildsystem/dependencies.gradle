@@ -39,7 +39,8 @@ ext {
             moshi                   : "com.squareup.moshi:moshi:$moshiVersion",
             moshiKotlin             : "com.squareup.moshi:moshi-kotlin:$moshiVersion",
             firebaseCore            : "com.google.firebase:firebase-core:$firebaseVersion",
-            firebaseDatabase        : "com.google.firebase:firebase-database:$firebaseVersion"
+            firebaseDatabase        : "com.google.firebase:firebase-database:$firebaseVersion",
+            dexter                  : "com.karumi:dexter:4.1.0"
     ]
 
     proc = [
