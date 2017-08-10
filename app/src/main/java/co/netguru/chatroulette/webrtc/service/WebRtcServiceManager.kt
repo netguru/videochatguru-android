@@ -127,6 +127,7 @@ class WebRtcServiceManager @Inject constructor(
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onNext = {
+                            //todo firebase dependency move up
                             if (it is ChildEventAdded) {
                                 webRtcClient.addIceCandidate(it.data)
                             } else {

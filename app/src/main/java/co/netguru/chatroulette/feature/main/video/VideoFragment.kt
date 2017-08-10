@@ -68,6 +68,10 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         ).check()
     }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         service?.let {
@@ -78,13 +82,10 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!activity.isChangingConfigurations) {
-            service?.stopSelf()
-        }
+        if (!activity.isChangingConfigurations) service?.stopSelf()
     }
 
     override fun onServiceDisconnected(componentName: ComponentName) {
-        service = null
         Timber.d("Service disconnected")
     }
 
@@ -115,7 +116,6 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     private fun unbindService() {
         context.applicationContext.unbindService(this)
-        service = null
     }
 
     override fun showCamViews() {

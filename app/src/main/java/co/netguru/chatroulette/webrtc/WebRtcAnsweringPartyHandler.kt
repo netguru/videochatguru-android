@@ -38,14 +38,13 @@ class WebRtcAnsweringPartyHandler(
 
     private fun setLocalAnswerDescription(sessionDescription: SessionDescription) {
         peer.setLocalDescription(object : SdpSetObserver {
-            override fun onSetFailure(error: String) {
-                webRtcAnsweringPartyListener.onError(error)
-            }
-
             override fun onSetSuccess() {
                 webRtcAnsweringPartyListener.onSuccess(sessionDescription)
             }
 
+            override fun onSetFailure(error: String) {
+                webRtcAnsweringPartyListener.onError(error)
+            }
         }, sessionDescription)
     }
 }
