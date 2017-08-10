@@ -133,18 +133,18 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     override fun getRemoteUuid() = service?.getRemoteUuid()
 
     override fun showErrorWhileChoosingRandom() {
-        Snackbar.make(view!!, R.string.error_choosing_random_partner, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(coordinatorLayout, R.string.error_choosing_random_partner, Snackbar.LENGTH_LONG).show()
     }
 
     override fun showNoOneAvailable() {
-        Snackbar.make(view!!, R.string.msg_no_one_available, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(coordinatorLayout, R.string.msg_no_one_available, Snackbar.LENGTH_LONG).show()
     }
 
     override fun showLookingForPartnerMessage() {
-        Snackbar.make(view!!, R.string.msg_looking_for_partner, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(coordinatorLayout, R.string.msg_looking_for_partner, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun showOtherPartyFinished() {
-        Snackbar.make(view!!, R.string.msg_other_party_finished, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(coordinatorLayout, R.string.msg_other_party_finished, Snackbar.LENGTH_SHORT).show()
     }
 }
