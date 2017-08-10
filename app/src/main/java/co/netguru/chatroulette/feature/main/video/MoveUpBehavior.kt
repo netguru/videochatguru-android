@@ -2,6 +2,7 @@ package co.netguru.chatroulette.feature.main.video
 
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
+import android.view.Gravity
 import android.view.View
 
 
@@ -11,10 +12,9 @@ class MoveUpBehavior : CoordinatorLayout.Behavior<View>() {
         return dependency is Snackbar.SnackbarLayout
     }
 
-    override fun onDependentViewChanged(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
-        //todo dismis snackbar not working : try to disable dismiss, or handle properly
-        val translationY = Math.min(0f, dependency.translationY - dependency.height)
-        child.translationY = translationY
-        return true
+    override fun onAttachedToLayoutParams(lp: CoordinatorLayout.LayoutParams) {
+        if (lp.dodgeInsetEdges == Gravity.NO_GRAVITY) {
+            lp.dodgeInsetEdges = Gravity.BOTTOM
+        }
     }
 }
