@@ -29,9 +29,10 @@ class WebRtcServiceManager @Inject constructor(
         private val firebaseIceCandidates: FirebaseIceCandidates,
         private val firebaseIceServers: FirebaseIceServers) {
 
+    var remoteUuid: String? = null
+
     private val disposables = CompositeDisposable()
 
-    var remoteUuid: String? = null
     private var finishedInitializing = false
     private var shouldCreateOffer = false
     private var isOfferingParty = false
@@ -65,6 +66,8 @@ class WebRtcServiceManager @Inject constructor(
         if (finishedInitializing) webRtcClient.releasePeerConnection()
         webRtcClient.dispose()
     }
+
+    fun switchCamera() = webRtcClient.switchCamera()
 
     private fun loadIceServers() {
         disposables += firebaseIceServers.getIceServers()
@@ -234,5 +237,4 @@ class WebRtcServiceManager @Inject constructor(
                         }
                 )
     }
-
 }

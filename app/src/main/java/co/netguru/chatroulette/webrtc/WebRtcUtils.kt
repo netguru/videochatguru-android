@@ -4,28 +4,22 @@ import android.content.Context
 import org.webrtc.Camera1Enumerator
 import org.webrtc.Camera2Enumerator
 import org.webrtc.CameraEnumerator
-import org.webrtc.VideoCapturer
+import org.webrtc.CameraVideoCapturer
 
 internal object WebRtcUtils {
-    internal fun createFrontCameraCapturer(context: Context) = createFrontCameraCapturer(
+
+    internal fun createCameraCapturerWithFrontAsDefault(context: Context) = createCameraCapturerWithFrontAsDefault(
             if (WebRtcCameraUtils.isCamera2Supported(context)) Camera2Enumerator(context) else Camera1Enumerator()
     )
 
-    internal fun createBackCameraCapturer(context: Context) = createBackCameraCapturer(
-            if (WebRtcCameraUtils.isCamera2Supported(context)) Camera2Enumerator(context) else Camera1Enumerator()
-    )
+    private fun createCameraCapturerWithFrontAsDefault(enumerator: CameraEnumerator): CameraVideoCapturer? {
+        val (frontFacingCameras, backFacingAndOtherCameras) = enumerator.deviceNames
+                .partition { enumerator.isFrontFacing(it) }
 
-    private fun createFrontCameraCapturer(enumerator: CameraEnumerator): VideoCapturer? {
-        return enumerator.deviceNames
-                .filter { enumerator.isFrontFacing(it) }
-                .map { enumerator.createCapturer(it, null) }
-                .firstOrNull()
-    }
+        val t = (frontFacingCameras.firstOrNull() ?: backFacingAndOtherCameras.firstOrNull())?.let {
+            enumerator.createCapturer(it, null)
+        }
 
-    private fun createBackCameraCapturer(enumerator: CameraEnumerator): VideoCapturer? {
-        return enumerator.deviceNames
-                .filter { enumerator.isBackFacing(it) }
-                .map { enumerator.createCapturer(it, null) }
-                .firstOrNull()
+        return t
     }
 }

@@ -56,6 +56,10 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         disconnectButton.setOnClickListener {
             getPresenter().disconnectByUser()
         }
+
+        switchCameraButton.setOnClickListener {
+            service?.switchCamera()
+        }
     }
 
     private fun initAlreadyRunningConnection() {

@@ -63,10 +63,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         peerConnectionConstraints
     }
 
-    private val frontCameraCapturer = WebRtcUtils.createFrontCameraCapturer(context)
-    private val backCameraCapturer = WebRtcUtils.createBackCameraCapturer(context)
-
-    var isFrontCameraUsed = true
+    private val cameraCapturer = WebRtcUtils.createCameraCapturerWithFrontAsDefault(context)
 
     private lateinit var peerConnectionListener: PeerConnectionListener
 
@@ -83,12 +80,11 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         }
         peerConnectionFactory = PeerConnectionFactory(PeerConnectionFactory.Options())
 
-        if (isCameraAvailable()) {
-            val videoCapturer = getCurrentVideoCapturer()
+        if (cameraCapturer != null) {
             peerConnectionFactory.setVideoHwAccelerationOptions(eglBase.eglBaseContext, eglBase.eglBaseContext)
-            videoSource = peerConnectionFactory.createVideoSource(videoCapturer)
+            videoSource = peerConnectionFactory.createVideoSource(cameraCapturer)
             localVideoTrack = peerConnectionFactory.createVideoTrack(counter.getAndIncrement().toString(), videoSource)
-            videoCapturer?.startCapture(1280, 720, 30)
+            cameraCapturer.startCapture(1280, 720, 30)
         }
 
         audioSource = peerConnectionFactory.createAudioSource(audioConstraints)
@@ -105,8 +101,10 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         peerConnection = peerConnectionFactory.createPeerConnection(rtcConfig, peerConnectionConstraints, videoPeerConnectionListener)
 
         val stream = peerConnectionFactory.createLocalMediaStream(getCounterStringValueAndIncrement())
+
         stream.addTrack(localAudioTrack)
-        stream.addTrack(localVideoTrack)
+        localVideoTrack?.let { stream.addTrack(it) }
+
         peerConnection.addStream(stream)
         offeringPartyHandler = WebRtcOfferingPartyHandler(peerConnection, webRtcOfferingActionListener)
         answeringPartyHandler = WebRtcAnsweringPartyHandler(peerConnection, offerAnswerConstraints, webRtcAnsweringPartyListener)
@@ -122,8 +120,6 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     override fun removeVideoStream() {
         remoteVideoStream = null
     }
-
-    private fun getCurrentVideoCapturer() = if (isFrontCameraUsed && frontCameraCapturer != null) frontCameraCapturer else backCameraCapturer
 
     fun attachRemoteView(remoteView: SurfaceViewRenderer, renderListener: RendererCommon.RendererEvents? = null) {
         remoteView.init(eglBase.eglBaseContext, renderListener)
@@ -149,8 +145,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     fun dispose() {
         eglBase.release()
         audioSource.dispose()
-        frontCameraCapturer?.dispose()
-        backCameraCapturer?.dispose()
+        cameraCapturer?.dispose()
         videoSource?.dispose()
         peerConnectionFactory.dispose()
     }
@@ -184,11 +179,11 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         peerConnection.removeIceCandidates(arrayOf(iceCandidate))
     }
 
-    private fun isCameraAvailable() = (frontCameraCapturer != null || backCameraCapturer != null)
-
-    private fun getCounterStringValueAndIncrement() = counter.getAndIncrement().toString()
-
     fun restart() {
         offeringPartyHandler.createOffer(offerAnswerRestartConstraints)
     }
+
+    fun switchCamera() = cameraCapturer?.switchCamera(null)
+
+    private fun getCounterStringValueAndIncrement() = counter.getAndIncrement().toString()
 }

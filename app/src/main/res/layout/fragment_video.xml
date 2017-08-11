@@ -59,13 +59,13 @@
             android:src="@drawable/ic_call_end_white_24dp"
             />
 
-        <ToggleButton
+        <ImageButton
             android:id="@+id/switchCameraButton"
-            style="@style/ToggleButtonBorderlessTextless"
             android:layout_width="@dimen/button_panel_button_width_height"
             android:layout_height="@dimen/button_panel_button_width_height"
             android:layout_margin="@dimen/margin_small"
-            android:button="@drawable/ic_videocam_front_rear_toggle"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_switch_video_white_24dp"
             />
 
         <ToggleButton

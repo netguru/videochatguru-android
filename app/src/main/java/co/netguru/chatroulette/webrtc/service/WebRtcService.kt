@@ -50,6 +50,8 @@ class WebRtcService : Service() {
 
     fun getRemoteUuid() = webRtcServiceManager.remoteUuid
 
+    fun switchCamera() = webRtcServiceManager.switchCamera()
+
     inner class LocalBinder : Binder() {
         val service: WebRtcService
             get() = this@WebRtcService
