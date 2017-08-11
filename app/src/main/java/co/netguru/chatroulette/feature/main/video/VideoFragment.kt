@@ -31,7 +31,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
         fun newInstance() = VideoFragment()
 
-        private const val KEY_SERVICE_RUNNING = "key:service_running"
+        private const val KEY_IN_CHAT = "key:in_chat"
     }
 
     lateinit var serviceConnection: ServiceConnection
@@ -47,7 +47,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         (buttonPanel.layoutParams as CoordinatorLayout.LayoutParams).behavior = MoveUpBehavior()
         activity.volumeControlStream = AudioManager.STREAM_VOICE_CALL
 
-        if (savedInstanceState?.getBoolean(KEY_SERVICE_RUNNING, false) == true) {
+        if (savedInstanceState?.getBoolean(KEY_IN_CHAT) == true) {
             initAlreadyRunningConnection()
         }
         connectButton.setOnClickListener {
@@ -93,8 +93,8 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        service?.let {
-            outState.putBoolean(KEY_SERVICE_RUNNING, true)
+        if (camView.visibility == View.VISIBLE) {
+            outState.putBoolean(KEY_IN_CHAT, true)
         }
     }
 
