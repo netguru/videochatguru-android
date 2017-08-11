@@ -16,10 +16,8 @@ internal object WebRtcUtils {
         val (frontFacingCameras, backFacingAndOtherCameras) = enumerator.deviceNames
                 .partition { enumerator.isFrontFacing(it) }
 
-        val t = (frontFacingCameras.firstOrNull() ?: backFacingAndOtherCameras.firstOrNull())?.let {
+        return (frontFacingCameras.firstOrNull() ?: backFacingAndOtherCameras.firstOrNull())?.let {
             enumerator.createCapturer(it, null)
         }
-
-        return t
     }
 }
