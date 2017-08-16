@@ -20,8 +20,16 @@ android {
     }
 
     buildTypes {
+        debug {
+            versionNameSuffix "-DEBUG"
+            applicationIdSuffix ".debug"
+        }
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

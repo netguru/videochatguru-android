@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in /Users/rafal/Library/Android/sdk/tools/proguard/proguard-android.txt
+# in /Users/maciek/Library/Android/sdk/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
 #
@@ -16,10 +16,48 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# base option from *App Dev Note*
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-dontpreverify
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-keepattributes LineNumberTable,SourceFile,Signature,*Annotation*,Exceptions,InnerClasses
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep native methods
+-keepclassmembers class * {
+    native <methods>;
+}
+
+# remove log call
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+}
+-assumenosideeffects class timber.log.Timber {
+    public static *** d(...);
+}
+
+# app compat-v7
+-keep class android.support.v7.widget.SearchView { *; }
+
+# FragmentArgs
+-keep class com.hannesdorfmann.fragmentargs.** { *; }
+
+# dagger
+-keepclassmembers,allowobfuscation class * {
+    @javax.inject.* *;
+    @dagger.* *;
+    <init>();
+}
+-keep class javax.inject.** { *; }
+-keep class **$$ModuleAdapter
+-keep class **$$InjectAdapter
+-keep class **$$StaticInjection
+-keep class dagger.** { *; }
+-dontwarn dagger.internal.codegen.**
+
+# leak canary
+-keep class org.eclipse.mat.** { *; }
+-keep class com.squareup.leakcanary.** { *; }
+-dontwarn android.app.Notification
