@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 
 
-abstract class BaseMvpFragment<in T : MvpView, out P : Presenter<T>> : BaseFragment() {
+abstract class BaseMvpFragment<T : MvpView, out P : Presenter<T>> : BaseFragment() {
 
     private lateinit var presenter: P
 
@@ -26,8 +26,6 @@ abstract class BaseMvpFragment<in T : MvpView, out P : Presenter<T>> : BaseFragm
 
     abstract fun retrievePresenter(): P
 
-    fun getPresenter(): P {
-        return presenter
-    }
+    fun getPresenter(): P = presenter
 
 }

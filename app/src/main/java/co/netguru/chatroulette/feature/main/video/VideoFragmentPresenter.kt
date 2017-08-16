@@ -36,17 +36,17 @@ class VideoFragmentPresenter @Inject constructor(
                 .subscribeBy(
                         onSuccess = {
                             Timber.d("Next $it")
-                            mvpView?.showCamViews()
-                            mvpView?.connectTo(it)
+                            getView()?.showCamViews()
+                            getView()?.connectTo(it)
                         },
                         onError = {
                             Timber.e(it, "Error while choosing random")
-                            mvpView?.showErrorWhileChoosingRandom()
+                            getView()?.showErrorWhileChoosingRandom()
                         },
                         onComplete = {
                             Timber.d("Done")
-                            mvpView?.showCamViews()
-                            mvpView?.showNoOneAvailable()
+                            getView()?.showCamViews()
+                            getView()?.showNoOneAvailable()
                         }
                 )
 
@@ -59,7 +59,7 @@ class VideoFragmentPresenter @Inject constructor(
                 .subscribeBy(
                         onNext = {
                             Timber.d("Disconnect order")
-                            mvpView?.showOtherPartyFinished()
+                            getView()?.showOtherPartyFinished()
                             disconnect()
                         }
                 )
@@ -74,20 +74,20 @@ class VideoFragmentPresenter @Inject constructor(
                         },
                         onComplete = {
                             disconnectOrdersSubscription.dispose()
-                            mvpView?.disconnect()
-                            mvpView?.showStartRouletteView()
+                            getView()?.disconnect()
+                            getView()?.showStartRouletteView()
                         }
                 )
 
     }
 
     fun connect() {
-        mvpView?.attachService()
-        mvpView?.showLookingForPartnerMessage()
+        getView()?.attachService()
+        getView()?.showLookingForPartnerMessage()
     }
 
     fun disconnectByUser() {
-        val remoteUuid = mvpView?.getRemoteUuid()
+        val remoteUuid = getView()?.getRemoteUuid()
         if (remoteUuid != null) {
             disposables += firebaseSignalingDisconnect.sendDisconnectOrderToOtherParty(remoteUuid)
                     .compose(RxUtils.applyCompletableIoSchedulers())

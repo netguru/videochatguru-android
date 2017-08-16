@@ -61,3 +61,20 @@
 -keep class org.eclipse.mat.** { *; }
 -keep class com.squareup.leakcanary.** { *; }
 -dontwarn android.app.Notification
+
+# Kotlin
+-keep class kotlin.Metadata { *; }
+
+#WebRtc
+-keep class org.webrtc.** { *; }
+
+#Firebase
+# Add this global rule
+-keepattributes Signature
+
+# This rule will properly ProGuard all the model classes in
+# the package com.yourcompany.models. Modify to fit the structure
+# of your app.
+-keepclassmembers class co.netguru.chatroulette.data.model.** {
+  *;
+}

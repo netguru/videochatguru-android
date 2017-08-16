@@ -3,7 +3,7 @@ package co.netguru.chatroulette.feature.base
 import android.os.Bundle
 
 
-abstract class BaseMvpActivity<in T : MvpView, out P : Presenter<T>> : BaseActivity() {
+abstract class BaseMvpActivity<T : MvpView, out P : Presenter<T>> : BaseActivity() {
 
     private lateinit var presenter: P
 
