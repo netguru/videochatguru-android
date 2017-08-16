@@ -52,6 +52,8 @@ class WebRtcService : Service() {
 
     fun switchCamera() = webRtcServiceManager.switchCamera()
 
+    fun enableCamera(isEnabled: Boolean) = webRtcServiceManager.enableCamera(isEnabled)
+
     inner class LocalBinder : Binder() {
         val service: WebRtcService
             get() = this@WebRtcService

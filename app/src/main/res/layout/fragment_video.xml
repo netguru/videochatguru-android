@@ -77,7 +77,7 @@
             android:button="@drawable/ic_microphone_toggle"/>
 
         <ToggleButton
-            android:id="@+id/cameraToggle"
+            android:id="@+id/cameraEnabledToggle"
             style="@style/ToggleButtonBorderlessTextless"
             android:layout_width="@dimen/button_panel_button_width_height"
             android:layout_height="@dimen/button_panel_button_width_height"

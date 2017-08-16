@@ -16,6 +16,10 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         private const val INITIALIZE_AUDIO = true
         private const val INITIALIZE_VIDEO = true
         private const val HW_ACCELERATION = true
+
+        private const val VIDEO_WIDTH = 1280
+        private const val VIDEO_HEIGHT = 720
+        private const val VIDEO_FPS = 24
     }
 
     private var remoteVideoStream: VideoTrack? = null
@@ -63,7 +67,12 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         peerConnectionConstraints
     }
 
-    private val cameraCapturer = WebRtcUtils.createCameraCapturerWithFrontAsDefault(context)
+    private val videoCameraCapturer = WebRtcUtils.createCameraCapturerWithFrontAsDefault(context)
+    var cameraEnabled = true
+        set(isEnabled) {
+            field = isEnabled
+            videoCameraCapturer?.let { enableVideo(isEnabled, it) }
+        }
 
     private lateinit var peerConnectionListener: PeerConnectionListener
 
@@ -80,11 +89,11 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         }
         peerConnectionFactory = PeerConnectionFactory(PeerConnectionFactory.Options())
 
-        if (cameraCapturer != null) {
+        if (videoCameraCapturer != null) {
             peerConnectionFactory.setVideoHwAccelerationOptions(eglBase.eglBaseContext, eglBase.eglBaseContext)
-            videoSource = peerConnectionFactory.createVideoSource(cameraCapturer)
+            videoSource = peerConnectionFactory.createVideoSource(videoCameraCapturer)
             localVideoTrack = peerConnectionFactory.createVideoTrack(counter.getAndIncrement().toString(), videoSource)
-            cameraCapturer.startCapture(1280, 720, 30)
+            enableVideo(cameraEnabled, videoCameraCapturer)
         }
 
         audioSource = peerConnectionFactory.createAudioSource(audioConstraints)
@@ -145,7 +154,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     fun dispose() {
         eglBase.release()
         audioSource.dispose()
-        cameraCapturer?.dispose()
+        videoCameraCapturer?.dispose()
         videoSource?.dispose()
         peerConnectionFactory.dispose()
     }
@@ -183,7 +192,14 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         offeringPartyHandler.createOffer(offerAnswerRestartConstraints)
     }
 
-    fun switchCamera() = cameraCapturer?.switchCamera(null)
+    fun switchCamera() = videoCameraCapturer?.switchCamera(null)
+
+    private fun enableVideo(isEnabled: Boolean, videoCapturer: CameraVideoCapturer) {
+        if (isEnabled)
+            videoCapturer.startCapture(VIDEO_WIDTH, VIDEO_HEIGHT, VIDEO_FPS)
+        else
+            videoCapturer.stopCapture()
+    }
 
     private fun getCounterStringValueAndIncrement() = counter.getAndIncrement().toString()
 }

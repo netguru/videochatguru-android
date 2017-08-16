@@ -69,6 +69,12 @@ class WebRtcServiceManager @Inject constructor(
 
     fun switchCamera() = webRtcClient.switchCamera()
 
+    fun enableCamera(isEnabled: Boolean) {
+        webRtcClient.cameraEnabled = isEnabled
+    }
+
+    fun isCameraEnabled() = webRtcClient.cameraEnabled
+
     private fun loadIceServers() {
         disposables += firebaseIceServers.getIceServers()
                 .subscribeBy(

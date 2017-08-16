@@ -60,6 +60,10 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         switchCameraButton.setOnClickListener {
             service?.switchCamera()
         }
+
+        cameraEnabledToggle.setOnCheckedChangeListener { _, enabled ->
+            service?.enableCamera(enabled)
+        }
     }
 
     private fun initAlreadyRunningConnection() {
