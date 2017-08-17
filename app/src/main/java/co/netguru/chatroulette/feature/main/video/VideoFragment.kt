@@ -108,7 +108,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun onDestroyView() {
         super.onDestroyView()
-        service?.also {
+        service?.let {
             it.detachViews()
             unbindService()
         }
