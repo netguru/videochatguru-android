@@ -64,17 +64,25 @@
 
 # Kotlin
 -keep class kotlin.Metadata { *; }
+-dontnote kotlin.internal.PlatformImplementationsKt
+-dontnote kotlin.reflect.jvm.internal.**
+
 
 #WebRtc
--keep class org.webrtc.** { *; }
+-keepclass class org.webrtc.** { *; }
+-keepclasseswithmembernames,includedescriptorclasses class * {
+    native <methods>;
+}
 
 #Firebase
 # Add this global rule
 -keepattributes Signature
 
 # This rule will properly ProGuard all the model classes in
-# the package com.yourcompany.models. Modify to fit the structure
-# of your app.
+# the package co.netguru.chatroulette.data.model.**
 -keepclassmembers class co.netguru.chatroulette.data.model.** {
   *;
 }
+
+#GMS
+-dontnote com.google.android.gms.**

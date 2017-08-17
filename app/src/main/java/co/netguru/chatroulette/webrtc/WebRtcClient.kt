@@ -148,7 +148,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         remoteView?.release()
         remoteVideoRenderer?.let { remoteVideoStream?.removeRenderer(it) }
         localView?.release()
-        localVideoRenderer?.let { localVideoTrack?.removeRenderer(localVideoRenderer) }
+        localVideoRenderer?.let { localVideoTrack?.removeRenderer(it) }
     }
 
     fun dispose() {
