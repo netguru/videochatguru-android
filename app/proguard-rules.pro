@@ -69,10 +69,7 @@
 
 
 #WebRtc
--keepclass class org.webrtc.** { *; }
--keepclasseswithmembernames,includedescriptorclasses class * {
-    native <methods>;
-}
+-keep class org.webrtc.** { *; }
 
 #Firebase
 # Add this global rule
