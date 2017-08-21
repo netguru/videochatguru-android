@@ -10,8 +10,8 @@ android {
         applicationId "co.netguru.chatroulette"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode globalVersionCode
+        versionName globalVersionName
     }
 
     sourceSets.main {
