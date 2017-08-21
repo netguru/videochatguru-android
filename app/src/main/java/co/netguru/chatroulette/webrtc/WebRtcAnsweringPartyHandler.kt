@@ -48,9 +48,3 @@ class WebRtcAnsweringPartyHandler(
         }, sessionDescription)
     }
 }
-
-interface WebRtcAnsweringPartyListener {
-    fun onError(error: String)
-
-    fun onSuccess(localSessionDescription: SessionDescription)
-}

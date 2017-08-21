@@ -51,10 +51,3 @@ class WebRtcOfferingPartyHandler(
         }, remoteSessionDescription)
     }
 }
-
-interface WebRtcOfferingActionListener {
-    fun onError(error: String)
-
-    fun onOfferRemoteDescription(localSessionDescription: SessionDescription)
-
-}
