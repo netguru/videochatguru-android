@@ -25,7 +25,5 @@ abstract class BaseMvpActivity<T : MvpView, out P : Presenter<T>> : BaseActivity
 
     abstract fun retrievePresenter(): P
 
-    fun getPresenter(): P {
-        return presenter
-    }
+    fun getPresenter(): P = presenter
 }

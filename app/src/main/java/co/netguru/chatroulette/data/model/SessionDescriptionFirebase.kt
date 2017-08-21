@@ -8,9 +8,8 @@ data class SessionDescriptionFirebase(val senderUuid: String = App.CURRENT_DEVIC
                                       val type: SessionDescription.Type? = null,
                                       val description: String? = null) {
     companion object {
-        fun fromSessionDescriptionWithDefaultSenderUuid(sessionDescription: SessionDescription): SessionDescriptionFirebase {
-            return SessionDescriptionFirebase(type = sessionDescription.type, description = sessionDescription.description)
-        }
+        fun fromSessionDescriptionWithDefaultSenderUuid(sessionDescription: SessionDescription): SessionDescriptionFirebase =
+                SessionDescriptionFirebase(type = sessionDescription.type, description = sessionDescription.description)
     }
 
     fun toSessionDescription() = SessionDescription(type, description)

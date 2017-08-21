@@ -34,7 +34,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         private const val KEY_IN_CHAT = "key:in_chat"
     }
 
-    lateinit var serviceConnection: ServiceConnection
+    private lateinit var serviceConnection: ServiceConnection
 
     override fun getLayoutId() = R.layout.fragment_video
 
@@ -66,7 +66,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
             service?.enableCamera(enabled)
         }
 
-        microphoneToggle.setOnCheckedChangeListener { _, enabled ->
+        microphoneEnabledToggle.setOnCheckedChangeListener { _, enabled ->
             service?.enableMicrophone(enabled)
         }
     }
@@ -150,7 +150,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     private fun syncButtonsState(service: WebRtcService) {
         cameraEnabledToggle.isChecked = service.isCameraEnabled()
-        microphoneToggle.isChecked = service.isMicrophoneEnabled()
+        microphoneEnabledToggle.isChecked = service.isMicrophoneEnabled()
     }
 
     fun onWebRtcServiceDisconnected() {

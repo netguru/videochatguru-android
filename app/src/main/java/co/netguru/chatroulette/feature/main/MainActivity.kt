@@ -9,7 +9,7 @@ import co.netguru.chatroulette.feature.main.video.VideoFragment
 
 class MainActivity : BaseMvpActivity<MainView, MainPresenter>(), MainView {
 
-    val videoFragment = VideoFragment.newInstance()
+    private val videoFragment = VideoFragment.newInstance()
 
     override fun retrievePresenter() = App.getApplicationComponent(this).mainComponent().mainPresenter()
 

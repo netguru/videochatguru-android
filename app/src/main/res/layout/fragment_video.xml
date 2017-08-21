@@ -69,7 +69,7 @@
             />
 
         <ToggleButton
-            android:id="@+id/microphoneToggle"
+            android:id="@+id/microphoneEnabledToggle"
             style="@style/ToggleButtonBorderlessTextless"
             android:layout_width="@dimen/button_panel_button_width_height"
             android:layout_height="@dimen/button_panel_button_width_height"

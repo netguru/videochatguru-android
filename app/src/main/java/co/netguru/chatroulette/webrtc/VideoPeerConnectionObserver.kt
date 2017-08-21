@@ -7,8 +7,8 @@ import timber.log.Timber
 
 
 internal class VideoPeerConnectionObserver(
-        val peerConnectionListener: PeerConnectionListener,
-        val remoteVideoListener: RemoteVideoListener) : CustomPeerConnectionObserver {
+        private val peerConnectionListener: PeerConnectionListener,
+        private val remoteVideoListener: RemoteVideoListener) : CustomPeerConnectionObserver {
 
     override fun onIceCandidate(iceCandidate: IceCandidate) {
         super.onIceCandidate(iceCandidate)

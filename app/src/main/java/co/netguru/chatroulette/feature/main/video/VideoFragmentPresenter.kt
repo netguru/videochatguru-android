@@ -65,7 +65,7 @@ class VideoFragmentPresenter @Inject constructor(
                 )
     }
 
-    fun disconnect() {
+    private fun disconnect() {
         disposables += firebaseSignalingOnline.disconnect()
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
