@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Debug: Chatroulette</string>
+    <string name="leak_canary_display_activity_label">Debug: Chatroulette leaks</string>
 </resources>
