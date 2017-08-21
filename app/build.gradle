@@ -70,5 +70,5 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
 }
-
+//To avoid dependency collisions GMS plugin should be placed at the bottom
 apply plugin: 'com.google.gms.google-services'
