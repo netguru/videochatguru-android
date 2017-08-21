@@ -63,6 +63,12 @@ dependencies {
     compile libs.firebaseDatabase
 
     compile libs.dexter
+
+    testCompile test.junit
+    testCompile test.mockito
+    testCompile(test.mockitoKotlin) {
+        exclude group: 'org.jetbrains.kotlin'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
