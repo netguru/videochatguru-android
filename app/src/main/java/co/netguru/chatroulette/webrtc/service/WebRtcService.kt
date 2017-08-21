@@ -16,9 +16,7 @@ class WebRtcService : Service() {
 
     private val binder = LocalBinder()
 
-    override fun onBind(intent: Intent): IBinder {
-        return binder
-    }
+    override fun onBind(intent: Intent): IBinder = binder
 
     override fun onCreate() {
         super.onCreate()
@@ -52,7 +50,17 @@ class WebRtcService : Service() {
 
     fun switchCamera() = webRtcServiceManager.switchCamera()
 
-    fun enableCamera(isEnabled: Boolean) = webRtcServiceManager.enableCamera(isEnabled)
+    fun enableCamera(isEnabled: Boolean) {
+        webRtcServiceManager.enableCamera(isEnabled)
+    }
+
+    fun isCameraEnabled() = webRtcServiceManager.isCameraEnabled()
+
+    fun enableMicrophone(isEnabled: Boolean) {
+        webRtcServiceManager.enableMicrophone(isEnabled)
+    }
+
+    fun isMicrophoneEnabled() = webRtcServiceManager.isMicrophoneEnabled()
 
     inner class LocalBinder : Binder() {
         val service: WebRtcService

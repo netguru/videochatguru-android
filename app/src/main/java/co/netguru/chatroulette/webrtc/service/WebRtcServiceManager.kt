@@ -75,6 +75,12 @@ class WebRtcServiceManager @Inject constructor(
 
     fun isCameraEnabled() = webRtcClient.cameraEnabled
 
+    fun enableMicrophone(enabled: Boolean) {
+        webRtcClient.microphoneEnabled = enabled
+    }
+
+    fun isMicrophoneEnabled() = webRtcClient.microphoneEnabled
+
     private fun loadIceServers() {
         disposables += firebaseIceServers.getIceServers()
                 .subscribeBy(

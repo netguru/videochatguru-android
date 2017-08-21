@@ -73,6 +73,12 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
             field = isEnabled
             videoCameraCapturer?.let { enableVideo(isEnabled, it) }
         }
+    var microphoneEnabled = true
+        set(isEnabled) {
+            field = isEnabled
+            localAudioTrack.setEnabled(isEnabled)
+        }
+
 
     private lateinit var peerConnectionListener: PeerConnectionListener
 

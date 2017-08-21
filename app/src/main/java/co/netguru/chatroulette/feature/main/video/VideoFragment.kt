@@ -53,6 +53,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         connectButton.setOnClickListener {
             checkPermissionsAndConnect()
         }
+
         disconnectButton.setOnClickListener {
             getPresenter().disconnectByUser()
         }
@@ -63,6 +64,10 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
         cameraEnabledToggle.setOnCheckedChangeListener { _, enabled ->
             service?.enableCamera(enabled)
+        }
+
+        microphoneToggle.setOnCheckedChangeListener { _, enabled ->
+            service?.enableMicrophone(enabled)
         }
     }
 
@@ -140,6 +145,12 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         this.service = service
         service.attachLocalView(localVideoView)
         service.attachRemoteView(remoteVideoView)
+        syncButtonsState(service)
+    }
+
+    private fun syncButtonsState(service: WebRtcService) {
+        cameraEnabledToggle.isChecked = service.isCameraEnabled()
+        microphoneToggle.isChecked = service.isMicrophoneEnabled()
     }
 
     fun onWebRtcServiceDisconnected() {
