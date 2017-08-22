@@ -6,7 +6,6 @@ import co.netguru.chatroulette.data.firebase.FirebaseIceCandidates
 import co.netguru.chatroulette.data.firebase.FirebaseIceServers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingAnswers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingOffers
-import co.netguru.chatroulette.data.model.IceCandidateFirebase
 import co.netguru.chatroulette.webrtc.PeerConnectionListener
 import co.netguru.chatroulette.webrtc.WebRtcAnsweringPartyListener
 import co.netguru.chatroulette.webrtc.WebRtcClient
@@ -146,7 +145,7 @@ class WebRtcServiceManager @Inject constructor(
                             if (it is ChildEventAdded) {
                                 webRtcClient.addIceCandidate(it.data)
                             } else {
-                                webRtcClient.removeIceCandidate(it.data)
+                                webRtcClient.removeIceCandidate(arrayOf(it.data))
                             }
                         },
                         onError = {
@@ -156,7 +155,7 @@ class WebRtcServiceManager @Inject constructor(
     }
 
     private fun sendIceCandidates(iceCandidate: IceCandidate) {
-        disposables += firebaseIceCandidates.send(IceCandidateFirebase.createFromIceCandidate(iceCandidate))
+        disposables += firebaseIceCandidates.send(iceCandidate)
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onError = {
@@ -169,7 +168,7 @@ class WebRtcServiceManager @Inject constructor(
     }
 
     private fun removeIceCandidates(iceCandidates: Array<IceCandidate>) {
-        disposables += firebaseIceCandidates.remove(IceCandidateFirebase.createFromIceCandidates(iceCandidates))
+        disposables += firebaseIceCandidates.remove(iceCandidates)
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onComplete = {

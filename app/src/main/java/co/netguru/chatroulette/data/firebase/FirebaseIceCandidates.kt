@@ -22,34 +22,37 @@ class FirebaseIceCandidates @Inject constructor(private val firebaseDatabase: Fi
 
     private fun deviceIceCandidatesPath(uuid: String) = ICE_CANDIDATES_PATH.plus(uuid)
 
-    fun send(iceCandidateFirebase: IceCandidateFirebase): Completable {
+    fun send(iceCandidate: IceCandidate): Completable {
         return Completable.create {
             val reference = firebaseDatabase.getReference(deviceIceCandidatesPath(App.CURRENT_DEVICE_UUID))
             with(reference) {
                 onDisconnect().removeValue()
-                push().setValue(iceCandidateFirebase)
+                push().setValue(IceCandidateFirebase.createFromIceCandidate(iceCandidate))
             }
             it.onComplete()
         }
     }
 
-    fun remove(iceCandidatesToRemoveFirebase: List<IceCandidateFirebase>): Completable {
+    fun remove(iceCandidatesToRemove: Array<IceCandidate>): Completable {
         return Completable.create {
-            val iceCandidatesToRemoveList = iceCandidatesToRemoveFirebase.toMutableList()
+            val iceCandidatesToRemoveList = iceCandidatesToRemove
+                    .map { IceCandidateFirebase.createFromIceCandidate(it) }
+                    .toMutableList()
             val reference = firebaseDatabase.getReference(deviceIceCandidatesPath(App.CURRENT_DEVICE_UUID))
-            reference.runTransaction(object : Transaction.Handler {
 
+            reference.runTransaction(object : Transaction.Handler {
                 override fun doTransaction(mutableData: MutableData): Transaction.Result {
                     val typeIndicator = object : GenericTypeIndicator<MutableMap<String, IceCandidateFirebase>>() {}
-                    val iceMap = mutableData.getValue(typeIndicator) ?:
+                    val currentIceCandidatesInFirebaseMap = mutableData.getValue(typeIndicator) ?:
                             return Transaction.success(mutableData)
 
-                    for ((key, value) in iceMap) {
+
+                    for ((key, value) in currentIceCandidatesInFirebaseMap) {
                         if (iceCandidatesToRemoveList.remove(value)) {
-                            iceMap.remove(key)
+                            currentIceCandidatesInFirebaseMap.remove(key)
                         }
                     }
-                    mutableData.value = iceMap
+                    mutableData.value = currentIceCandidatesInFirebaseMap
                     return Transaction.success(mutableData)
                 }
 

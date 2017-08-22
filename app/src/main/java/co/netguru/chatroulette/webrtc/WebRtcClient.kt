@@ -189,9 +189,8 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         peerConnection.addIceCandidate(iceCandidate)
     }
 
-    fun removeIceCandidate(iceCandidate: IceCandidate) {
-        //todo move up to service manager or higher
-        peerConnection.removeIceCandidates(arrayOf(iceCandidate))
+    fun removeIceCandidate(iceCandidates: Array<IceCandidate>) {
+        peerConnection.removeIceCandidates(iceCandidates)
     }
 
     fun restart() {
