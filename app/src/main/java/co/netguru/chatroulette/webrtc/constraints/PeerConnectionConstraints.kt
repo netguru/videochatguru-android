@@ -17,6 +17,7 @@ internal enum class PeerConnectionConstraints(override val constraintString: Str
      */
     GOOG_CPU_OVERUSE_DETECTION("googCpuOveruseDetection"),
     /**
+     * Differentiated Services Code Point - DiffServ is a coarse-grained, class-based mechanism for traffic management.
      * @see <a href="https://en.wikipedia.org/wiki/Differentiated_services">DSCP</a>
      */
     GOOG_DSCP("googDscp"),
