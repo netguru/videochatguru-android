@@ -48,11 +48,11 @@ class WebRtcServiceManager @Inject constructor(
     }
 
     fun attachRemoteView(remoteView: SurfaceViewRenderer) {
-        webRtcClient.attachRemoteView(remoteView, null)
+        webRtcClient.attachRemoteView(remoteView)
     }
 
     fun attachLocalView(localView: SurfaceViewRenderer) {
-        webRtcClient.attachLocalView(localView, null)
+        webRtcClient.attachLocalView(localView)
     }
 
     fun detachViews() {
@@ -62,7 +62,7 @@ class WebRtcServiceManager @Inject constructor(
     fun destroy() {
         disposables.dispose()
         webRtcClient.detachViews()
-        if (finishedInitializing) webRtcClient.releasePeerConnection()
+        webRtcClient.releasePeerConnection()
         webRtcClient.dispose()
     }
 

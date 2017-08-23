@@ -9,7 +9,7 @@ ext {
 }
 
 buildscript {
-    ext.kotlinVersion = '1.1.4'
+    ext.kotlinVersion = '1.1.4-2'
     repositories {
         jcenter()
     }

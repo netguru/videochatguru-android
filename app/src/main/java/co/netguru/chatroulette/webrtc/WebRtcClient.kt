@@ -1,16 +1,16 @@
 package co.netguru.chatroulette.webrtc
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import co.netguru.chatroulette.webrtc.constraints.AudioMediaConstraints
 import co.netguru.chatroulette.webrtc.constraints.OfferAnswerConstraints
 import co.netguru.chatroulette.webrtc.constraints.PeerConnectionConstraints
 import org.webrtc.*
-import timber.log.Timber
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
 class WebRtcClient(context: Context) : RemoteVideoListener {
-
-    private val counter = AtomicInteger(0)
 
     companion object {
         private const val INITIALIZE_AUDIO = true
@@ -22,13 +22,19 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
         private const val VIDEO_FPS = 24
     }
 
+    private val counter = AtomicInteger(0)
+    private val singleThreadExecutor = Executors.newSingleThreadExecutor()
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
+
     private var remoteVideoStream: VideoTrack? = null
 
     private var videoSource: VideoSource? = null
     private var localVideoTrack: VideoTrack? = null
 
-    private val audioSource: AudioSource
-    private val localAudioTrack: AudioTrack
+    private lateinit var peerConnectionFactory: PeerConnectionFactory
+
+    private lateinit var audioSource: AudioSource
+    private lateinit var localAudioTrack: AudioTrack
 
     private var remoteView: SurfaceViewRenderer? = null
     private var remoteVideoRenderer: VideoRenderer? = null
@@ -36,8 +42,6 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     private var localVideoRenderer: VideoRenderer? = null
 
     private val eglBase = EglBase.create()
-
-    private val peerConnectionFactory: PeerConnectionFactory
 
     private val audioConstraints by lazy {
         val audioConstraints = MediaConstraints()
@@ -68,17 +72,23 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     }
 
     private val videoCameraCapturer = WebRtcUtils.createCameraCapturerWithFrontAsDefault(context)
+
     var cameraEnabled = true
         set(isEnabled) {
             field = isEnabled
-            videoCameraCapturer?.let { enableVideo(isEnabled, it) }
+            singleThreadExecutor.execute {
+                videoCameraCapturer?.let { enableVideo(isEnabled, it) }
+            }
         }
     var microphoneEnabled = true
         set(isEnabled) {
             field = isEnabled
-            localAudioTrack.setEnabled(isEnabled)
+            singleThreadExecutor.execute {
+                localAudioTrack.setEnabled(isEnabled)
+            }
         }
 
+    private var isPeerConnectionInitialized = false
 
     private lateinit var peerConnectionListener: PeerConnectionListener
 
@@ -91,8 +101,14 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
 
     init {
         if (!PeerConnectionFactory.initializeAndroidGlobals(context.applicationContext, INITIALIZE_AUDIO, INITIALIZE_VIDEO, HW_ACCELERATION)) {
-            Timber.d("Failed to initializeAndroidGlobals")
+            error("WebRtc failed to initializeAndroidGlobals")
         }
+        singleThreadExecutor.execute {
+            initialize()
+        }
+    }
+
+    private fun initialize() {
         peerConnectionFactory = PeerConnectionFactory(PeerConnectionFactory.Options())
 
         if (videoCameraCapturer != null) {
@@ -110,94 +126,145 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
                                  peerConnectionListener: PeerConnectionListener,
                                  webRtcOfferingActionListener: WebRtcOfferingActionListener,
                                  webRtcAnsweringPartyListener: WebRtcAnsweringPartyListener) {
+        isPeerConnectionInitialized = true
+        singleThreadExecutor.execute {
+            this.peerConnectionListener = peerConnectionListener
+            val rtcConfig = PeerConnection.RTCConfiguration(iceServers)
+            peerConnection = peerConnectionFactory.createPeerConnection(rtcConfig, peerConnectionConstraints, videoPeerConnectionListener)
 
-        this.peerConnectionListener = peerConnectionListener
-        val rtcConfig = PeerConnection.RTCConfiguration(iceServers)
-        peerConnection = peerConnectionFactory.createPeerConnection(rtcConfig, peerConnectionConstraints, videoPeerConnectionListener)
+            val stream = peerConnectionFactory.createLocalMediaStream(getCounterStringValueAndIncrement())
 
-        val stream = peerConnectionFactory.createLocalMediaStream(getCounterStringValueAndIncrement())
+            stream.addTrack(localAudioTrack)
+            localVideoTrack?.let { stream.addTrack(it) }
 
-        stream.addTrack(localAudioTrack)
-        localVideoTrack?.let { stream.addTrack(it) }
-
-        peerConnection.addStream(stream)
-        offeringPartyHandler = WebRtcOfferingPartyHandler(peerConnection, webRtcOfferingActionListener)
-        answeringPartyHandler = WebRtcAnsweringPartyHandler(peerConnection, offerAnswerConstraints, webRtcAnsweringPartyListener)
+            peerConnection.addStream(stream)
+            offeringPartyHandler = WebRtcOfferingPartyHandler(peerConnection, webRtcOfferingActionListener)
+            answeringPartyHandler = WebRtcAnsweringPartyHandler(peerConnection, offerAnswerConstraints, webRtcAnsweringPartyListener)
+        }
     }
 
     override fun onAddRemoteVideoStream(remoteVideoTrack: VideoTrack) {
-        remoteVideoStream = remoteVideoTrack
-        remoteVideoRenderer?.let {
-            remoteVideoTrack.addRenderer(it)
+        singleThreadExecutor.execute {
+            remoteVideoStream = remoteVideoTrack
+            remoteVideoRenderer?.let {
+                remoteVideoTrack.addRenderer(it)
+            }
         }
     }
 
     override fun removeVideoStream() {
-        remoteVideoStream = null
+        singleThreadExecutor.execute {
+            remoteVideoStream = null
+        }
     }
 
-    fun attachRemoteView(remoteView: SurfaceViewRenderer, renderListener: RendererCommon.RendererEvents? = null) {
-        remoteView.init(eglBase.eglBaseContext, renderListener)
-        this.remoteView = remoteView
-        remoteVideoRenderer = VideoRenderer(remoteView)
-        remoteVideoStream?.addRenderer(remoteVideoRenderer)
+    fun attachRemoteView(remoteView: SurfaceViewRenderer) {
+        mainThreadHandler.run {
+            remoteView.init(eglBase.eglBaseContext, null)
+            this@WebRtcClient.remoteView = remoteView
+            singleThreadExecutor.execute {
+                remoteVideoRenderer = VideoRenderer(remoteView)
+                remoteVideoStream?.addRenderer(remoteVideoRenderer)
+            }
+        }
     }
 
-    fun attachLocalView(localView: SurfaceViewRenderer, renderListener: RendererCommon.RendererEvents? = null) {
-        localView.init(eglBase.eglBaseContext, renderListener)
-        this.localView = localView
-        localVideoRenderer = VideoRenderer(localView)
-        localVideoTrack?.addRenderer(localVideoRenderer)
+    fun attachLocalView(localView: SurfaceViewRenderer) {
+        mainThreadHandler.run {
+            localView.init(eglBase.eglBaseContext, null)
+            this@WebRtcClient.localView = localView
+            singleThreadExecutor.execute {
+                localVideoRenderer = VideoRenderer(localView)
+                localVideoTrack?.addRenderer(localVideoRenderer)
+            }
+        }
+
     }
 
     fun detachViews() {
-        remoteView?.release()
-        remoteVideoRenderer?.let { remoteVideoStream?.removeRenderer(it) }
-        localView?.release()
-        localVideoRenderer?.let { localVideoTrack?.removeRenderer(it) }
+        mainThreadHandler.run {
+            remoteView?.release()
+            remoteView = null
+            localView?.release()
+            localView = null
+            singleThreadExecutor.execute {
+                remoteVideoRenderer?.let {
+                    remoteVideoStream?.removeRenderer(it)
+                    remoteVideoRenderer = null
+                }
+                localVideoRenderer?.let {
+                    localVideoTrack?.removeRenderer(it)
+                    localVideoRenderer = null
+                }
+            }
+        }
+
     }
 
     fun dispose() {
-        eglBase.release()
-        audioSource.dispose()
-        videoCameraCapturer?.dispose()
-        videoSource?.dispose()
-        peerConnectionFactory.dispose()
+        singleThreadExecutor.execute {
+            eglBase.release()
+            audioSource.dispose()
+            videoCameraCapturer?.dispose()
+            videoSource?.dispose()
+            peerConnectionFactory.dispose()
+        }
+        singleThreadExecutor.shutdown()
     }
 
     /**
      * If peer connection was initialized make sure that this method is called before [dispose]
      */
     fun releasePeerConnection() {
-        peerConnection.close()
-        peerConnection.dispose()
+        if (isPeerConnectionInitialized) {
+            singleThreadExecutor.execute {
+                peerConnection.close()
+                peerConnection.dispose()
+            }
+        }
     }
 
     fun createOffer() {
-        offeringPartyHandler.createOffer(offerAnswerConstraints)
+        singleThreadExecutor.execute {
+            offeringPartyHandler.createOffer(offerAnswerConstraints)
+        }
     }
 
     fun handleRemoteAnswer(remoteSessionDescription: SessionDescription) {
-        offeringPartyHandler.handleRemoteAnswer(remoteSessionDescription)
+        singleThreadExecutor.execute {
+            offeringPartyHandler.handleRemoteAnswer(remoteSessionDescription)
+        }
     }
 
     fun handleRemoteOffer(remoteSessionDescription: SessionDescription) {
-        answeringPartyHandler.handleRemoteOffer(remoteSessionDescription)
+        singleThreadExecutor.execute {
+            answeringPartyHandler.handleRemoteOffer(remoteSessionDescription)
+        }
     }
 
     fun addIceCandidate(iceCandidate: IceCandidate) {
-        peerConnection.addIceCandidate(iceCandidate)
+        singleThreadExecutor.execute {
+            peerConnection.addIceCandidate(iceCandidate)
+        }
     }
 
     fun removeIceCandidate(iceCandidates: Array<IceCandidate>) {
-        peerConnection.removeIceCandidates(iceCandidates)
+        singleThreadExecutor.execute {
+            peerConnection.removeIceCandidates(iceCandidates)
+        }
     }
 
     fun restart() {
-        offeringPartyHandler.createOffer(offerAnswerRestartConstraints)
+        singleThreadExecutor.execute {
+            offeringPartyHandler.createOffer(offerAnswerRestartConstraints)
+        }
     }
 
-    fun switchCamera() = videoCameraCapturer?.switchCamera(null)
+    fun switchCamera() {
+        singleThreadExecutor.execute {
+            videoCameraCapturer?.switchCamera(null)
+        }
+    }
 
     private fun enableVideo(isEnabled: Boolean, videoCapturer: CameraVideoCapturer) {
         if (isEnabled)

@@ -21,7 +21,7 @@ interface CustomPeerConnectionObserver : PeerConnection.Observer {
     }
 
     override fun onIceGatheringChange(iceGatheringState: PeerConnection.IceGatheringState) {
-        Timber.d(" onIceGatheringChange() called with $iceGatheringState")
+        Timber.d("onIceGatheringChange() called with $iceGatheringState")
     }
 
     override fun onIceCandidate(iceCandidate: IceCandidate) {
