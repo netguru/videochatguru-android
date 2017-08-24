@@ -5,7 +5,7 @@ import org.webrtc.PeerConnection
 import org.webrtc.SessionDescription
 
 
-class WebRtcAnsweringPartyHandler(
+internal class WebRtcAnsweringPartyHandler(
         private val peer: PeerConnection,
         private val offerAnswerConstraints: MediaConstraints,
         private val webRtcAnsweringPartyListener: WebRtcAnsweringPartyListener) {

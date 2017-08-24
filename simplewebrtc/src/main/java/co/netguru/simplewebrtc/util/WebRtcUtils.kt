@@ -1,4 +1,4 @@
-package co.netguru.simplewebrtc
+package co.netguru.simplewebrtc.util
 
 import android.annotation.SuppressLint
 import android.content.Context

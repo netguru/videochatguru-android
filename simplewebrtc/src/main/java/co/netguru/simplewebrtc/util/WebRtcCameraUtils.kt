@@ -1,4 +1,4 @@
-package co.netguru.simplewebrtc
+package co.netguru.simplewebrtc.util
 
 import android.content.Context
 import org.webrtc.Camera2Enumerator

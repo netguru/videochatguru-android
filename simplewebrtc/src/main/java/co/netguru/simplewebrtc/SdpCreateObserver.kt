@@ -2,7 +2,7 @@ package co.netguru.simplewebrtc
 
 import org.webrtc.SdpObserver
 
-interface SdpCreateObserver : SdpObserver {
+internal interface SdpCreateObserver : SdpObserver {
 
     override fun onSetFailure(error: String) {
         throw IllegalStateException("onSetFailure called in set listener")

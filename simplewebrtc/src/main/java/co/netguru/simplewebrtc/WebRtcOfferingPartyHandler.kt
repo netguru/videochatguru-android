@@ -6,7 +6,7 @@ import org.webrtc.SessionDescription
 import timber.log.Timber
 
 
-class WebRtcOfferingPartyHandler(
+internal class WebRtcOfferingPartyHandler(
         private val peer: PeerConnection,
         private val webRtcActionListener: WebRtcOfferingActionListener) {
 

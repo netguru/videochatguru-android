@@ -3,7 +3,7 @@ package co.netguru.simplewebrtc
 import org.webrtc.SdpObserver
 import org.webrtc.SessionDescription
 
-interface SdpSetObserver : SdpObserver {
+internal interface SdpSetObserver : SdpObserver {
 
     override fun onCreateSuccess(sessionDescription: SessionDescription) {
         throw IllegalStateException("onCreateSuccess called in set listener")
