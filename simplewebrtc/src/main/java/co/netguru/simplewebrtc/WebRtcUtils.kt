@@ -1,4 +1,4 @@
-package co.netguru.chatroulette.webrtc
+package co.netguru.simplewebrtc
 
 import android.annotation.SuppressLint
 import android.content.Context

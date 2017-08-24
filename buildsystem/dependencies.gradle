@@ -12,8 +12,8 @@ ext {
     firebaseVersion = '11.2.0'
 
     libs = [
-            kotlinStdlib            : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion",
-            kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion",
+            kotlinStdlib            : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin",
+            kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
             appCompat               : "com.android.support:appcompat-v7:$supportLibraryVersion",
             recyclerView            : "com.android.support:recyclerview-v7:$supportLibraryVersion",
             design                  : "com.android.support:design:$supportLibraryVersion",

@@ -1,4 +1,4 @@
-package co.netguru.chatroulette.webrtc.constraints
+package co.netguru.simplewebrtc.constraints
 
 /**
  * These constraints should be used during PeerConnection construction.

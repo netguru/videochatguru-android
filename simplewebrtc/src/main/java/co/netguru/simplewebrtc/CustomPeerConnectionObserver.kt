@@ -1,4 +1,4 @@
-package co.netguru.chatroulette.webrtc
+package co.netguru.simplewebrtc
 
 import org.webrtc.DataChannel
 import org.webrtc.IceCandidate

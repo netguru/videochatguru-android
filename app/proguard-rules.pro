@@ -67,9 +67,6 @@
 -dontnote kotlin.internal.PlatformImplementationsKt
 -dontnote kotlin.reflect.jvm.internal.**
 
-#WebRtc
--keep class org.webrtc.** { *; }
-
 #Firebase
 # Add this global rule
 -keepattributes Signature

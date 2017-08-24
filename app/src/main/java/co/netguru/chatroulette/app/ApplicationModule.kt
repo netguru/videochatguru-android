@@ -7,8 +7,8 @@ import co.netguru.chatroulette.data.firebase.FirebaseIceCandidates
 import co.netguru.chatroulette.data.firebase.FirebaseIceServers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingAnswers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingOffers
-import co.netguru.chatroulette.webrtc.WebRtcClient
 import co.netguru.chatroulette.webrtc.service.WebRtcServiceManager
+import co.netguru.simplewebrtc.WebRtcClient
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

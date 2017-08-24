@@ -1,4 +1,4 @@
-package co.netguru.chatroulette.webrtc.constraints
+package co.netguru.simplewebrtc.constraints
 
 import org.webrtc.MediaConstraints
 

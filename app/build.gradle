@@ -4,19 +4,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
     defaultConfig {
         applicationId "co.netguru.chatroulette"
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
         versionCode globalVersionCode
         versionName globalVersionName
-    }
-
-    sourceSets.main {
-        jniLibs.srcDir 'libs'
-        jni.srcDirs = [] //disable automatic ndk-build call
     }
 
     buildTypes {
@@ -41,6 +37,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(path: ':simplewebrtc')
 
     compile libs.appCompat
     compile libs.recyclerView

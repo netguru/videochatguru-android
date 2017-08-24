@@ -1,11 +1,11 @@
-package co.netguru.chatroulette.webrtc
+package co.netguru.simplewebrtc
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import co.netguru.chatroulette.webrtc.constraints.AudioMediaConstraints
-import co.netguru.chatroulette.webrtc.constraints.OfferAnswerConstraints
-import co.netguru.chatroulette.webrtc.constraints.PeerConnectionConstraints
+import co.netguru.simplewebrtc.constraints.AudioMediaConstraints
+import co.netguru.simplewebrtc.constraints.OfferAnswerConstraints
+import co.netguru.simplewebrtc.constraints.PeerConnectionConstraints
 import org.webrtc.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
@@ -19,6 +19,10 @@ class WebRtcClient(context: Context,
     companion object {
         private const val INITIALIZE_AUDIO = true
         private const val INITIALIZE_VIDEO = true
+
+        fun enableLogs() {
+
+        }
     }
 
     private val counter = AtomicInteger(0)

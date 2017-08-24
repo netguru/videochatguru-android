@@ -9,13 +9,20 @@ ext {
 }
 
 buildscript {
-    ext.kotlinVersion = '1.1.4-2'
+
+    ext.versions = [
+            kotlin    : '1.1.4-2',
+            buildTools: '26.0.1',
+            minSdk    : 16,
+            compileSdk: 26,
+    ]
+
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
         classpath 'com.google.gms:google-services:3.1.0'
 
         // NOTE: Do not place your application dependencies here; they belong

@@ -1,4 +1,4 @@
-package co.netguru.chatroulette.webrtc.constraints
+package co.netguru.simplewebrtc.constraints
 
 /**
  * Constraint keys for CreateOffer / CreateAnswer defined in W3C specification.

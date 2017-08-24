@@ -6,10 +6,10 @@ import co.netguru.chatroulette.data.firebase.FirebaseIceCandidates
 import co.netguru.chatroulette.data.firebase.FirebaseIceServers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingAnswers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingOffers
-import co.netguru.chatroulette.webrtc.PeerConnectionListener
-import co.netguru.chatroulette.webrtc.WebRtcAnsweringPartyListener
-import co.netguru.chatroulette.webrtc.WebRtcClient
-import co.netguru.chatroulette.webrtc.WebRtcOfferingActionListener
+import co.netguru.simplewebrtc.PeerConnectionListener
+import co.netguru.simplewebrtc.WebRtcAnsweringPartyListener
+import co.netguru.simplewebrtc.WebRtcClient
+import co.netguru.simplewebrtc.WebRtcOfferingActionListener
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
