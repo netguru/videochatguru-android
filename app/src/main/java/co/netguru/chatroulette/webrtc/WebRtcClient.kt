@@ -10,16 +10,15 @@ import org.webrtc.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
-class WebRtcClient(context: Context) : RemoteVideoListener {
+class WebRtcClient(context: Context,
+                   private val localVideoWidth: Int = 1280,
+                   private val localVideoHeight: Int = 720,
+                   private val localVideoFps: Int = 24,
+                   hardwareAcceleration: Boolean = true) : RemoteVideoListener {
 
     companion object {
         private const val INITIALIZE_AUDIO = true
         private const val INITIALIZE_VIDEO = true
-        private const val HW_ACCELERATION = true
-
-        private const val VIDEO_WIDTH = 1280
-        private const val VIDEO_HEIGHT = 720
-        private const val VIDEO_FPS = 24
     }
 
     private val counter = AtomicInteger(0)
@@ -100,7 +99,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
     private lateinit var answeringPartyHandler: WebRtcAnsweringPartyHandler
 
     init {
-        if (!PeerConnectionFactory.initializeAndroidGlobals(context.applicationContext, INITIALIZE_AUDIO, INITIALIZE_VIDEO, HW_ACCELERATION)) {
+        if (!PeerConnectionFactory.initializeAndroidGlobals(context.applicationContext, INITIALIZE_AUDIO, INITIALIZE_VIDEO, hardwareAcceleration)) {
             error("WebRtc failed to initializeAndroidGlobals")
         }
         singleThreadExecutor.execute {
@@ -268,7 +267,7 @@ class WebRtcClient(context: Context) : RemoteVideoListener {
 
     private fun enableVideo(isEnabled: Boolean, videoCapturer: CameraVideoCapturer) {
         if (isEnabled)
-            videoCapturer.startCapture(VIDEO_WIDTH, VIDEO_HEIGHT, VIDEO_FPS)
+            videoCapturer.startCapture(localVideoWidth, localVideoHeight, localVideoFps)
         else
             videoCapturer.stopCapture()
     }
