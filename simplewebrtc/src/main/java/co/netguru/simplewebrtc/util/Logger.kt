@@ -11,18 +11,16 @@ class Logger private constructor() {
 
     companion object {
 
+        private const val PREFIX = "WebRTC:"
+
         var loggingEnabled = false
 
         fun d(tag: String, message: String) {
-            if (loggingEnabled) {
-                Log.d(tag, message)
-            }
+            if (loggingEnabled) Log.d("$PREFIX $tag", message)
         }
 
         fun e(tag: String, message: String) {
-            if (loggingEnabled) {
-                Log.e(tag, message)
-            }
+            if (loggingEnabled) Log.e("$PREFIX $tag", message)
         }
     }
 }

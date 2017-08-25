@@ -10,7 +10,7 @@ internal class WebRtcOfferingPartyHandler(
         private val peer: PeerConnection,
         private val webRtcActionListener: WebRtcOfferingActionListener) {
 
-    private val TAG = "WebRTC:${WebRtcOfferingPartyHandler::class.java.simpleName}"
+    private val TAG = WebRtcOfferingPartyHandler::class.java.simpleName
 
     fun createOffer(offerAnswerConstraints: MediaConstraints) {
         Logger.d(TAG, "Creating offer with $offerAnswerConstraints")

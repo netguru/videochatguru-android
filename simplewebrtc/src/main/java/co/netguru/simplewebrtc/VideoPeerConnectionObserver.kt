@@ -10,7 +10,7 @@ internal class VideoPeerConnectionObserver(
         private val peerConnectionListener: PeerConnectionListener,
         private val remoteVideoListener: RemoteVideoListener) : CustomPeerConnectionObserver {
 
-    private val TAG = "WebRTC:${VideoPeerConnectionObserver::class.java.simpleName}"
+    private val TAG = VideoPeerConnectionObserver::class.java.simpleName
 
     override fun onIceCandidate(iceCandidate: IceCandidate) {
         super.onIceCandidate(iceCandidate)

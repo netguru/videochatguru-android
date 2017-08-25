@@ -9,7 +9,7 @@ import org.webrtc.PeerConnection
 internal interface CustomPeerConnectionObserver : PeerConnection.Observer {
 
     companion object {
-        private val TAG = "WebRTC:${CustomPeerConnectionObserver::class.java.simpleName}"
+        private val TAG = CustomPeerConnectionObserver::class.java.simpleName
     }
 
     override fun onSignalingChange(signalingState: PeerConnection.SignalingState) {
