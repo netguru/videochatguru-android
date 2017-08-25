@@ -7,7 +7,7 @@ import co.netguru.chatroulette.data.firebase.FirebaseIceCandidates
 import co.netguru.chatroulette.data.firebase.FirebaseIceServers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingAnswers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingOffers
-import co.netguru.chatroulette.webrtc.service.WebRtcServiceManager
+import co.netguru.chatroulette.webrtc.service.WebRtcServiceController
 import co.netguru.simplewebrtc.WebRtcClient
 import dagger.Module
 import dagger.Provides
@@ -32,10 +32,10 @@ class ApplicationModule(private val application: Application) {
     fun provideWebRtcClient(context: Context) = WebRtcClient(context)
 
     @Provides
-    fun provideWebRtcServiceManager(webRtcClient: WebRtcClient, firebaseSignalingAnswers: FirebaseSignalingAnswers,
-                                    firebaseSignalingOffers: FirebaseSignalingOffers, firebaseIceCandidates: FirebaseIceCandidates,
-                                    firebaseIceServers: FirebaseIceServers): WebRtcServiceManager {
-        return WebRtcServiceManager(
+    fun provideWebRtcServiceControler(webRtcClient: WebRtcClient, firebaseSignalingAnswers: FirebaseSignalingAnswers,
+                                      firebaseSignalingOffers: FirebaseSignalingOffers, firebaseIceCandidates: FirebaseIceCandidates,
+                                      firebaseIceServers: FirebaseIceServers): WebRtcServiceController {
+        return WebRtcServiceController(
                 webRtcClient, firebaseSignalingAnswers, firebaseSignalingOffers,
                 firebaseIceCandidates, firebaseIceServers)
     }

@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class WebRtcService : Service() {
 
-    @Inject lateinit var webRtcServiceManager: WebRtcServiceManager
+    @Inject lateinit var webRtcServiceManager: WebRtcServiceController
 
     private val binder = LocalBinder()
 
