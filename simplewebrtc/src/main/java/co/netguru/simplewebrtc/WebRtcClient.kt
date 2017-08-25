@@ -36,7 +36,7 @@ class WebRtcClient(context: Context,
     private val singleThreadExecutor = Executors.newSingleThreadExecutor()
     private val mainThreadHandler = Handler(Looper.getMainLooper())
 
-    private var remoteVideoStream: VideoTrack? = null
+    private var remoteVideoTrack: VideoTrack? = null
 
     private var videoSource: VideoSource? = null
     private var localVideoTrack: VideoTrack? = null
@@ -155,7 +155,7 @@ class WebRtcClient(context: Context,
 
     override fun onAddRemoteVideoStream(remoteVideoTrack: VideoTrack) {
         singleThreadExecutor.execute {
-            remoteVideoStream = remoteVideoTrack
+            this.remoteVideoTrack = remoteVideoTrack
             remoteVideoRenderer?.let {
                 remoteVideoTrack.addRenderer(it)
             }
@@ -164,7 +164,7 @@ class WebRtcClient(context: Context,
 
     override fun removeVideoStream() {
         singleThreadExecutor.execute {
-            remoteVideoStream = null
+            remoteVideoTrack = null
         }
     }
 
@@ -174,7 +174,7 @@ class WebRtcClient(context: Context,
             this@WebRtcClient.remoteView = remoteView
             singleThreadExecutor.execute {
                 remoteVideoRenderer = VideoRenderer(remoteView)
-                remoteVideoStream?.addRenderer(remoteVideoRenderer)
+                remoteVideoTrack?.addRenderer(remoteVideoRenderer)
             }
         }
     }
@@ -199,16 +199,17 @@ class WebRtcClient(context: Context,
             localView = null
             singleThreadExecutor.execute {
                 remoteVideoRenderer?.let {
-                    remoteVideoStream?.removeRenderer(it)
+                    remoteVideoTrack?.removeRenderer(it)
+                    it.dispose()
                     remoteVideoRenderer = null
                 }
                 localVideoRenderer?.let {
                     localVideoTrack?.removeRenderer(it)
+                    it.dispose()
                     localVideoRenderer = null
                 }
             }
         }
-
     }
 
     fun dispose() {
