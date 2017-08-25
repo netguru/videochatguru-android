@@ -3,7 +3,10 @@ package co.netguru.chatroulette.feature.base.service
 import android.app.Service
 
 
-abstract class BaseServiceWithFacade : Service() {
+abstract class BaseServiceWithFacade<T : ServiceFacade, out C : ServiceController<T>> : Service() {
+
+    private lateinit var serviceController: C
+
     override fun onCreate() {
         super.onCreate()
         attachServiceToController()
@@ -11,14 +14,14 @@ abstract class BaseServiceWithFacade : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        detachService()
+        serviceController.detachService()
     }
 
-    private fun detachService() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
+    @Suppress("UNCHECKED_CAST")
     private fun attachServiceToController() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        serviceController = retrieveController()
+        serviceController.attachService(this as T)
     }
+
+    abstract fun retrieveController(): C
 }

@@ -7,7 +7,6 @@ import co.netguru.chatroulette.data.firebase.FirebaseIceCandidates
 import co.netguru.chatroulette.data.firebase.FirebaseIceServers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingAnswers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingOffers
-import co.netguru.chatroulette.feature.base.service.ServiceController
 import co.netguru.simplewebrtc.PeerConnectionListener
 import co.netguru.simplewebrtc.WebRtcAnsweringPartyListener
 import co.netguru.simplewebrtc.WebRtcClient
@@ -28,7 +27,7 @@ class WebRtcServiceController @Inject constructor(
         private val firebaseSignalingAnswers: FirebaseSignalingAnswers,
         private val firebaseSignalingOffers: FirebaseSignalingOffers,
         private val firebaseIceCandidates: FirebaseIceCandidates,
-        private val firebaseIceServers: FirebaseIceServers) : ServiceController {
+        private val firebaseIceServers: FirebaseIceServers) {
 
     var remoteUuid: String? = null
 
@@ -38,19 +37,19 @@ class WebRtcServiceController @Inject constructor(
     private var shouldCreateOffer = false
     private var isOfferingParty = false
 
-    private var service: Service? = null
+   // private var service: Service? = null
 
     init {
         loadIceServers()
     }
 
-    override fun attachService(service: Service) {
+   /* override fun attachService(service: Service) {
         this.service = service
     }
 
     override fun detachService() {
         service = null
-    }
+    }*/
 
     fun offerDevice(deviceUuid: String) {
         isOfferingParty = true
