@@ -210,7 +210,6 @@ class WebRtcClient(context: Context,
                 }
             }
         }
-
     }
 
     fun dispose() {
