@@ -23,7 +23,7 @@ class WebRtcClient(context: Context,
         private const val INITIALIZE_VIDEO = true
 
         /**
-         * Enable additional loging - this might be helpfull while resolving problems.
+         * Enable additional logging - this might be helpful while resolving problems and should be used only in debug builds.
          * By default logs are turned off.
          */
         fun enableLogs(logsEnabled: Boolean) {

@@ -3,24 +3,16 @@ package co.netguru.simplewebrtc.util
 import android.util.Log
 
 
-class Logger private constructor() {
+internal object Logger {
+    private const val PREFIX = "WebRTC:"
 
-    init {
-        throw AssertionError()
+    var loggingEnabled = false
+
+    fun d(tag: String, message: String) {
+        if (loggingEnabled) Log.d("$PREFIX $tag", message)
     }
 
-    companion object {
-
-        private const val PREFIX = "WebRTC:"
-
-        var loggingEnabled = false
-
-        fun d(tag: String, message: String) {
-            if (loggingEnabled) Log.d("$PREFIX $tag", message)
-        }
-
-        fun e(tag: String, message: String) {
-            if (loggingEnabled) Log.e("$PREFIX $tag", message)
-        }
+    fun e(tag: String, message: String) {
+        if (loggingEnabled) Log.e("$PREFIX $tag", message)
     }
 }
