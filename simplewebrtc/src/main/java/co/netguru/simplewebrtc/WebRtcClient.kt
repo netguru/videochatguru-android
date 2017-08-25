@@ -6,6 +6,7 @@ import android.os.Looper
 import co.netguru.simplewebrtc.constraints.AudioMediaConstraints
 import co.netguru.simplewebrtc.constraints.OfferAnswerConstraints
 import co.netguru.simplewebrtc.constraints.PeerConnectionConstraints
+import co.netguru.simplewebrtc.util.Logger
 import co.netguru.simplewebrtc.util.WebRtcUtils
 import org.webrtc.*
 import java.util.concurrent.Executors
@@ -21,8 +22,13 @@ class WebRtcClient(context: Context,
         private const val INITIALIZE_AUDIO = true
         private const val INITIALIZE_VIDEO = true
 
-        fun enableLogs() {
-
+        /**
+         * Enable additional loging - this might be helpfull while resolving problems.
+         * By default logs are turned off.
+         */
+        fun enableLogs(logsEnabled: Boolean) {
+            Logging.enableLogToDebugOutput(if (logsEnabled) Logging.Severity.LS_INFO else Logging.Severity.LS_NONE)
+            Logger.loggingEnabled = logsEnabled
         }
     }
 

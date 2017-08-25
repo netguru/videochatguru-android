@@ -5,8 +5,8 @@ import android.content.Context
 import android.widget.Toast
 import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.data.firebase.FirebaseModule
+import co.netguru.simplewebrtc.WebRtcClient
 import com.squareup.leakcanary.LeakCanary
-import org.webrtc.Logging
 import timber.log.Timber
 import java.util.*
 
@@ -38,8 +38,7 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             //Enables WebRTC Logging
-            //Logging.enableLogToDebugOutput(Logging.Severity.)
-            Logging.enableTracing("logcat:", EnumSet.of<Logging.TraceLevel>(Logging.TraceLevel.TRACE_DEFAULT))
+            WebRtcClient.enableLogs(true)
             Toast.makeText(this, "Uuid: ${App.CURRENT_DEVICE_UUID}", Toast.LENGTH_LONG).show()
         }
     }

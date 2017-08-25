@@ -1,14 +1,16 @@
 package co.netguru.simplewebrtc
 
+import co.netguru.simplewebrtc.util.Logger
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
 import org.webrtc.PeerConnection
-import timber.log.Timber
 
 
 internal class VideoPeerConnectionObserver(
         private val peerConnectionListener: PeerConnectionListener,
         private val remoteVideoListener: RemoteVideoListener) : CustomPeerConnectionObserver {
+
+    private val TAG = "WebRTC:${VideoPeerConnectionObserver::class.java.simpleName}"
 
     override fun onIceCandidate(iceCandidate: IceCandidate) {
         super.onIceCandidate(iceCandidate)
@@ -28,7 +30,7 @@ internal class VideoPeerConnectionObserver(
     override fun onAddStream(mediaStream: MediaStream) {
         super.onAddStream(mediaStream)
         if (mediaStream.audioTracks.size > 1 || mediaStream.videoTracks.size > 1) {
-            Timber.e("Weird-looking stream: " + mediaStream)
+            Logger.e(TAG, "Weird-looking stream: $mediaStream")
             return
         }
         if (mediaStream.videoTracks.size == 1) {

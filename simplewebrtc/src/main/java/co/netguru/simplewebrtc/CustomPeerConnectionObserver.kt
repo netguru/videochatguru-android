@@ -1,50 +1,54 @@
 package co.netguru.simplewebrtc
 
+import co.netguru.simplewebrtc.util.Logger
 import org.webrtc.DataChannel
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
 import org.webrtc.PeerConnection
-import timber.log.Timber
 
 internal interface CustomPeerConnectionObserver : PeerConnection.Observer {
 
+    companion object {
+        private val TAG = "WebRTC:${CustomPeerConnectionObserver::class.java.simpleName}"
+    }
+
     override fun onSignalingChange(signalingState: PeerConnection.SignalingState) {
-        Timber.d("onSignalingChange() called with $signalingState")
+        Logger.d(TAG, "onSignalingChange() called with $signalingState")
     }
 
     override fun onIceConnectionChange(iceConnectionState: PeerConnection.IceConnectionState) {
-        Timber.d("onIceConnectionChange() called with $iceConnectionState")
+        Logger.d(TAG, "onIceConnectionChange() called with $iceConnectionState")
     }
 
     override fun onIceConnectionReceivingChange(b: Boolean) {
-        Timber.d("onIceConnectionReceivingChange() called with $b")
+        Logger.d(TAG, "onIceConnectionReceivingChange() called with $b")
     }
 
     override fun onIceGatheringChange(iceGatheringState: PeerConnection.IceGatheringState) {
-        Timber.d("onIceGatheringChange() called with $iceGatheringState")
+        Logger.d(TAG, "onIceGatheringChange() called with $iceGatheringState")
     }
 
     override fun onIceCandidate(iceCandidate: IceCandidate) {
-        Timber.d("onIceCandidate() called with $iceCandidate")
+        Logger.d(TAG, "onIceCandidate() called with $iceCandidate")
     }
 
     override fun onIceCandidatesRemoved(iceCandidates: Array<IceCandidate>) {
-        Timber.d("onIceCandidatesRemoved called with $iceCandidates")
+        Logger.d(TAG, "onIceCandidatesRemoved called with $iceCandidates")
     }
 
     override fun onAddStream(mediaStream: MediaStream) {
-        Timber.d("onAddStreamCalled() called with $mediaStream")
+        Logger.d(TAG, "onAddStreamCalled() called with $mediaStream")
     }
 
     override fun onRemoveStream(mediaStream: MediaStream) {
-        Timber.d("onRemoveStream() called with $mediaStream")
+        Logger.d(TAG, "onRemoveStream() called with $mediaStream")
     }
 
     override fun onDataChannel(dataChannel: DataChannel) {
-        Timber.d("onDataChannel() called with  $dataChannel")
+        Logger.d(TAG, "onDataChannel() called with  $dataChannel")
     }
 
     override fun onRenegotiationNeeded() {
-        Timber.d("onRenegotiationNeeded() called")
+        Logger.d(TAG, "onRenegotiationNeeded() called")
     }
 }

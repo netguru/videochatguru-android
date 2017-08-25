@@ -1,17 +1,19 @@
 package co.netguru.simplewebrtc
 
+import co.netguru.simplewebrtc.util.Logger
 import org.webrtc.MediaConstraints
 import org.webrtc.PeerConnection
 import org.webrtc.SessionDescription
-import timber.log.Timber
 
 
 internal class WebRtcOfferingPartyHandler(
         private val peer: PeerConnection,
         private val webRtcActionListener: WebRtcOfferingActionListener) {
 
+    private val TAG = "WebRTC:${WebRtcOfferingPartyHandler::class.java.simpleName}"
+
     fun createOffer(offerAnswerConstraints: MediaConstraints) {
-        Timber.d("Creating offer with $offerAnswerConstraints")
+        Logger.d(TAG, "Creating offer with $offerAnswerConstraints")
         peer.createOffer(object : SdpCreateObserver {
             override fun onCreateSuccess(localSessionDescription: SessionDescription) {
                 setLocalOfferDescription(localSessionDescription)
@@ -41,7 +43,7 @@ internal class WebRtcOfferingPartyHandler(
     fun handleRemoteAnswer(remoteSessionDescription: SessionDescription) {
         peer.setRemoteDescription(object : SdpSetObserver {
             override fun onSetSuccess() {
-                Timber.d("Remote description from answer set successfully")
+                Logger.d(TAG, "Remote description from answer set successfully")
             }
 
             override fun onSetFailure(error: String) {
