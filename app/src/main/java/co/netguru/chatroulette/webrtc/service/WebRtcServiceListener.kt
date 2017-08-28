@@ -4,9 +4,7 @@ package co.netguru.chatroulette.webrtc.service
 interface WebRtcServiceListener {
 
     /**
-     * When receiving this exception service will call stopSelf 
+     * When receiving this exception service is in unrecoverable state and will call stopSelf, bound view(if any) should unbind
      */
-    fun criticalException() {
-
-    }
+    fun criticalWebRTCServiceException(throwable: Throwable)
 }

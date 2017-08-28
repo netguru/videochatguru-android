@@ -1,66 +1,86 @@
 package co.netguru.chatroulette.webrtc.service
 
-import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Binder
 import android.os.IBinder
 import co.netguru.chatroulette.app.App
+import co.netguru.chatroulette.feature.base.service.BaseServiceWithFacade
 import org.webrtc.SurfaceViewRenderer
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class WebRtcService : Service() {
+class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceController>(), WebRtcServiceFacade {
 
-    @Inject lateinit var webRtcServiceManager: WebRtcServiceManager
+    companion object {
+        fun startService(packageContext: Context) {
+            packageContext.startService(Intent(packageContext, WebRtcService::class.java))
+        }
+
+        fun bindService(context: Context, connection: ServiceConnection) {
+            context.bindService(Intent(context, WebRtcService::class.java), connection, 0)
+        }
+    }
+
+    @Inject lateinit var webRtcServiceController: WebRtcServiceController
 
     private val binder = LocalBinder()
 
     override fun onBind(intent: Intent): IBinder = binder
 
     override fun onCreate() {
-        super.onCreate()
-        Timber.d("WebRtc service created")
         App.getApplicationComponent(this).webRtcServiceComponent().inject(this)
+        Timber.d("WebRtc service created")
+        super.onCreate()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.d("WebRtc service destroyed")
-        webRtcServiceManager.destroy()
+    override fun retrieveController(): WebRtcServiceController = webRtcServiceController
+
+    override fun stop() {
+        stopSelf()
+    }
+
+    fun attachServiceActionsListener(webRtcServiceListener: WebRtcServiceListener) {
+        webRtcServiceController.serviceListener = webRtcServiceListener
+    }
+
+    fun detachServiceActionsListener() {
+        webRtcServiceController.serviceListener = null
     }
 
     fun offerDevice(deviceUuid: String) {
-        webRtcServiceManager.offerDevice(deviceUuid)
+        webRtcServiceController.offerDevice(deviceUuid)
     }
 
     fun attachRemoteView(remoteView: SurfaceViewRenderer) {
-        webRtcServiceManager.attachRemoteView(remoteView)
+        webRtcServiceController.attachRemoteView(remoteView)
     }
 
     fun attachLocalView(localView: SurfaceViewRenderer) {
-        webRtcServiceManager.attachLocalView(localView)
+        webRtcServiceController.attachLocalView(localView)
     }
 
     fun detachViews() {
-        webRtcServiceManager.detachViews()
+        webRtcServiceController.detachViews()
     }
 
-    fun getRemoteUuid() = webRtcServiceManager.remoteUuid
+    fun getRemoteUuid() = webRtcServiceController.remoteUuid
 
-    fun switchCamera() = webRtcServiceManager.switchCamera()
+    fun switchCamera() = webRtcServiceController.switchCamera()
 
     fun enableCamera(isEnabled: Boolean) {
-        webRtcServiceManager.enableCamera(isEnabled)
+        webRtcServiceController.enableCamera(isEnabled)
     }
 
-    fun isCameraEnabled() = webRtcServiceManager.isCameraEnabled()
+    fun isCameraEnabled() = webRtcServiceController.isCameraEnabled()
 
     fun enableMicrophone(isEnabled: Boolean) {
-        webRtcServiceManager.enableMicrophone(isEnabled)
+        webRtcServiceController.enableMicrophone(isEnabled)
     }
 
-    fun isMicrophoneEnabled() = webRtcServiceManager.isMicrophoneEnabled()
+    fun isMicrophoneEnabled() = webRtcServiceController.isMicrophoneEnabled()
 
     inner class LocalBinder : Binder() {
         val service: WebRtcService

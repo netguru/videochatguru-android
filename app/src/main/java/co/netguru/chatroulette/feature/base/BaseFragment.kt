@@ -2,6 +2,9 @@ package co.netguru.chatroulette.feature.base
 
 import android.os.Bundle
 import android.support.annotation.LayoutRes
+import android.support.annotation.StringRes
+import android.support.design.widget.BaseTransientBottomBar
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,4 +18,10 @@ abstract class BaseFragment : Fragment() {
 
     @LayoutRes
     abstract fun getLayoutId(): Int
+
+    fun showSnackbarMessage(@StringRes resId: Int, @BaseTransientBottomBar.Duration duration: Int) {
+        view?.let {
+            Snackbar.make(it, resId, duration).show()
+        }
+    }
 }

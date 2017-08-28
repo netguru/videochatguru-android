@@ -7,6 +7,7 @@ import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.data.firebase.FirebaseModule
 import co.netguru.simplewebrtc.WebRtcClient
 import com.squareup.leakcanary.LeakCanary
+import org.webrtc.Logging
 import timber.log.Timber
 import java.util.*
 
@@ -38,7 +39,8 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             //Enables WebRTC Logging
-            WebRtcClient.enableLogs(true)
+            WebRtcClient.enableSimpleWebRtcLogs(true)
+            //WebRtcClient.enableInternalLogs(Logging.Severity.LS_VERBOSE)
             Toast.makeText(this, "Uuid: ${App.CURRENT_DEVICE_UUID}", Toast.LENGTH_LONG).show()
         }
     }

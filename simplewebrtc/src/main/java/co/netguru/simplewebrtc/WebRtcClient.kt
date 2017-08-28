@@ -19,6 +19,11 @@ class WebRtcClient(context: Context,
                    hardwareAcceleration: Boolean = true) : RemoteVideoListener {
 
     companion object {
+
+        init {
+            Logging.enableLogToDebugOutput(Logging.Severity.LS_NONE)
+        }
+
         private const val INITIALIZE_AUDIO = true
         private const val INITIALIZE_VIDEO = true
 
@@ -26,9 +31,16 @@ class WebRtcClient(context: Context,
          * Enable additional logging - this might be helpful while resolving problems and should be used only in debug builds.
          * By default logs are turned off.
          */
-        fun enableLogs(logsEnabled: Boolean) {
-            Logging.enableLogToDebugOutput(if (logsEnabled) Logging.Severity.LS_INFO else Logging.Severity.LS_NONE)
-            Logger.loggingEnabled = logsEnabled
+        fun enableSimpleWebRtcLogs(enabled: Boolean) {
+            Logger.loggingEnabled = enabled
+        }
+
+        /**
+         * Enable webrtc internal logging - this might be helpful while resolving problems and should be used only in debug builds.
+         * By default logs are turned off.
+         */
+        fun enableInternalLogs(severity: Logging.Severity) {
+            Logging.enableLogToDebugOutput(severity)
         }
     }
 
@@ -214,6 +226,7 @@ class WebRtcClient(context: Context,
 
     fun dispose() {
         singleThreadExecutor.execute {
+            releasePeerConnection()
             eglBase.release()
             audioSource.dispose()
             videoCameraCapturer?.dispose()
@@ -224,14 +237,12 @@ class WebRtcClient(context: Context,
     }
 
     /**
-     * If peer connection was initialized make sure that this method is called before [dispose]
+     * If peer connection was initialized  this method should close peer connection
      */
-    fun releasePeerConnection() {
+    private fun releasePeerConnection() {
         if (isPeerConnectionInitialized) {
-            singleThreadExecutor.execute {
-                peerConnection.close()
-                peerConnection.dispose()
-            }
+            peerConnection.close()
+            peerConnection.dispose()
         }
     }
 
@@ -271,9 +282,9 @@ class WebRtcClient(context: Context,
         }
     }
 
-    fun switchCamera() {
+    fun switchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler? = null) {
         singleThreadExecutor.execute {
-            videoCameraCapturer?.switchCamera(null)
+            videoCameraCapturer?.switchCamera(cameraSwitchHandler)
         }
     }
 
