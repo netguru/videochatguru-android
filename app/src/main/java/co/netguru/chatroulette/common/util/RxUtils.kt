@@ -2,6 +2,7 @@ package co.netguru.chatroulette.common.util
 
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.ofType
 import io.reactivex.schedulers.Schedulers
 
 internal object RxUtils {

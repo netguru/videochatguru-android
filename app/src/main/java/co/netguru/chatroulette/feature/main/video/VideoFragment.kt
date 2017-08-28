@@ -15,6 +15,7 @@ import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
 import co.netguru.chatroulette.feature.base.BaseMvpFragment
 import co.netguru.chatroulette.webrtc.service.WebRtcService
+import co.netguru.chatroulette.webrtc.service.WebRtcServiceListener
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_video.*
 import timber.log.Timber
 
 
-class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>(), VideoFragmentView {
+class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>(), VideoFragmentView, WebRtcServiceListener {
 
     companion object {
         val TAG: String = VideoFragment::class.java.name
@@ -71,6 +72,97 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        service?.let {
+            it.detachViews()
+            unbindService()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (camView.visibility == View.VISIBLE) {
+            outState.putBoolean(KEY_IN_CHAT, true)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!activity.isChangingConfigurations) disconnect()
+    }
+
+    override fun attachService() {
+        val intent = Intent(activity, WebRtcService::class.java)
+        context.startService(intent)
+        serviceConnection = object : ServiceConnection {
+            override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
+                onWebRtcServiceConnected((iBinder as (WebRtcService.LocalBinder)).service)
+                getPresenter().startRoulette()
+            }
+
+            override fun onServiceDisconnected(componentName: ComponentName) {
+                onWebRtcServiceDisconnected()
+            }
+        }
+        context.applicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun criticalWebRTCServiceException(throwable: Throwable) {
+        unbindService()
+        showSnackbarMessage(R.string.error_web_rtc_error, Snackbar.LENGTH_LONG)
+        Timber.e(throwable, "Critical WebRTC service error")
+    }
+
+    override fun connectTo(uuid: String) {
+        service?.offerDevice(uuid)
+    }
+
+    override fun disconnect() {
+        service?.let {
+            it.stopSelf()
+            unbindService()
+        }
+    }
+
+    private fun unbindService() {
+        service?.let {
+            it.detachServiceActionsListener()
+            context.applicationContext.unbindService(serviceConnection)
+            service = null
+        }
+    }
+
+    override fun showCamViews() {
+        buttonPanel.visibility = View.VISIBLE
+        camView.visibility = View.VISIBLE
+        connectButton.visibility = View.GONE
+    }
+
+    override fun showStartRouletteView() {
+        buttonPanel.visibility = View.GONE
+        camView.visibility = View.GONE
+        connectButton.visibility = View.VISIBLE
+    }
+
+    override fun getRemoteUuid() = service?.getRemoteUuid()
+
+    override fun showErrorWhileChoosingRandom() {
+        showSnackbarMessage(R.string.error_choosing_random_partner, Snackbar.LENGTH_LONG)
+    }
+
+    override fun showNoOneAvailable() {
+        showSnackbarMessage(R.string.msg_no_one_available, Snackbar.LENGTH_LONG)
+    }
+
+    override fun showLookingForPartnerMessage() {
+        showSnackbarMessage(R.string.msg_looking_for_partner, Snackbar.LENGTH_SHORT)
+    }
+
+    override fun showOtherPartyFinished() {
+        showSnackbarMessage(R.string.msg_other_party_finished, Snackbar.LENGTH_SHORT)
+    }
+
     private fun initAlreadyRunningConnection() {
         showCamViews()
         val intent = Intent(activity, WebRtcService::class.java)
@@ -104,48 +196,13 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
                 ).check()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        if (camView.visibility == View.VISIBLE) {
-            outState.putBoolean(KEY_IN_CHAT, true)
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        service?.let {
-            it.detachViews()
-            unbindService()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (!activity.isChangingConfigurations) disconnect()
-    }
-
-    override fun attachService() {
-        val intent = Intent(activity, WebRtcService::class.java)
-        context.startService(intent)
-        serviceConnection = object : ServiceConnection {
-            override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
-                onWebRtcServiceConnected((iBinder as (WebRtcService.LocalBinder)).service)
-                getPresenter().startRoulette()
-            }
-
-            override fun onServiceDisconnected(componentName: ComponentName) {
-                onWebRtcServiceDisconnected()
-            }
-        }
-        context.applicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-    }
-
-    fun onWebRtcServiceConnected(service: WebRtcService) {
+    private fun onWebRtcServiceConnected(service: WebRtcService) {
         Timber.d("Service connected")
         this.service = service
         service.attachLocalView(localVideoView)
         service.attachRemoteView(remoteVideoView)
         syncButtonsState(service)
+        service.attachServiceActionsListener(webRtcServiceListener = this)
     }
 
     private fun syncButtonsState(service: WebRtcService) {
@@ -153,55 +210,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         microphoneEnabledToggle.isChecked = service.isMicrophoneEnabled()
     }
 
-    fun onWebRtcServiceDisconnected() {
+    private fun onWebRtcServiceDisconnected() {
         Timber.d("Service disconnected")
-    }
-
-    override fun connectTo(uuid: String) {
-        service?.offerDevice(uuid)
-    }
-
-    override fun disconnect() {
-        service?.let {
-            it.stopSelf()
-            unbindService()
-        }
-    }
-
-    private fun unbindService() {
-        service?.let {
-            context.applicationContext.unbindService(serviceConnection)
-            service = null
-        }
-    }
-
-    override fun showCamViews() {
-        buttonPanel.visibility = View.VISIBLE
-        camView.visibility = View.VISIBLE
-        connectButton.visibility = View.GONE
-    }
-
-    override fun showStartRouletteView() {
-        buttonPanel.visibility = View.GONE
-        camView.visibility = View.GONE
-        connectButton.visibility = View.VISIBLE
-    }
-
-    override fun getRemoteUuid() = service?.getRemoteUuid()
-
-    override fun showErrorWhileChoosingRandom() {
-        Snackbar.make(coordinatorLayout, R.string.error_choosing_random_partner, Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun showNoOneAvailable() {
-        Snackbar.make(coordinatorLayout, R.string.msg_no_one_available, Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun showLookingForPartnerMessage() {
-        Snackbar.make(coordinatorLayout, R.string.msg_looking_for_partner, Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun showOtherPartyFinished() {
-        Snackbar.make(coordinatorLayout, R.string.msg_other_party_finished, Snackbar.LENGTH_SHORT).show()
     }
 }

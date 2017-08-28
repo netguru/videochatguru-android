@@ -26,10 +26,16 @@ class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceCo
 
     override fun retrieveController(): WebRtcServiceController = webRtcServiceController
 
-    override fun onDestroy() {
-        super.onDestroy()
-        //todo remove
-        Timber.d("WebRtc service destroyed")
+    override fun stop() {
+        stopSelf()
+    }
+
+    fun attachServiceActionsListener(webRtcServiceListener: WebRtcServiceListener) {
+        webRtcServiceController.serviceListener = webRtcServiceListener
+    }
+
+    fun detachServiceActionsListener() {
+        webRtcServiceController.serviceListener = null
     }
 
     fun offerDevice(deviceUuid: String) {

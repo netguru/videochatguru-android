@@ -32,9 +32,9 @@ class ApplicationModule(private val application: Application) {
     fun provideWebRtcClient(context: Context) = WebRtcClient(context)
 
     @Provides
-    fun provideWebRtcServiceControler(webRtcClient: WebRtcClient, firebaseSignalingAnswers: FirebaseSignalingAnswers,
-                                      firebaseSignalingOffers: FirebaseSignalingOffers, firebaseIceCandidates: FirebaseIceCandidates,
-                                      firebaseIceServers: FirebaseIceServers): WebRtcServiceController {
+    fun provideWebRtcServiceController(webRtcClient: WebRtcClient, firebaseSignalingAnswers: FirebaseSignalingAnswers,
+                                       firebaseSignalingOffers: FirebaseSignalingOffers, firebaseIceCandidates: FirebaseIceCandidates,
+                                       firebaseIceServers: FirebaseIceServers): WebRtcServiceController {
         return WebRtcServiceController(
                 webRtcClient, firebaseSignalingAnswers, firebaseSignalingOffers,
                 firebaseIceCandidates, firebaseIceServers)

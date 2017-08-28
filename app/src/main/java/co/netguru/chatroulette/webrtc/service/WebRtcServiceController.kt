@@ -29,6 +29,7 @@ class WebRtcServiceController @Inject constructor(
         private val firebaseIceCandidates: FirebaseIceCandidates,
         private val firebaseIceServers: FirebaseIceServers) : BaseServiceController<WebRtcServiceFacade>() {
 
+    var serviceListener: WebRtcServiceListener? = null
     var remoteUuid: String? = null
 
     private val disposables = CompositeDisposable()
@@ -90,7 +91,7 @@ class WebRtcServiceController @Inject constructor(
                             initializeWebRtc(it)
                         },
                         onError = {
-                            //todo mvpView?.showServersRetrievingError()
+                            handleCriticalException(it)
                         }
                 )
     }
@@ -115,7 +116,7 @@ class WebRtcServiceController @Inject constructor(
                 },
                 webRtcOfferingActionListener = object : WebRtcOfferingActionListener {
                     override fun onError(error: String) {
-                        Timber.d("Error in offering party: $error")
+                        Timber.e("Error in offering party: $error")
                     }
 
                     override fun onOfferRemoteDescription(localSessionDescription: SessionDescription) {
@@ -126,7 +127,7 @@ class WebRtcServiceController @Inject constructor(
                 },
                 webRtcAnsweringPartyListener = object : WebRtcAnsweringPartyListener {
                     override fun onError(error: String) {
-                        Timber.d("Error in answering party: $error")
+                        Timber.e("Error in answering party: $error")
                     }
 
                     override fun onSuccess(localSessionDescription: SessionDescription) {
@@ -143,7 +144,6 @@ class WebRtcServiceController @Inject constructor(
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onNext = {
-                            //todo firebase dependency move up
                             if (it is ChildEventAdded) {
                                 webRtcClient.addIceCandidate(it.data)
                             } else {
@@ -151,7 +151,7 @@ class WebRtcServiceController @Inject constructor(
                             }
                         },
                         onError = {
-                            Timber.e(it, "Error while listening for signals")
+                            handleCriticalException(it)
                         }
                 )
     }
@@ -160,11 +160,11 @@ class WebRtcServiceController @Inject constructor(
         disposables += firebaseIceCandidates.send(iceCandidate)
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
-                        onError = {
-                            Timber.e(it, "Error while sending message")
-                        },
                         onComplete = {
                             Timber.d("Ice message sent")
+                        },
+                        onError = {
+                            Timber.e(it, "Error while sending message")
                         }
                 )
     }
@@ -177,7 +177,7 @@ class WebRtcServiceController @Inject constructor(
                             Timber.d("Ice candidates successfully removed")
                         },
                         onError = {
-                            Timber.d("Error while removing ice candidates $it")
+                            Timber.e(it, "Error while removing ice candidates")
                         }
                 )
     }
@@ -199,19 +199,13 @@ class WebRtcServiceController @Inject constructor(
     }
 
     private fun listenForOffers() {
-        disposables += firebaseSignalingOffers.listen()
+        disposables += firebaseSignalingOffers.listenForNewOffersWithUuid()
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
-                        onNext = {
-                            val data = it.data
-                            if (data != null) {
-                                val senderUuid = it.data.senderUuid
-                                remoteUuid = senderUuid
-                                listenForIceCandidates(senderUuid)
-                                webRtcClient.handleRemoteOffer(it.data.toSessionDescription())
-                            } else {
-                                //todo
-                            }
+                        onNext = { (sessionDescription, remoteUuid) ->
+                            this.remoteUuid = remoteUuid
+                            listenForIceCandidates(remoteUuid)
+                            webRtcClient.handleRemoteOffer(sessionDescription)
                         },
                         onError = {
                             Timber.e(it, "Error while listening for offers")
@@ -233,21 +227,21 @@ class WebRtcServiceController @Inject constructor(
     }
 
     private fun listenForAnswers() {
-        disposables += firebaseSignalingAnswers.listen()
+        disposables += firebaseSignalingAnswers.listenForNewAnswers()
                 .compose(RxUtils.applyFlowableIoSchedulers())
                 .subscribeBy(
                         onNext = {
                             Timber.d("Next answer $it")
-                            val data = it.data
-                            if (data != null) {
-                                webRtcClient.handleRemoteAnswer(it.data.toSessionDescription())
-                            } else {
-                                //todo
-                            }
+                            webRtcClient.handleRemoteAnswer(it)
                         },
                         onError = {
                             Timber.e(it, "Error while listening for answers")
                         }
                 )
+    }
+
+    private fun handleCriticalException(throwable: Throwable) {
+        serviceListener?.criticalWebRTCServiceException(throwable)
+        getService()?.stop()
     }
 }
