@@ -1,6 +1,8 @@
 package co.netguru.chatroulette.webrtc.service
 
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Binder
 import android.os.IBinder
 import co.netguru.chatroulette.app.App
@@ -11,6 +13,16 @@ import javax.inject.Inject
 
 
 class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceController>(), WebRtcServiceFacade {
+
+    companion object {
+        fun startService(packageContext: Context) {
+            packageContext.startService(Intent(packageContext, WebRtcService::class.java))
+        }
+
+        fun bindService(context: Context, connection: ServiceConnection) {
+            context.bindService(Intent(context, WebRtcService::class.java), connection, 0)
+        }
+    }
 
     @Inject lateinit var webRtcServiceController: WebRtcServiceController
 

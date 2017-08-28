@@ -2,8 +2,6 @@ package co.netguru.chatroulette.feature.main.video
 
 import android.Manifest
 import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
 import android.content.ServiceConnection
 import android.media.AudioManager
 import android.os.Bundle
@@ -93,8 +91,6 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     }
 
     override fun attachService() {
-        val intent = Intent(activity, WebRtcService::class.java)
-        context.startService(intent)
         serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
                 onWebRtcServiceConnected((iBinder as (WebRtcService.LocalBinder)).service)
@@ -105,7 +101,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
                 onWebRtcServiceDisconnected()
             }
         }
-        context.applicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        startAndBindWebRTCService(serviceConnection)
     }
 
     override fun criticalWebRTCServiceException(throwable: Throwable) {
@@ -128,7 +124,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     private fun unbindService() {
         service?.let {
             it.detachServiceActionsListener()
-            context.applicationContext.unbindService(serviceConnection)
+            context.unbindService(serviceConnection)
             service = null
         }
     }
@@ -165,7 +161,6 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     private fun initAlreadyRunningConnection() {
         showCamViews()
-        val intent = Intent(activity, WebRtcService::class.java)
         serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
                 onWebRtcServiceConnected((iBinder as (WebRtcService.LocalBinder)).service)
@@ -176,7 +171,12 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
                 onWebRtcServiceDisconnected()
             }
         }
-        context.applicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        startAndBindWebRTCService(serviceConnection)
+    }
+
+    private fun startAndBindWebRTCService(serviceConnection: ServiceConnection) {
+        WebRtcService.startService(context)
+        WebRtcService.bindService(context, serviceConnection)
     }
 
     private fun checkPermissionsAndConnect() {
