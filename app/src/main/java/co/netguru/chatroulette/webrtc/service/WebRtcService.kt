@@ -1,16 +1,16 @@
 package co.netguru.chatroulette.webrtc.service
 
-import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import co.netguru.chatroulette.app.App
+import co.netguru.chatroulette.feature.base.service.BaseServiceWithFacade
 import org.webrtc.SurfaceViewRenderer
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class WebRtcService : Service() {
+class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceController>(), WebRtcServiceFacade {
 
     @Inject lateinit var webRtcServiceManager: WebRtcServiceController
 
@@ -19,10 +19,12 @@ class WebRtcService : Service() {
     override fun onBind(intent: Intent): IBinder = binder
 
     override fun onCreate() {
-        super.onCreate()
-        Timber.d("WebRtc service created")
         App.getApplicationComponent(this).webRtcServiceComponent().inject(this)
+        Timber.d("WebRtc service created")
+        super.onCreate()
     }
+
+    override fun retrieveController(): WebRtcServiceController = webRtcServiceManager
 
     override fun onDestroy() {
         super.onDestroy()
