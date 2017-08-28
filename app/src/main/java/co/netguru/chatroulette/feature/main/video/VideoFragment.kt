@@ -165,12 +165,14 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         service?.let {
             it.stopSelf()
             unbindService()
-            service = null
         }
     }
 
     private fun unbindService() {
-        context.applicationContext.unbindService(serviceConnection)
+        service?.let {
+            context.applicationContext.unbindService(serviceConnection)
+            service = null
+        }
     }
 
     override fun showCamViews() {
