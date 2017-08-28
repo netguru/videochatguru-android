@@ -282,9 +282,9 @@ class WebRtcClient(context: Context,
         }
     }
 
-    fun switchCamera() {
+    fun switchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler? = null) {
         singleThreadExecutor.execute {
-            videoCameraCapturer?.switchCamera(null)
+            videoCameraCapturer?.switchCamera(cameraSwitchHandler)
         }
     }
 
