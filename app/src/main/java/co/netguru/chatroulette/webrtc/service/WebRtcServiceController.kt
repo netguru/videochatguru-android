@@ -37,8 +37,16 @@ class WebRtcServiceController @Inject constructor(
     private var shouldCreateOffer = false
     private var isOfferingParty = false
 
-    init {
+    override fun attachService(service: WebRtcServiceFacade) {
+        super.attachService(service)
         loadIceServers()
+    }
+
+    override fun detachService() {
+        super.detachService()
+        disposables.dispose()
+        webRtcClient.detachViews()
+        webRtcClient.dispose()
     }
 
     fun offerDevice(deviceUuid: String) {
@@ -58,13 +66,6 @@ class WebRtcServiceController @Inject constructor(
 
     fun detachViews() {
         webRtcClient.detachViews()
-    }
-
-    fun destroy() {
-        disposables.dispose()
-        webRtcClient.detachViews()
-        webRtcClient.releasePeerConnection()
-        webRtcClient.dispose()
     }
 
     fun switchCamera() = webRtcClient.switchCamera()

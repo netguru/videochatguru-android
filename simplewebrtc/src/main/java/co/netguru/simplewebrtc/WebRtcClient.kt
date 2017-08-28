@@ -226,6 +226,7 @@ class WebRtcClient(context: Context,
 
     fun dispose() {
         singleThreadExecutor.execute {
+            releasePeerConnection()
             eglBase.release()
             audioSource.dispose()
             videoCameraCapturer?.dispose()
@@ -236,14 +237,12 @@ class WebRtcClient(context: Context,
     }
 
     /**
-     * If peer connection was initialized make sure that this method is called before [dispose]
+     * If peer connection was initialized  this method should close peer connection
      */
-    fun releasePeerConnection() {
+    private fun releasePeerConnection() {
         if (isPeerConnectionInitialized) {
-            singleThreadExecutor.execute {
-                peerConnection.close()
-                peerConnection.dispose()
-            }
+            peerConnection.close()
+            peerConnection.dispose()
         }
     }
 

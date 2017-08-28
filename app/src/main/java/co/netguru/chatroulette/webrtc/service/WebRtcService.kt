@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceController>(), WebRtcServiceFacade {
 
-    @Inject lateinit var webRtcServiceManager: WebRtcServiceController
+    @Inject lateinit var webRtcServiceController: WebRtcServiceController
 
     private val binder = LocalBinder()
 
@@ -24,45 +24,45 @@ class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceCo
         super.onCreate()
     }
 
-    override fun retrieveController(): WebRtcServiceController = webRtcServiceManager
+    override fun retrieveController(): WebRtcServiceController = webRtcServiceController
 
     override fun onDestroy() {
         super.onDestroy()
+        //todo remove
         Timber.d("WebRtc service destroyed")
-        webRtcServiceManager.destroy()
     }
 
     fun offerDevice(deviceUuid: String) {
-        webRtcServiceManager.offerDevice(deviceUuid)
+        webRtcServiceController.offerDevice(deviceUuid)
     }
 
     fun attachRemoteView(remoteView: SurfaceViewRenderer) {
-        webRtcServiceManager.attachRemoteView(remoteView)
+        webRtcServiceController.attachRemoteView(remoteView)
     }
 
     fun attachLocalView(localView: SurfaceViewRenderer) {
-        webRtcServiceManager.attachLocalView(localView)
+        webRtcServiceController.attachLocalView(localView)
     }
 
     fun detachViews() {
-        webRtcServiceManager.detachViews()
+        webRtcServiceController.detachViews()
     }
 
-    fun getRemoteUuid() = webRtcServiceManager.remoteUuid
+    fun getRemoteUuid() = webRtcServiceController.remoteUuid
 
-    fun switchCamera() = webRtcServiceManager.switchCamera()
+    fun switchCamera() = webRtcServiceController.switchCamera()
 
     fun enableCamera(isEnabled: Boolean) {
-        webRtcServiceManager.enableCamera(isEnabled)
+        webRtcServiceController.enableCamera(isEnabled)
     }
 
-    fun isCameraEnabled() = webRtcServiceManager.isCameraEnabled()
+    fun isCameraEnabled() = webRtcServiceController.isCameraEnabled()
 
     fun enableMicrophone(isEnabled: Boolean) {
-        webRtcServiceManager.enableMicrophone(isEnabled)
+        webRtcServiceController.enableMicrophone(isEnabled)
     }
 
-    fun isMicrophoneEnabled() = webRtcServiceManager.isMicrophoneEnabled()
+    fun isMicrophoneEnabled() = webRtcServiceController.isMicrophoneEnabled()
 
     inner class LocalBinder : Binder() {
         val service: WebRtcService
