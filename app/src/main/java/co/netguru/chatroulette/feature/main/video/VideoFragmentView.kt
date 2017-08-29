@@ -13,4 +13,6 @@ interface VideoFragmentView : MvpView {
     fun showNoOneAvailable()
     fun showLookingForPartnerMessage()
     fun showOtherPartyFinished()
+    fun showConnectedMsg()
+    fun showWillTryToRestartMsg()
 }

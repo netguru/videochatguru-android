@@ -6,31 +6,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/camView"
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/localVideoView"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/local_video_bottom_margin"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:visibility="gone"
+        />
+
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/remoteVideoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        >
-
-        <org.webrtc.SurfaceViewRenderer
-            android:id="@+id/localVideoView"
-            android:layout_width="200dp"
-            android:layout_height="100dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/local_video_bottom_margin"
-            android:layout_marginLeft="@dimen/margin_medium"
-            android:layout_marginRight="@dimen/margin_medium"/>
-
-        <org.webrtc.SurfaceViewRenderer
-            android:id="@+id/remoteVideoView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-
-    </RelativeLayout>
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/connectButton"

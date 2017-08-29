@@ -276,6 +276,11 @@ class WebRtcClient(context: Context,
         }
     }
 
+    /**
+     * Tries to start connection again, this should be called when connection state changes to
+     * [PeerConnection.IceConnectionState.DISCONNECTED] or [PeerConnection.IceConnectionState.FAILED]
+     * by one of the parties - preferably offering one.
+     */
     fun restart() {
         singleThreadExecutor.execute {
             offeringPartyHandler.createOffer(offerAnswerRestartConstraints)

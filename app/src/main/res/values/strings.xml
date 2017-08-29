@@ -9,4 +9,6 @@
     <string name="msg_other_party_finished">Other party finished the call</string>
     <string name="msg_permissions">Camera and audio access is needed for Chatroullete to function</string>
     <string name="action_settings">Settings</string>
+    <string name="msg_will_try_to_restart_msg">Connection with other party was lost, trying to reconnect…</string>
+    <string name="msg_connected_to_other_party">Connected to other party. Have fun!</string>
 </resources>

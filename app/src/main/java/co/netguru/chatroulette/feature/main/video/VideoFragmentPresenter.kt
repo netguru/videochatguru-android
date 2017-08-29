@@ -9,6 +9,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.disposables.Disposables
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import org.webrtc.PeerConnection
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -100,5 +101,20 @@ class VideoFragmentPresenter @Inject constructor(
             disconnect()
         }
 
+    }
+
+    fun connectionStateChange(iceConnectionState: PeerConnection.IceConnectionState) {
+        Timber.d("Ice connection state changed: $iceConnectionState")
+        when (iceConnectionState) {
+            PeerConnection.IceConnectionState.CONNECTED -> {
+                getView()?.showConnectedMsg()
+            }
+            PeerConnection.IceConnectionState.DISCONNECTED -> {
+                getView()?.showWillTryToRestartMsg()
+            }
+            else -> {
+                //no-op for now - could show or hide progress bars or messages on given event
+            }
+        }
     }
 }

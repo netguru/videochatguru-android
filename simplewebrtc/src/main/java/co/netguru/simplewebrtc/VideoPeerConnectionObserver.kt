@@ -17,6 +17,10 @@ internal class VideoPeerConnectionObserver(
         peerConnectionListener.onIceCandidate(iceCandidate)
     }
 
+    /**
+     * Describes connection state
+     * @see <a href="http://w3c.github.io/webrtc-pc/#rtciceconnectionstate-enum">http://w3c.github.io/webrtc-pc/#rtciceconnectionstate-enum</a>
+     */
     override fun onIceConnectionChange(iceConnectionState: PeerConnection.IceConnectionState) {
         super.onIceConnectionChange(iceConnectionState)
         peerConnectionListener.onIceConnectionChange(iceConnectionState)

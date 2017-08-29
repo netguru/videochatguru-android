@@ -20,6 +20,7 @@ import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
 import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener
 import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener
 import kotlinx.android.synthetic.main.fragment_video.*
+import org.webrtc.PeerConnection
 import timber.log.Timber
 
 
@@ -44,6 +45,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (buttonPanel.layoutParams as CoordinatorLayout.LayoutParams).behavior = MoveUpBehavior()
+        (localVideoView.layoutParams as CoordinatorLayout.LayoutParams).behavior = MoveUpBehavior()
         activity.volumeControlStream = AudioManager.STREAM_VOICE_CALL
 
         if (savedInstanceState?.getBoolean(KEY_IN_CHAT) == true) {
@@ -80,7 +82,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (camView.visibility == View.VISIBLE) {
+        if (remoteVideoView.visibility == View.VISIBLE) {
             outState.putBoolean(KEY_IN_CHAT, true)
         }
     }
@@ -110,6 +112,10 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         Timber.e(throwable, "Critical WebRTC service error")
     }
 
+    override fun connectionStateChange(iceConnectionState: PeerConnection.IceConnectionState) {
+        getPresenter().connectionStateChange(iceConnectionState)
+    }
+
     override fun connectTo(uuid: String) {
         service?.offerDevice(uuid)
     }
@@ -131,13 +137,15 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun showCamViews() {
         buttonPanel.visibility = View.VISIBLE
-        camView.visibility = View.VISIBLE
+        remoteVideoView.visibility = View.VISIBLE
+        localVideoView.visibility = View.VISIBLE
         connectButton.visibility = View.GONE
     }
 
     override fun showStartRouletteView() {
         buttonPanel.visibility = View.GONE
-        camView.visibility = View.GONE
+        remoteVideoView.visibility = View.GONE
+        localVideoView.visibility = View.GONE
         connectButton.visibility = View.VISIBLE
     }
 
@@ -157,6 +165,14 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun showOtherPartyFinished() {
         showSnackbarMessage(R.string.msg_other_party_finished, Snackbar.LENGTH_SHORT)
+    }
+
+    override fun showConnectedMsg() {
+        showSnackbarMessage(R.string.msg_connected_to_other_party, Snackbar.LENGTH_LONG)
+    }
+
+    override fun showWillTryToRestartMsg() {
+        showSnackbarMessage(R.string.msg_will_try_to_restart_msg, Snackbar.LENGTH_LONG)
     }
 
     private fun initAlreadyRunningConnection() {

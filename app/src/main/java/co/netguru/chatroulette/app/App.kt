@@ -39,7 +39,7 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             //Enables WebRTC Logging
-            WebRtcClient.enableSimpleWebRtcLogs(true)
+            //WebRtcClient.enableSimpleWebRtcLogs(true)
             //WebRtcClient.enableInternalLogs(Logging.Severity.LS_VERBOSE)
             Toast.makeText(this, "Uuid: ${App.CURRENT_DEVICE_UUID}", Toast.LENGTH_LONG).show()
         }

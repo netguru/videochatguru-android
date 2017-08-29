@@ -1,5 +1,7 @@
 package co.netguru.chatroulette.webrtc.service
 
+import android.os.Handler
+import android.os.Looper
 import co.netguru.chatroulette.common.extension.ChildEventAdded
 import co.netguru.chatroulette.common.util.RxUtils
 import co.netguru.chatroulette.data.firebase.FirebaseIceCandidates
@@ -31,6 +33,7 @@ class WebRtcServiceController @Inject constructor(
 
     var serviceListener: WebRtcServiceListener? = null
     var remoteUuid: String? = null
+    val mainThreadHandler = Handler(Looper.getMainLooper())
 
     private val disposables = CompositeDisposable()
 
@@ -103,10 +106,14 @@ class WebRtcServiceController @Inject constructor(
                         if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED && isOfferingParty) {
                             webRtcClient.restart()
                         }
+                        mainThreadHandler.post {
+                            serviceListener?.connectionStateChange(iceConnectionState)
+                        }
+
                     }
 
                     override fun onIceCandidate(iceCandidate: IceCandidate) {
-                        sendIceCandidates(iceCandidate)
+                        sendIceCandidate(iceCandidate)
                     }
 
                     override fun onIceCandidatesRemoved(iceCandidates: Array<IceCandidate>) {
@@ -156,7 +163,7 @@ class WebRtcServiceController @Inject constructor(
                 )
     }
 
-    private fun sendIceCandidates(iceCandidate: IceCandidate) {
+    private fun sendIceCandidate(iceCandidate: IceCandidate) {
         disposables += firebaseIceCandidates.send(iceCandidate)
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
@@ -193,7 +200,7 @@ class WebRtcServiceController @Inject constructor(
                             Timber.d("description set")
                         },
                         onError = {
-                            Timber.e(it, "Error occurred while setting description")
+                            handleCriticalException(it)
                         }
                 )
     }
@@ -208,7 +215,7 @@ class WebRtcServiceController @Inject constructor(
                             webRtcClient.handleRemoteOffer(sessionDescription)
                         },
                         onError = {
-                            Timber.e(it, "Error while listening for offers")
+                            handleCriticalException(it)
                         }
                 )
     }
@@ -221,7 +228,7 @@ class WebRtcServiceController @Inject constructor(
                 .compose(RxUtils.applyCompletableIoSchedulers())
                 .subscribeBy(
                         onError = {
-                            Timber.e(it, "Error occurred while sending answer")
+                            handleCriticalException(it)
                         }
                 )
     }
@@ -235,7 +242,7 @@ class WebRtcServiceController @Inject constructor(
                             webRtcClient.handleRemoteAnswer(it)
                         },
                         onError = {
-                            Timber.e(it, "Error while listening for answers")
+                            handleCriticalException(it)
                         }
                 )
     }
