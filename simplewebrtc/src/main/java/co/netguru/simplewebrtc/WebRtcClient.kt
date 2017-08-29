@@ -66,31 +66,31 @@ class WebRtcClient(context: Context,
     private val eglBase = EglBase.create()
 
     private val audioConstraints by lazy {
-        val audioConstraints = MediaConstraints()
-        audioConstraints.mandatory.add(AudioMediaConstraints.DISABLE_AUDIO_PROCESSING.toKeyValuePair(true))
-        audioConstraints
+        MediaConstraints().apply {
+            mandatory.add(AudioMediaConstraints.DISABLE_AUDIO_PROCESSING.toKeyValuePair(true))
+        }
     }
 
     private val offerAnswerConstraints by lazy {
-        val offerAnswerConstraints = MediaConstraints()
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
-        offerAnswerConstraints
+        MediaConstraints().apply {
+            mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
+            mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
+        }
     }
 
     private val offerAnswerRestartConstraints by lazy {
-        val offerAnswerConstraints = MediaConstraints()
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.ICE_RESTART.toKeyValuePair(true))
-        offerAnswerConstraints
+        MediaConstraints().apply {
+            mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
+            mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
+            mandatory.add(OfferAnswerConstraints.ICE_RESTART.toKeyValuePair(true))
+        }
     }
 
     private val peerConnectionConstraints by lazy {
-        val peerConnectionConstraints = MediaConstraints()
-        peerConnectionConstraints.mandatory.add(PeerConnectionConstraints.DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT.toKeyValuePair(true))
-        peerConnectionConstraints.mandatory.add(PeerConnectionConstraints.GOOG_CPU_OVERUSE_DETECTION.toKeyValuePair(true))
-        peerConnectionConstraints
+        MediaConstraints().apply {
+            mandatory.add(PeerConnectionConstraints.DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT.toKeyValuePair(true))
+            mandatory.add(PeerConnectionConstraints.GOOG_CPU_OVERUSE_DETECTION.toKeyValuePair(true))
+        }
     }
 
     private val videoCameraCapturer = WebRtcUtils.createCameraCapturerWithFrontAsDefault(context)
