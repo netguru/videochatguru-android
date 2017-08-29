@@ -3,7 +3,7 @@ package co.netguru.chatroulette.data.model
 import org.webrtc.PeerConnection
 
 
-@Suppress("MemberVisibilityCanPrivate")
+@Suppress("MemberVisibilityCanPrivate")//Firebase model - members cant be private
 data class IceServerFirebase(val uri: String? = null, val username: String? = null, val password: String? = null) {
 
     fun toIceServer(): PeerConnection.IceServer {
