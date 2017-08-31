@@ -6,8 +6,10 @@ import android.os.Looper
 import co.netguru.simplewebrtc.constraints.AudioMediaConstraints
 import co.netguru.simplewebrtc.constraints.OfferAnswerConstraints
 import co.netguru.simplewebrtc.constraints.PeerConnectionConstraints
+import co.netguru.simplewebrtc.constraints.WebRtcConstraints
 import co.netguru.simplewebrtc.util.Logger
 import co.netguru.simplewebrtc.util.WebRtcUtils
+import co.netguru.simplewebrtc.util.addConstraints
 import org.webrtc.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
@@ -16,7 +18,11 @@ class WebRtcClient(context: Context,
                    private val localVideoWidth: Int = 1280,
                    private val localVideoHeight: Int = 720,
                    private val localVideoFps: Int = 24,
-                   hardwareAcceleration: Boolean = true) : RemoteVideoListener {
+                   hardwareAcceleration: Boolean = true,
+                   audioConstraintBooleans: WebRtcConstraints<AudioMediaConstraints.Booleans, Boolean>? = null,
+                   audioConstraintIntegers: WebRtcConstraints<AudioMediaConstraints.Integers, Int>? = null,
+                   peerConnectionConstraints: WebRtcConstraints<PeerConnectionConstraints, Boolean>? = null,
+                   offerAnswerConstraints: WebRtcConstraints<OfferAnswerConstraints, Boolean>? = null) : RemoteVideoListener {
 
     companion object {
 
@@ -65,32 +71,28 @@ class WebRtcClient(context: Context,
 
     private val eglBase = EglBase.create()
 
-    private val audioConstraints by lazy {
-        val audioConstraints = MediaConstraints()
-        audioConstraints.mandatory.add(AudioMediaConstraints.DISABLE_AUDIO_PROCESSING.toKeyValuePair(true))
-        audioConstraints
+    private val audioBooleanConstraints by lazy {
+        WebRtcConstraints<AudioMediaConstraints.Booleans, Boolean>().apply {
+            addMandatoryConstraint(AudioMediaConstraints.Booleans.DISABLE_AUDIO_PROCESSING, true)
+        }
+    }
+
+    private val audioIntegerConstraints by lazy {
+        WebRtcConstraints<AudioMediaConstraints.Integers, Int>()
     }
 
     private val offerAnswerConstraints by lazy {
-        val offerAnswerConstraints = MediaConstraints()
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
-        offerAnswerConstraints
-    }
-
-    private val offerAnswerRestartConstraints by lazy {
-        val offerAnswerConstraints = MediaConstraints()
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO.toKeyValuePair(true))
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO.toKeyValuePair(true))
-        offerAnswerConstraints.mandatory.add(OfferAnswerConstraints.ICE_RESTART.toKeyValuePair(true))
-        offerAnswerConstraints
+        WebRtcConstraints<OfferAnswerConstraints, Boolean>().apply {
+            addMandatoryConstraint(OfferAnswerConstraints.OFFER_TO_RECEIVE_AUDIO, true)
+            addMandatoryConstraint(OfferAnswerConstraints.OFFER_TO_RECEIVE_VIDEO, true)
+        }
     }
 
     private val peerConnectionConstraints by lazy {
-        val peerConnectionConstraints = MediaConstraints()
-        peerConnectionConstraints.mandatory.add(PeerConnectionConstraints.DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT.toKeyValuePair(true))
-        peerConnectionConstraints.mandatory.add(PeerConnectionConstraints.GOOG_CPU_OVERUSE_DETECTION.toKeyValuePair(true))
-        peerConnectionConstraints
+        WebRtcConstraints<PeerConnectionConstraints, Boolean>().apply {
+            addMandatoryConstraint(PeerConnectionConstraints.DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT, true)
+            addMandatoryConstraint(PeerConnectionConstraints.GOOG_CPU_OVERUSE_DETECTION, true)
+        }
     }
 
     private val videoCameraCapturer = WebRtcUtils.createCameraCapturerWithFrontAsDefault(context)
@@ -125,6 +127,18 @@ class WebRtcClient(context: Context,
         if (!PeerConnectionFactory.initializeAndroidGlobals(context.applicationContext, INITIALIZE_AUDIO, INITIALIZE_VIDEO, hardwareAcceleration)) {
             error("WebRtc failed to initializeAndroidGlobals")
         }
+        audioConstraintBooleans?.let {
+            audioBooleanConstraints += it
+        }
+        audioConstraintIntegers?.let {
+            audioIntegerConstraints += it
+        }
+        peerConnectionConstraints?.let {
+            this.peerConnectionConstraints += it
+        }
+        offerAnswerConstraints?.let {
+            this.offerAnswerConstraints += it
+        }
         singleThreadExecutor.execute {
             initialize()
         }
@@ -140,7 +154,7 @@ class WebRtcClient(context: Context,
             enableVideo(cameraEnabled, videoCameraCapturer)
         }
 
-        audioSource = peerConnectionFactory.createAudioSource(audioConstraints)
+        audioSource = peerConnectionFactory.createAudioSource(getAudioMediaConstraints())
         localAudioTrack = peerConnectionFactory.createAudioTrack(getCounterStringValueAndIncrement(), audioSource)
     }
 
@@ -152,7 +166,7 @@ class WebRtcClient(context: Context,
         singleThreadExecutor.execute {
             this.peerConnectionListener = peerConnectionListener
             val rtcConfig = PeerConnection.RTCConfiguration(iceServers)
-            peerConnection = peerConnectionFactory.createPeerConnection(rtcConfig, peerConnectionConstraints, videoPeerConnectionListener)
+            peerConnection = peerConnectionFactory.createPeerConnection(rtcConfig, getPeerConnectionMediaConstraints(), videoPeerConnectionListener)
 
             val stream = peerConnectionFactory.createLocalMediaStream(getCounterStringValueAndIncrement())
 
@@ -161,7 +175,7 @@ class WebRtcClient(context: Context,
 
             peerConnection.addStream(stream)
             offeringPartyHandler = WebRtcOfferingPartyHandler(peerConnection, webRtcOfferingActionListener)
-            answeringPartyHandler = WebRtcAnsweringPartyHandler(peerConnection, offerAnswerConstraints, webRtcAnsweringPartyListener)
+            answeringPartyHandler = WebRtcAnsweringPartyHandler(peerConnection, getOfferAnswerConstraints(), webRtcAnsweringPartyListener)
         }
     }
 
@@ -248,7 +262,7 @@ class WebRtcClient(context: Context,
 
     fun createOffer() {
         singleThreadExecutor.execute {
-            offeringPartyHandler.createOffer(offerAnswerConstraints)
+            offeringPartyHandler.createOffer(getOfferAnswerConstraints())
         }
     }
 
@@ -283,7 +297,7 @@ class WebRtcClient(context: Context,
      */
     fun restart() {
         singleThreadExecutor.execute {
-            offeringPartyHandler.createOffer(offerAnswerRestartConstraints)
+            offeringPartyHandler.createOffer(getOfferAnswerRestartConstraints())
         }
     }
 
@@ -301,4 +315,20 @@ class WebRtcClient(context: Context,
     }
 
     private fun getCounterStringValueAndIncrement() = counter.getAndIncrement().toString()
+
+    private fun getAudioMediaConstraints() = MediaConstraints().apply {
+        addConstraints(audioBooleanConstraints, audioIntegerConstraints)
+    }
+
+    private fun getPeerConnectionMediaConstraints() = MediaConstraints().apply {
+        addConstraints(peerConnectionConstraints)
+    }
+
+    private fun getOfferAnswerConstraints() = MediaConstraints().apply {
+        addConstraints(offerAnswerConstraints)
+    }
+
+    private fun getOfferAnswerRestartConstraints() = getOfferAnswerConstraints().apply {
+        mandatory.add(OfferAnswerConstraints.ICE_RESTART.toKeyValuePair(true))
+    }
 }
