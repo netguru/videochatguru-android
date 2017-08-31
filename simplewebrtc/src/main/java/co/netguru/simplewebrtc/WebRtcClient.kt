@@ -25,29 +25,8 @@ class WebRtcClient(context: Context,
                    offerAnswerConstraints: WebRtcConstraints<OfferAnswerConstraints, Boolean>? = null) : RemoteVideoListener {
 
     companion object {
-
-        init {
-            Logging.enableLogToDebugOutput(Logging.Severity.LS_NONE)
-        }
-
         private const val INITIALIZE_AUDIO = true
         private const val INITIALIZE_VIDEO = true
-
-        /**
-         * Enable additional logging - this might be helpful while resolving problems and should be used only in debug builds.
-         * By default logs are turned off.
-         */
-        fun enableSimpleWebRtcLogs(enabled: Boolean) {
-            Logger.loggingEnabled = enabled
-        }
-
-        /**
-         * Enable webrtc internal logging - this might be helpful while resolving problems and should be used only in debug builds.
-         * By default logs are turned off.
-         */
-        fun enableInternalLogs(severity: Logging.Severity) {
-            Logging.enableLogToDebugOutput(severity)
-        }
     }
 
     private val counter = AtomicInteger(0)
