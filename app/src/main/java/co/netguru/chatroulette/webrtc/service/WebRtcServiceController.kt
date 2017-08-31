@@ -152,9 +152,9 @@ class WebRtcServiceController @Inject constructor(
                 .subscribeBy(
                         onNext = {
                             if (it is ChildEventAdded) {
-                                webRtcClient.addIceCandidate(it.data)
+                                webRtcClient.addRemoteIceCandidate(it.data)
                             } else {
-                                webRtcClient.removeIceCandidate(arrayOf(it.data))
+                                webRtcClient.removeRemoteIceCandidate(arrayOf(it.data))
                             }
                         },
                         onError = {

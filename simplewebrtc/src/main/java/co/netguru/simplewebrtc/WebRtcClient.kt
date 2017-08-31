@@ -7,6 +7,7 @@ import co.netguru.simplewebrtc.constraints.AudioMediaConstraints
 import co.netguru.simplewebrtc.constraints.OfferAnswerConstraints
 import co.netguru.simplewebrtc.constraints.PeerConnectionConstraints
 import co.netguru.simplewebrtc.constraints.WebRtcConstraints
+import co.netguru.simplewebrtc.util.Logger
 import co.netguru.simplewebrtc.util.WebRtcUtils
 import co.netguru.simplewebrtc.util.addConstraints
 import org.webrtc.*
@@ -26,6 +27,7 @@ class WebRtcClient(context: Context,
     companion object {
         private const val INITIALIZE_AUDIO = true
         private const val INITIALIZE_VIDEO = true
+        private val TAG = WebRtcClient::class.java.simpleName
     }
 
     private val counter = AtomicInteger(0)
@@ -135,22 +137,29 @@ class WebRtcClient(context: Context,
         localAudioTrack = peerConnectionFactory.createAudioTrack(getCounterStringValueAndIncrement(), audioSource)
     }
 
+    /**
+     * Initialize the peer connection
+     * @param iceServers list of interactive connectivity establishment servers used for traversal or relaying media (Stun and Turn)
+     * @param peerConnectionListener listener for interactive connectivity establishment actions
+     * @param webRtcOfferingActionListener offering party actions listener
+     * @param webRtcAnsweringPartyListener answering party actions listener
+     */
     fun initializePeerConnection(iceServers: List<PeerConnection.IceServer>,
                                  peerConnectionListener: PeerConnectionListener,
                                  webRtcOfferingActionListener: WebRtcOfferingActionListener,
                                  webRtcAnsweringPartyListener: WebRtcAnsweringPartyListener) {
-        isPeerConnectionInitialized = true
         singleThreadExecutor.execute {
             this.peerConnectionListener = peerConnectionListener
             val rtcConfig = PeerConnection.RTCConfiguration(iceServers)
             peerConnection = peerConnectionFactory.createPeerConnection(rtcConfig, getPeerConnectionMediaConstraints(), videoPeerConnectionListener)
+            isPeerConnectionInitialized = true
 
-            val stream = peerConnectionFactory.createLocalMediaStream(getCounterStringValueAndIncrement())
+            val localMediaStream = peerConnectionFactory.createLocalMediaStream(getCounterStringValueAndIncrement())
 
-            stream.addTrack(localAudioTrack)
-            localVideoTrack?.let { stream.addTrack(it) }
+            localMediaStream.addTrack(localAudioTrack)
+            localVideoTrack?.let { localMediaStream.addTrack(it) }
 
-            peerConnection.addStream(stream)
+            peerConnection.addStream(localMediaStream)
             offeringPartyHandler = WebRtcOfferingPartyHandler(peerConnection, webRtcOfferingActionListener)
             answeringPartyHandler = WebRtcAnsweringPartyHandler(peerConnection, getOfferAnswerConstraints(), webRtcAnsweringPartyListener)
         }
@@ -171,6 +180,9 @@ class WebRtcClient(context: Context,
         }
     }
 
+    /**
+     * Attach [SurfaceViewRenderer] to webrtc client used for rendering remote view.
+     */
     fun attachRemoteView(remoteView: SurfaceViewRenderer) {
         mainThreadHandler.run {
             remoteView.init(eglBase.eglBaseContext, null)
@@ -182,6 +194,9 @@ class WebRtcClient(context: Context,
         }
     }
 
+    /**
+     * Attach [SurfaceViewRenderer] to webrtc client used for rendering local view.
+     */
     fun attachLocalView(localView: SurfaceViewRenderer) {
         mainThreadHandler.run {
             localView.init(eglBase.eglBaseContext, null)
@@ -194,6 +209,9 @@ class WebRtcClient(context: Context,
 
     }
 
+    /**
+     * Detach all [SurfaceViewRenderer]'s from webrtc client.
+     */
     fun detachViews() {
         mainThreadHandler.run {
             remoteView?.release()
@@ -215,6 +233,9 @@ class WebRtcClient(context: Context,
         }
     }
 
+    /**
+     * Call this method after you finish using this WebRtcClient instance.
+     */
     fun dispose() {
         singleThreadExecutor.execute {
             if (isPeerConnectionInitialized) {
@@ -230,31 +251,47 @@ class WebRtcClient(context: Context,
         singleThreadExecutor.shutdown()
     }
 
+    /**
+     * Orders webrtc client to create offer for remote party. Offer will be returned in [WebRtcOfferingActionListener] callback
+     */
     fun createOffer() {
         singleThreadExecutor.execute {
             offeringPartyHandler.createOffer(getOfferAnswerConstraints())
         }
     }
 
+    /**
+     * Handles received remote answer to our offer.
+     */
     fun handleRemoteAnswer(remoteSessionDescription: SessionDescription) {
         singleThreadExecutor.execute {
             offeringPartyHandler.handleRemoteAnswer(remoteSessionDescription)
         }
     }
 
+    /**
+     * Handles received remote offer. This will result in producing answer which will be returned in
+     * [WebRtcAnsweringPartyListener] callback.
+     */
     fun handleRemoteOffer(remoteSessionDescription: SessionDescription) {
         singleThreadExecutor.execute {
             answeringPartyHandler.handleRemoteOffer(remoteSessionDescription)
         }
     }
 
-    fun addIceCandidate(iceCandidate: IceCandidate) {
+    /**
+     * Adds ice candidate from remote party to webrtc client
+     */
+    fun addRemoteIceCandidate(iceCandidate: IceCandidate) {
         singleThreadExecutor.execute {
             peerConnection.addIceCandidate(iceCandidate)
         }
     }
 
-    fun removeIceCandidate(iceCandidates: Array<IceCandidate>) {
+    /**
+     * Removes ice candidates
+     */
+    fun removeRemoteIceCandidate(iceCandidates: Array<IceCandidate>) {
         singleThreadExecutor.execute {
             peerConnection.removeIceCandidates(iceCandidates)
         }
@@ -271,6 +308,10 @@ class WebRtcClient(context: Context,
         }
     }
 
+    /**
+     * Switches the camera to other if there is any available. By default front camera is used.
+     * @param cameraSwitchHandler allows listening for switch camera event
+     */
     fun switchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler? = null) {
         singleThreadExecutor.execute {
             videoCameraCapturer?.switchCamera(cameraSwitchHandler)
@@ -300,5 +341,18 @@ class WebRtcClient(context: Context,
 
     private fun getOfferAnswerRestartConstraints() = getOfferAnswerConstraints().apply {
         mandatory.add(OfferAnswerConstraints.ICE_RESTART.toKeyValuePair(true))
+    }
+
+    /**
+     * Safety net in case the owner of an object forgets to call its explicit termination method.
+     * @see <a href="https://kotlinlang.org/docs/reference/java-interop.html#finalize">
+     *     https://kotlinlang.org/docs/reference/java-interop.html#finalize</a>
+     */
+    protected fun finalize() {
+        if (!singleThreadExecutor.isShutdown) {
+            Logger.e(TAG, "Dispose method wasn't called")
+            dispose()
+        }
+
     }
 }
