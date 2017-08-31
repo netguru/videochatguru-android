@@ -184,7 +184,7 @@ class WebRtcClient(context: Context,
      * Attach [SurfaceViewRenderer] to webrtc client used for rendering remote view.
      */
     fun attachRemoteView(remoteView: SurfaceViewRenderer) {
-        mainThreadHandler.run {
+        mainThreadHandler.post {
             remoteView.init(eglBase.eglBaseContext, null)
             this@WebRtcClient.remoteView = remoteView
             singleThreadExecutor.execute {
@@ -198,7 +198,7 @@ class WebRtcClient(context: Context,
      * Attach [SurfaceViewRenderer] to webrtc client used for rendering local view.
      */
     fun attachLocalView(localView: SurfaceViewRenderer) {
-        mainThreadHandler.run {
+        mainThreadHandler.post {
             localView.init(eglBase.eglBaseContext, null)
             this@WebRtcClient.localView = localView
             singleThreadExecutor.execute {
@@ -209,9 +209,11 @@ class WebRtcClient(context: Context,
 
     }
 
-    fun detachLocalView() = mainThreadHandler.run {
-        localView?.release()
-        localView = null
+    fun detachLocalView() {
+        mainThreadHandler.post {
+            localView?.release()
+            localView = null
+        }
         singleThreadExecutor.execute {
             localVideoRenderer?.let {
                 localVideoTrack?.removeRenderer(it)
@@ -221,9 +223,11 @@ class WebRtcClient(context: Context,
         }
     }
 
-    fun detachRemoteView() = mainThreadHandler.run {
-        remoteView?.release()
-        remoteView = null
+    fun detachRemoteView() {
+        mainThreadHandler.post {
+            remoteView?.release()
+            remoteView = null
+        }
         singleThreadExecutor.execute {
             remoteVideoRenderer?.let {
                 remoteVideoTrack?.removeRenderer(it)
