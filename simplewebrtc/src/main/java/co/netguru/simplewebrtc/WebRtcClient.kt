@@ -209,28 +209,36 @@ class WebRtcClient(context: Context,
 
     }
 
+    fun detachLocalView() = mainThreadHandler.run {
+        localView?.release()
+        localView = null
+        singleThreadExecutor.execute {
+            localVideoRenderer?.let {
+                localVideoTrack?.removeRenderer(it)
+                it.dispose()
+                localVideoRenderer = null
+            }
+        }
+    }
+
+    fun detachRemoteView() = mainThreadHandler.run {
+        remoteView?.release()
+        remoteView = null
+        singleThreadExecutor.execute {
+            remoteVideoRenderer?.let {
+                remoteVideoTrack?.removeRenderer(it)
+                it.dispose()
+                remoteVideoRenderer = null
+            }
+        }
+    }
+
     /**
      * Detach all [SurfaceViewRenderer]'s from webrtc client.
      */
     fun detachViews() {
-        mainThreadHandler.run {
-            remoteView?.release()
-            remoteView = null
-            localView?.release()
-            localView = null
-            singleThreadExecutor.execute {
-                remoteVideoRenderer?.let {
-                    remoteVideoTrack?.removeRenderer(it)
-                    it.dispose()
-                    remoteVideoRenderer = null
-                }
-                localVideoRenderer?.let {
-                    localVideoTrack?.removeRenderer(it)
-                    it.dispose()
-                    localVideoRenderer = null
-                }
-            }
-        }
+        detachLocalView()
+        detachRemoteView()
     }
 
     /**
