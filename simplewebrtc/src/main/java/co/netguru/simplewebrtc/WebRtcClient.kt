@@ -7,7 +7,6 @@ import co.netguru.simplewebrtc.constraints.AudioMediaConstraints
 import co.netguru.simplewebrtc.constraints.OfferAnswerConstraints
 import co.netguru.simplewebrtc.constraints.PeerConnectionConstraints
 import co.netguru.simplewebrtc.constraints.WebRtcConstraints
-import co.netguru.simplewebrtc.util.Logger
 import co.netguru.simplewebrtc.util.WebRtcUtils
 import co.netguru.simplewebrtc.util.addConstraints
 import org.webrtc.*
@@ -92,12 +91,11 @@ class WebRtcClient(context: Context,
         }
 
     private var isPeerConnectionInitialized = false
+    private lateinit var peerConnection: PeerConnection
 
     private lateinit var peerConnectionListener: PeerConnectionListener
 
     private val videoPeerConnectionListener by lazy { VideoPeerConnectionObserver(peerConnectionListener, this) }
-
-    private lateinit var peerConnection: PeerConnection
 
     private lateinit var offeringPartyHandler: WebRtcOfferingPartyHandler
     private lateinit var answeringPartyHandler: WebRtcAnsweringPartyHandler
@@ -219,7 +217,10 @@ class WebRtcClient(context: Context,
 
     fun dispose() {
         singleThreadExecutor.execute {
-            releasePeerConnection()
+            if (isPeerConnectionInitialized) {
+                peerConnection.close()
+                peerConnection.dispose()
+            }
             eglBase.release()
             audioSource.dispose()
             videoCameraCapturer?.dispose()
@@ -227,16 +228,6 @@ class WebRtcClient(context: Context,
             peerConnectionFactory.dispose()
         }
         singleThreadExecutor.shutdown()
-    }
-
-    /**
-     * If peer connection was initialized  this method should close peer connection
-     */
-    private fun releasePeerConnection() {
-        if (isPeerConnectionInitialized) {
-            peerConnection.close()
-            peerConnection.dispose()
-        }
     }
 
     fun createOffer() {

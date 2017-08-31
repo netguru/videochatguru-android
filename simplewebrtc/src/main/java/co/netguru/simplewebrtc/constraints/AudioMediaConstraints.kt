@@ -6,7 +6,7 @@ package co.netguru.simplewebrtc.constraints
  * @see <a href="https://chromium.googlesource.com/external/webrtc/+/e33c5d918a213202321bde751226c4949644fe5e/webrtc/api/mediaconstraintsinterface.cc">
  *     Available constraints in media constraints interface implementation</a>
  */
-class AudioMediaConstraints {
+sealed class AudioMediaConstraints {
     enum class Booleans(override val constraintString: String) : WebRtcConstraint<Boolean> {
         DISABLE_AUDIO_PROCESSING("echoCancellation"),
         ECHO_CANCELLATION("googEchoCancellation"),
