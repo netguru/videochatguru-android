@@ -3,7 +3,7 @@ package co.netguru.simplewebrtc.constraints
 import org.webrtc.MediaConstraints
 
 
-interface WebRtcConstraint<T> {
+interface WebRtcConstraint<in T> {
 
     val constraintString: String
 
