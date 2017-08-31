@@ -3,10 +3,9 @@ package co.netguru.simplewebrtc.constraints
 import org.webrtc.MediaConstraints
 
 
-internal interface WebRtcConstraint {
+interface WebRtcConstraint<T> {
 
     val constraintString: String
 
-    fun toKeyValuePair(enabled: Boolean) = MediaConstraints.KeyValuePair(constraintString, enabled.toString())
-
+    fun toKeyValuePair(value: T) = MediaConstraints.KeyValuePair(constraintString, value.toString())
 }

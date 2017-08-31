@@ -6,7 +6,7 @@ package co.netguru.simplewebrtc.constraints
  * @see <a href="https://chromium.googlesource.com/external/webrtc/+/e33c5d918a213202321bde751226c4949644fe5e/webrtc/api/mediaconstraintsinterface.cc">
  *     Available constraints in media constraints interface implementation</a>
  */
-internal enum class OfferAnswerConstraints(override val constraintString: String) : WebRtcConstraint {
+enum class OfferAnswerConstraints(override val constraintString: String) : WebRtcConstraint<Boolean> {
 
     OFFER_TO_RECEIVE_AUDIO("OfferToReceiveAudio"),
     OFFER_TO_RECEIVE_VIDEO("OfferToReceiveVideo"),
@@ -21,6 +21,10 @@ internal enum class OfferAnswerConstraints(override val constraintString: String
     /**
      * Tries to restart connection after it was in failed or disconnected state
      */
-    ICE_RESTART("IceRestart")
+    ICE_RESTART("IceRestart"),
+    /**
+     * Google specific constraint for BUNDLE enable/disable.
+     */
+    GOOG_USE_RTP_MUX("googUseRtpMUX")
 
 }
