@@ -8,9 +8,6 @@ data class IceCandidateFirebase(val sdpMLineIndex: Int? = null, val sdpMid: Stri
     companion object {
         fun createFromIceCandidate(iceCandidate: IceCandidate): IceCandidateFirebase =
                 IceCandidateFirebase(sdpMLineIndex = iceCandidate.sdpMLineIndex, sdpMid = iceCandidate.sdpMid, sdp = iceCandidate.sdp)
-
-        fun createFromIceCandidates(iceCandidates: Array<IceCandidate>): List<IceCandidateFirebase> =
-                iceCandidates.map { createFromIceCandidate(it) }
     }
 
     fun toIceCandidate() = IceCandidate(sdpMid, sdpMLineIndex ?: -1, sdp)

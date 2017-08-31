@@ -6,9 +6,7 @@ class WebRtcConstraints<T : WebRtcConstraint<E>, E> {
     private val mandatory: MutableMap<WebRtcConstraint<E>, E> = mutableMapOf()
     private val optional: MutableMap<WebRtcConstraint<E>, E> = mutableMapOf()
 
-    operator fun plusAssign(other: WebRtcConstraints<T, E>) {
-        addAll(other)
-    }
+    operator fun plusAssign(other: WebRtcConstraints<T, E>) = addAll(other)
 
     fun addMandatoryConstraint(constraint: T, value: E) {
         mandatory.put(constraint, value)

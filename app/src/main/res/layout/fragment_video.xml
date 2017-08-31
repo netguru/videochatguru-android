@@ -48,8 +48,8 @@
             android:layout_height="@dimen/button_panel_button_width_height"
             android:layout_margin="@dimen/margin_small"
             android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_call_end_white_24dp"
-            />
+            android:contentDescription="@string/desc_hangup"
+            android:src="@drawable/ic_call_end_white_24dp"/>
 
         <ImageButton
             android:id="@+id/switchCameraButton"
@@ -57,8 +57,8 @@
             android:layout_height="@dimen/button_panel_button_width_height"
             android:layout_margin="@dimen/margin_small"
             android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_switch_video_white_24dp"
-            />
+            android:contentDescription="@string/desc_switch_camera"
+            android:src="@drawable/ic_switch_video_white_24dp"/>
 
         <ToggleButton
             android:id="@+id/microphoneEnabledToggle"
@@ -66,7 +66,8 @@
             android:layout_width="@dimen/button_panel_button_width_height"
             android:layout_height="@dimen/button_panel_button_width_height"
             android:layout_margin="@dimen/margin_small"
-            android:button="@drawable/ic_microphone_toggle"/>
+            android:button="@drawable/ic_microphone_toggle"
+            android:contentDescription="@string/desc_toggle_microphone"/>
 
         <ToggleButton
             android:id="@+id/cameraEnabledToggle"
@@ -75,7 +76,8 @@
             android:layout_height="@dimen/button_panel_button_width_height"
             android:layout_margin="@dimen/margin_small"
             android:background="?selectableItemBackgroundBorderless"
-            android:button="@drawable/ic_videocam_on_off_toggle"/>
+            android:button="@drawable/ic_videocam_on_off_toggle"
+            android:contentDescription="@string/desc_toggle_camera"/>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

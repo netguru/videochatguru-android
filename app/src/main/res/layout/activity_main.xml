@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:padding="@dimen/margin_large"
-        android:src="@drawable/ic_videocam_white_72dp"/>
+        android:src="@drawable/ic_videocam_white_72dp"
+        tools:ignore="ContentDescription"/>
 
     <TextView
         style="@style/Base.TextAppearance.AppCompat.Large"

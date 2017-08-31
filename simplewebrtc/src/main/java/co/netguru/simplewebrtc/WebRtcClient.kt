@@ -318,6 +318,20 @@ class WebRtcClient(context: Context,
         }
     }
 
+    /**
+     * Safety net in case the owner of an object forgets to call its explicit termination method.
+     * @see <a href="https://kotlinlang.org/docs/reference/java-interop.html#finalize">
+     *     https://kotlinlang.org/docs/reference/java-interop.html#finalize</a>
+     */
+    @Suppress("unused", "ProtectedInFinal")
+    protected fun finalize() {
+        if (!singleThreadExecutor.isShutdown) {
+            Logger.e(TAG, "Dispose method wasn't called")
+            dispose()
+        }
+
+    }
+
     private fun enableVideo(isEnabled: Boolean, videoCapturer: CameraVideoCapturer) {
         if (isEnabled)
             videoCapturer.startCapture(localVideoWidth, localVideoHeight, localVideoFps)
@@ -341,18 +355,5 @@ class WebRtcClient(context: Context,
 
     private fun getOfferAnswerRestartConstraints() = getOfferAnswerConstraints().apply {
         mandatory.add(OfferAnswerConstraints.ICE_RESTART.toKeyValuePair(true))
-    }
-
-    /**
-     * Safety net in case the owner of an object forgets to call its explicit termination method.
-     * @see <a href="https://kotlinlang.org/docs/reference/java-interop.html#finalize">
-     *     https://kotlinlang.org/docs/reference/java-interop.html#finalize</a>
-     */
-    protected fun finalize() {
-        if (!singleThreadExecutor.isShutdown) {
-            Logger.e(TAG, "Dispose method wasn't called")
-            dispose()
-        }
-
     }
 }

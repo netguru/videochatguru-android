@@ -7,8 +7,8 @@ ext {
                     buildStatus  : System.getenv('BITRISE_BUILD_STATUS'),
                     sourceDir    : System.getenv('BITRISE_SOURCE_DIR'),
                     deployDir    : System.getenv('BITRISE_DEPLOY_DIR'),
-                    isCi         : "true".equals(System.getenv('CI')),
-                    isPr         : "true".equals(System.getenv('PR')),
+                    isCi         : "true" == System.getenv('CI'),
+                    isPr         : "true" == System.getenv('PR'),
             ],
             // Bitrise.io - only
             io : [

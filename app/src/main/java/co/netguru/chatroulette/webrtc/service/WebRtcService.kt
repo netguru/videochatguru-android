@@ -38,9 +38,7 @@ class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceCo
 
     override fun retrieveController(): WebRtcServiceController = webRtcServiceController
 
-    override fun stop() {
-        stopSelf()
-    }
+    override fun stop() = stopSelf()
 
     fun attachServiceActionsListener(webRtcServiceListener: WebRtcServiceListener) {
         webRtcServiceController.serviceListener = webRtcServiceListener
