@@ -93,9 +93,10 @@ You're more than welcome to contribute or report an issue in case of any problem
  - enables zipAlign, shrinkResources
  - non-debuggable
  
-### Build properties
-<!-- List all build properties that have to be supplied, including secrets. Describe the method of supplying them, both on local builds and CI -->
-
-| Property         | External property name | Environment variable |
-|------------------|------------------------|----------------------|
-| HockeyApp App ID | HockeyAppId            | HOCKEY_APP_ID        |
+## Download
+Just add the following dependency in your app's build.gradle:
+```groovy
+dependencies {
+      compile 'TBD'
+}
+```
