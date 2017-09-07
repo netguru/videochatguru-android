@@ -40,7 +40,6 @@ dependencies {
     compile project(':simplewebrtc')
 
     compile libs.appCompat
-    compile libs.recyclerView
     compile libs.design
 
     compile libs.dagger

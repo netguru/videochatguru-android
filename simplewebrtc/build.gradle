@@ -37,7 +37,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin"
+    compile libs.kotlinStdlib
 }
 repositories {
     mavenCentral()
