@@ -88,7 +88,7 @@ class VideoFragmentPresenter @Inject constructor(
     }
 
     fun disconnectByUser() {
-        val remoteUuid = getView()?.getRemoteUuid()
+        val remoteUuid = getView()?.remoteUuid
         if (remoteUuid != null) {
             disposables += firebaseSignalingDisconnect.sendDisconnectOrderToOtherParty(remoteUuid)
                     .compose(RxUtils.applyCompletableIoSchedulers())

@@ -5,8 +5,11 @@ import android.content.Context
 import android.widget.Toast
 import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.data.firebase.FirebaseModule
-import co.netguru.simplewebrtc.WebRtcLogs
+import co.netguru.simplewebrtc.disableWebRtcLogs
+import co.netguru.simplewebrtc.enableInternalWebRtclogs
+import co.netguru.simplewebrtc.enableWebRtcLogs
 import com.squareup.leakcanary.LeakCanary
+import org.webrtc.Logging
 import timber.log.Timber
 import java.util.*
 
@@ -38,10 +41,11 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             //Enables WebRTC Logging
-            WebRtcLogs.enableSimpleWebRtcLogs(true)
+            enableWebRtcLogs(true)
+            enableInternalWebRtclogs(Logging.Severity.LS_INFO)
             Toast.makeText(this, "Uuid: ${App.CURRENT_DEVICE_UUID}", Toast.LENGTH_LONG).show()
         } else {
-            WebRtcLogs.disableLogs()
+            disableWebRtcLogs()
         }
     }
 }

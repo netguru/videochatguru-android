@@ -42,6 +42,9 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     var service: WebRtcService? = null
 
+    override val remoteUuid
+        get() = service?.getRemoteUuid()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (buttonPanel.layoutParams as CoordinatorLayout.LayoutParams).behavior = MoveUpBehavior()
@@ -148,8 +151,6 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         localVideoView.visibility = View.GONE
         connectButton.visibility = View.VISIBLE
     }
-
-    override fun getRemoteUuid() = service?.getRemoteUuid()
 
     override fun showErrorWhileChoosingRandom() {
         showSnackbarMessage(R.string.error_choosing_random_partner, Snackbar.LENGTH_LONG)

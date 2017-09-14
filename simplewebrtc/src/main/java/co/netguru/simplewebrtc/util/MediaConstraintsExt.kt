@@ -5,8 +5,8 @@ import org.webrtc.MediaConstraints
 
 
 fun MediaConstraints.addConstraints(constraints: WebRtcConstraints<*, *>) {
-    mandatory.addAll(constraints.getMandatoryKeyValuePairs())
-    optional.addAll(constraints.getOptionalKeyValuePairs())
+    mandatory.addAll(constraints.mandatoryKeyValuePairs)
+    optional.addAll(constraints.optionalKeyValuePairs)
 }
 
 fun MediaConstraints.addConstraints(vararg constraints: WebRtcConstraints<*, *>) {

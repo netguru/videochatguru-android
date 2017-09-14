@@ -345,10 +345,11 @@ class WebRtcClient(context: Context,
     }
 
     private fun enableVideo(isEnabled: Boolean, videoCapturer: CameraVideoCapturer) {
-        if (isEnabled)
+        if (isEnabled) {
             videoCapturer.startCapture(localVideoWidth, localVideoHeight, localVideoFps)
-        else
+        } else {
             videoCapturer.stopCapture()
+        }
     }
 
     private fun getCounterStringValueAndIncrement() = counter.getAndIncrement().toString()
