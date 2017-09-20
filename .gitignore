@@ -111,6 +111,4 @@ Temporary Items
 .Trash-*
 
 # Google Services
-app/google-services.json
-app/src/androidTest/
-app/src/test/
+google-services.json
