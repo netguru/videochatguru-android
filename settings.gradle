@@ -1,1 +1,1 @@
-include ':app', ':simplewebrtc'
+include ':sample', ':library'
