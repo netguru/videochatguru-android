@@ -5,9 +5,9 @@ import android.content.Context
 import android.widget.Toast
 import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.data.firebase.FirebaseModule
-import co.netguru.simplewebrtc.disableWebRtcLogs
-import co.netguru.simplewebrtc.enableInternalWebRtclogs
-import co.netguru.simplewebrtc.enableWebRtcLogs
+import co.netguru.chatguru.disableWebRtcLogs
+import co.netguru.chatguru.enableInternalWebRtclogs
+import co.netguru.chatguru.enableWebRtcLogs
 import com.squareup.leakcanary.LeakCanary
 import org.webrtc.Logging
 import timber.log.Timber

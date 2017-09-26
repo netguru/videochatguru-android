@@ -94,9 +94,18 @@ You're more than welcome to contribute or report an issue in case of any problem
  - non-debuggable
  
 ## Download
+To use this library in your project, place the following code in your top hierarchy build.gradle file:
+```groovy
+allprojects {
+    repositories {
+        maven {  url 'https://dl.bintray.com/netguru/maven/' }
+    }
+}
+```
+
 Just add the following dependency in your app's build.gradle:
 ```groovy
 dependencies {
-      compile 'TBD'
+      compile 'co.netguru.chatguru:chatguru:0.1.0@aar'
 }
 ```
