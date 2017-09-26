@@ -109,3 +109,7 @@ dependencies {
       compile 'co.netguru.chatguru:chatguru:0.1.0@aar'
 }
 ```
+
+Copyright © 2017 [Netguru](http://netguru.co).
+
+Licensed under the [GPLv3 License, BSD 3-Clause](LICENSE).
