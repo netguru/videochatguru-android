@@ -3,9 +3,9 @@ ext {
 
     // edit
     bintrayName = 'Chatguru'
-    artifact = 'library'
-    artifactGroupName = 'library' // can be the same as artifact
-    packageName = 'co.netguru.chatguru'
+    artifact = 'chatguru'
+    artifactGroupName = 'chatguru' // can be the same as artifact
+    packageName = 'co.netguru'
     libraryVersion = android.defaultConfig.versionName // optionally hardcode with 'x.y.z' format
     publishedGroupId = "$packageName.$artifactGroupName"
     libraryName = 'Chatguru'
