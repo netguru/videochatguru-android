@@ -1,6 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+def versionMajor = 0
+def versionMinor = 1
+def versionPatch = 0
+
 android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -8,7 +12,7 @@ android {
     defaultConfig {
         minSdkVersion versions.minSdk
         versionCode 1
-        versionName "1.0.0"
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         consumerProguardFiles 'proguard-rules.pro'
 
     }
