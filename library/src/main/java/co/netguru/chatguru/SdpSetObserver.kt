@@ -1,4 +1,4 @@
-package co.netguru.simplewebrtc
+package co.netguru.chatguru
 
 import org.webrtc.SdpObserver
 import org.webrtc.SessionDescription

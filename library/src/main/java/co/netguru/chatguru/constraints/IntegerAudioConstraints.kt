@@ -1,4 +1,4 @@
-package co.netguru.simplewebrtc.constraints
+package co.netguru.chatguru.constraints
 
 /**
  * Integer value based audio constraints.

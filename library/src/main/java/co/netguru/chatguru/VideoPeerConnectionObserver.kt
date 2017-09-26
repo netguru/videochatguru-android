@@ -1,6 +1,6 @@
-package co.netguru.simplewebrtc
+package co.netguru.chatguru
 
-import co.netguru.simplewebrtc.util.Logger
+import co.netguru.chatguru.util.Logger
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
 import org.webrtc.PeerConnection

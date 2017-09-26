@@ -1,4 +1,4 @@
-package co.netguru.simplewebrtc.util
+package co.netguru.chatguru.util
 
 import android.util.Log
 

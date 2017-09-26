@@ -1,6 +1,6 @@
-package co.netguru.simplewebrtc.util
+package co.netguru.chatguru.util
 
-import co.netguru.simplewebrtc.constraints.WebRtcConstraints
+import co.netguru.chatguru.constraints.WebRtcConstraints
 import org.webrtc.MediaConstraints
 
 

@@ -1,4 +1,4 @@
-package co.netguru.simplewebrtc
+package co.netguru.chatguru
 
 import org.webrtc.MediaConstraints
 import org.webrtc.PeerConnection

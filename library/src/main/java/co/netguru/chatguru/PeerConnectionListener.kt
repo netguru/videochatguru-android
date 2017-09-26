@@ -1,4 +1,4 @@
-package co.netguru.simplewebrtc
+package co.netguru.chatguru
 
 import org.webrtc.IceCandidate
 import org.webrtc.PeerConnection

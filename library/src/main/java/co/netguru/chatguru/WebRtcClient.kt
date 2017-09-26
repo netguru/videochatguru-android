@@ -1,12 +1,12 @@
-package co.netguru.simplewebrtc
+package co.netguru.chatguru
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import co.netguru.simplewebrtc.constraints.*
-import co.netguru.simplewebrtc.util.Logger
-import co.netguru.simplewebrtc.util.WebRtcUtils
-import co.netguru.simplewebrtc.util.addConstraints
+import co.netguru.chatguru.constraints.*
+import co.netguru.chatguru.util.Logger
+import co.netguru.chatguru.util.WebRtcUtils
+import co.netguru.chatguru.util.addConstraints
 import org.webrtc.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
