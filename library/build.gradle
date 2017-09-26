@@ -46,5 +46,6 @@ dependencies {
 repositories {
     mavenCentral()
 }
-
-apply from: 'publish.gradle'
+if (!isBitrise) {
+    apply from: 'publish.gradle'
+}
