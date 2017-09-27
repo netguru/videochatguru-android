@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#4CAF50</color>
-    <color name="primary_dark">#388E3C</color>
-    <color name="accent">#FF9800</color>
-    <color name="accent_panel">#77FF9800</color>
-    <color name="white">#fff</color>
-    <color name="form_icon_color">#8a000000</color>
+    <color name="primary">#61A7F3</color>
+    <color name="primary_dark">#1D78C0</color>
+    <color name="accent">#448AFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#EA362A</color>
+    <color name="semi_transparent_white">#80FFFFFF</color>
+    <color name="transparent_black">#4D000000</color>
+    <color name="light_blue">#B0E9EB</color>
 </resources>

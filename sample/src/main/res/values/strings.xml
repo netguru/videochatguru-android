@@ -2,12 +2,11 @@
     <string name="app_name">Chatroulette</string>
     <string name="leak_canary_display_activity_label">Chatroulete leaks</string>
 
-    <string name="btn_start_roulette">Start roulette</string>
-
     <string name="error_choosing_random_partner">Error occurred while choosing random partner try again later</string>
     <string name="error_web_rtc_error">Error occurred while trying to connect to other party</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_start">Start</string>
 
     <string name="msg_no_one_available">No one is available at the moment. This might take some time…</string>
     <string name="msg_looking_for_partner">Looking for partner…</string>

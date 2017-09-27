@@ -16,12 +16,9 @@ abstract class BaseActivity : AppCompatActivity() {
     @LayoutRes
     abstract fun getLayoutId(): Int
 
-
     fun getReplaceFragmentTransaction(containerViewId: Int, fragment: Fragment, tag: String): FragmentTransaction {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(containerViewId, fragment, tag)
         return fragmentTransaction
     }
-
-
 }
