@@ -11,7 +11,6 @@
         </shape>
     </item>
 
-    <!-- TODO 27.09.2017 Should be changed to Chatguru logo. Mocked drawable should be removed!!-->
     <item
         android:bottom="@dimen/splash_screen_vertical_margin"
         android:drawable="@drawable/chatguru_logo"
