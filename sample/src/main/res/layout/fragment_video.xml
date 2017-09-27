@@ -4,15 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/localVideoView"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/local_video_bottom_margin"
-        android:layout_marginLeft="@dimen/margin_medium"
-        android:layout_marginRight="@dimen/margin_medium"
-        android:visibility="gone" />
+        android:layout_width="@dimen/local_video_width"
+        android:layout_height="@dimen/local_video_height"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/margin_medium"
+        android:visibility="visible" />
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/remoteVideoView"
