@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:drawable="@color/primary"/>
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:centerColor="@color/white"
+                android:endColor="@color/lightBlue"
+                android:startColor="@color/white" />
+        </shape>
+    </item>
 
+    <!-- TODO 27.09.2017 Should be changed to Chatguru logo. Mocked drawable should be removed!!-->
     <item
-        android:drawable="@drawable/ic_videocam_white_72dp"
-        android:gravity="center"/>
-
+        android:bottom="@dimen/splash_screen_vertical_margin"
+        android:drawable="@drawable/chatguru_logo"
+        android:gravity="center" />
 </layer-list>

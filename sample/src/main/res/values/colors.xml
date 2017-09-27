@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#4CAF50</color>
-    <color name="primary_dark">#388E3C</color>
+    <color name="primary">#61A7F3</color>
+    <color name="primary_dark">#1D78C0</color>
     <color name="accent">#FF9800</color>
     <color name="accent_panel">#77FF9800</color>
     <color name="white">#fff</color>
     <color name="form_icon_color">#8a000000</color>
+    <color name="lightBlue">#B0E9EB</color>
 </resources>

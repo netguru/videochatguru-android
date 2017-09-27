@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/coordinatorLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/localVideoView"
@@ -14,23 +12,22 @@
         android:layout_marginBottom="@dimen/local_video_bottom_margin"
         android:layout_marginLeft="@dimen/margin_medium"
         android:layout_marginRight="@dimen/margin_medium"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/remoteVideoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
+    <Button
         android:id="@+id/connectButton"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/button_start_width"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_margin="@dimen/margin_medium"
-        android:src="@drawable/ic_call_white_24dp"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/splash_screen_vertical_margin"
+        android:background="@drawable/rounded_button"
+        android:text="@string/action_start" />
 
     <LinearLayout
         android:id="@+id/buttonPanel"
@@ -39,8 +36,7 @@
         android:layout_gravity="center|bottom"
         android:background="@color/accent_panel"
         android:gravity="center"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <ImageButton
             android:id="@+id/disconnectButton"
@@ -49,7 +45,7 @@
             android:layout_margin="@dimen/margin_small"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/desc_hangup"
-            android:src="@drawable/ic_call_end_white_24dp"/>
+            android:src="@drawable/ic_call_end_white_24dp" />
 
         <ImageButton
             android:id="@+id/switchCameraButton"
@@ -58,7 +54,7 @@
             android:layout_margin="@dimen/margin_small"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/desc_switch_camera"
-            android:src="@drawable/ic_switch_video_white_24dp"/>
+            android:src="@drawable/ic_switch_video_white_24dp" />
 
         <ToggleButton
             android:id="@+id/microphoneEnabledToggle"
@@ -67,7 +63,7 @@
             android:layout_height="@dimen/button_panel_button_width_height"
             android:layout_margin="@dimen/margin_small"
             android:button="@drawable/ic_microphone_toggle"
-            android:contentDescription="@string/desc_toggle_microphone"/>
+            android:contentDescription="@string/desc_toggle_microphone" />
 
         <ToggleButton
             android:id="@+id/cameraEnabledToggle"
@@ -77,7 +73,6 @@
             android:layout_margin="@dimen/margin_small"
             android:background="?selectableItemBackgroundBorderless"
             android:button="@drawable/ic_videocam_on_off_toggle"
-            android:contentDescription="@string/desc_toggle_camera"/>
+            android:contentDescription="@string/desc_toggle_camera" />
     </LinearLayout>
-
 </android.support.design.widget.CoordinatorLayout>
