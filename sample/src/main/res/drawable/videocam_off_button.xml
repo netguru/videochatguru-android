@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/circle_transparent_button" />
+
+    <item
+        android:bottom="@dimen/margin_medium"
+        android:drawable="@drawable/ic_videocam_off_white_24dp"
+        android:left="@dimen/margin_medium"
+        android:right="@dimen/margin_medium"
+        android:top="@dimen/margin_medium" />
+</layer-list>

@@ -2,6 +2,8 @@
     <string name="app_name">Chatroulette</string>
     <string name="leak_canary_display_activity_label">Chatroulete leaks</string>
 
+    <string name="action_start">start</string>
+
     <string name="btn_start_roulette">Start roulette</string>
 
     <string name="error_choosing_random_partner">Error occurred while choosing random partner try again later</string>

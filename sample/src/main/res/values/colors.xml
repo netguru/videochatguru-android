@@ -3,9 +3,9 @@
     <color name="primary">#61A7F3</color>
     <color name="primary_dark">#1D78C0</color>
     <color name="accent">#FF9800</color>
-    <color name="accent_panel">#77FF9800</color>
     <color name="white">#FFFFFF</color>
-    <color name="semiTransparentWhite">#40FFFFFF</color>
-    <color name="form_icon_color">#8a000000</color>
+    <color name="red">#EA362A</color>
+    <color name="semiTransparentWhite">#80FFFFFF</color>
+    <color name="transparentBlack">#26000000</color>
     <color name="lightBlue">#B0E9EB</color>
 </resources>
