@@ -2,6 +2,9 @@ package co.netguru.chatguru
 
 import org.webrtc.SessionDescription
 
+/**
+ * Listener used for notifying of answering party events
+ */
 interface WebRtcAnsweringPartyListener {
     /**
      * Triggered in case of internal errors.
