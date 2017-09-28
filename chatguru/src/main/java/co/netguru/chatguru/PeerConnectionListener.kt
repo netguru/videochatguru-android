@@ -3,7 +3,9 @@ package co.netguru.chatguru
 import org.webrtc.IceCandidate
 import org.webrtc.PeerConnection
 
-
+/**
+ * Listener interface used for notifying of peer connection state changes.
+ */
 interface PeerConnectionListener {
     /**
      * Triggered whenever WebRTC finds ice candidate, [iceCandidate] object should be passed to the other party
