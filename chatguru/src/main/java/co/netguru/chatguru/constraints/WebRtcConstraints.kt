@@ -3,7 +3,7 @@ package co.netguru.chatguru.constraints
 /**
  * Container class for WebRTC constraints management.
  */
-class WebRtcConstraints<T : WebRtcConstraint<E>, E> {
+open class WebRtcConstraints<T : WebRtcConstraint<E>, E> {
 
     private val mandatory: MutableMap<WebRtcConstraint<E>, E> = mutableMapOf()
     private val optional: MutableMap<WebRtcConstraint<E>, E> = mutableMapOf()
