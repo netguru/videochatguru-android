@@ -12,17 +12,27 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * WebRTC client wraps webRTC implementation simplifying implementation of video chat.
+ * WebRTC client wraps webRTC implementation simplifying implementation of video chat. WebRTC client
+ * uses set of default WebRTC constraints that should suffice most of the use cases if you need to overwrite
+ * those you can pass your own [WebRtcConstraints] collection of constraints.
+ *
  * @param context used only during camera initialization, not stored internally
- * //todo add the rest
+ * @param localVideoWidth width of video recorded by this client
+ * @param localVideoHeight height of video recorded by this client
+ * @param localVideoFps frames per second recorded by this client
+ * @param hardwareAcceleration set whether client should use hardware acceleration, enabled by default
+ * @param booleanAudioConstraints enables overwriting default [BooleanAudioConstraints] used by client
+ * @param integerAudioConstraints enables overwriting default [IntegerAudioConstraints] used by client
+ * @param peerConnectionConstraints enables overwriting default [PeerConnectionConstraints] used by client
+ * @param offerAnswerConstraints enables overwriting default [OfferAnswerConstraints] used by client
  */
 class WebRtcClient(context: Context,
                    private val localVideoWidth: Int = 1280,
                    private val localVideoHeight: Int = 720,
                    private val localVideoFps: Int = 24,
                    hardwareAcceleration: Boolean = true,
-                   audioConstraintBooleanAudioConstraints: WebRtcConstraints<BooleanAudioConstraints, Boolean>? = null,
-                   audioConstraintIntegerAudioConstraints: WebRtcConstraints<IntegerAudioConstraints, Int>? = null,
+                   booleanAudioConstraints: WebRtcConstraints<BooleanAudioConstraints, Boolean>? = null,
+                   integerAudioConstraints: WebRtcConstraints<IntegerAudioConstraints, Int>? = null,
                    peerConnectionConstraints: WebRtcConstraints<PeerConnectionConstraints, Boolean>? = null,
                    offerAnswerConstraints: WebRtcConstraints<OfferAnswerConstraints, Boolean>? = null) : RemoteVideoListener {
 
@@ -108,10 +118,10 @@ class WebRtcClient(context: Context,
         if (!PeerConnectionFactory.initializeAndroidGlobals(context.applicationContext, INITIALIZE_AUDIO, INITIALIZE_VIDEO, hardwareAcceleration)) {
             error("WebRtc failed to initializeAndroidGlobals")
         }
-        audioConstraintBooleanAudioConstraints?.let {
+        booleanAudioConstraints?.let {
             audioBooleanConstraints += it
         }
-        audioConstraintIntegerAudioConstraints?.let {
+        integerAudioConstraints?.let {
             audioIntegerConstraints += it
         }
         peerConnectionConstraints?.let {
@@ -326,6 +336,7 @@ class WebRtcClient(context: Context,
      * Switches the camera to other if there is any available. By default front camera is used.
      * @param cameraSwitchHandler allows listening for switch camera event
      */
+    @JvmOverloads
     fun switchCamera(cameraSwitchHandler: CameraVideoCapturer.CameraSwitchHandler? = null) {
         singleThreadExecutor.execute {
             videoCameraCapturer?.switchCamera(cameraSwitchHandler)
