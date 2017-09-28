@@ -22,14 +22,14 @@
 <!--- If applies, add link to app on Google Play -->
 
 ## Sample
-Chatroulette sample allows you to have a video chat with random stranger, project showcase use of Chatguru WebRTC wrapper on Android. Signaling is done through Firebase. Your firebase setup should provide at least one IceServer - for best results you should provide at least one Turn server to be able to make connection when peer to peer connection fails. 
+Chatroulette sample allows you to have a video chat with random stranger, project showcase use of Chatguru WebRTC wrapper on Android. Signaling is done through Firebase. Your Firebase setup should provide at least one IceServer - for best results you should provide at least one Turn server to be able to make connection when peer to peer connection fails. 
 
 ## Chatguru setup
 For library setup currently you can reffer to sample.
 
 [WebRTC for Android](https://webrtc.org/native-code/android/)
 ## Development
-To run sample project you need to prepare firebase instance first.
+To run sample project you need to prepare Firebase instance first.
 ### Setting up Firebase
 1. Go to https://console.firebase.google.com/
 2. Create new project
