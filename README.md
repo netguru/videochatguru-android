@@ -106,7 +106,7 @@ allprojects {
 Just add the following dependency in your app's build.gradle:
 ```groovy
 dependencies {
-      compile 'co.netguru.chatguru:chatguru:0.1.0@aar'
+      compile 'co.netguru.chatguru:chatguru:0.1.1@aar'
 }
 ```
 

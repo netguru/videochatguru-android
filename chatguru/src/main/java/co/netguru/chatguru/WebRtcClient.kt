@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * @param peerConnectionConstraints enables overwriting default [PeerConnectionConstraints] used by client
  * @param offerAnswerConstraints enables overwriting default [OfferAnswerConstraints] used by client
  */
-class WebRtcClient(context: Context,
+open class WebRtcClient(context: Context,
                    private val localVideoWidth: Int = 1280,
                    private val localVideoHeight: Int = 720,
                    private val localVideoFps: Int = 24,
