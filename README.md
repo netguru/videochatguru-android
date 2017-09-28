@@ -10,7 +10,7 @@
 -->
 
 <!-- Put your project's name -->
-# Chatroullete webrtc for Android
+# Chatguru simple webrtc for Android
 
 <!-- METADATA -->
 <!-- Add links to JIRA, Google Drive, mailing list and other relevant resources -->
@@ -21,16 +21,15 @@
 
 <!--- If applies, add link to app on Google Play -->
 
-## Synopsis
-<!-- Describe the project in few sentences -->
-Chatroulette allows you to have a video chat with random stranger.
+## Sample
+Chatroulette sample allows you to have a video chat with random stranger, project showcase use of Chatguru WebRTC wrapper on Android. Signaling is done through Firebase. Your Firebase setup should provide at least one IceServer - for best results you should provide at least one Turn server to be able to make connection when peer to peer connection fails. 
 
-This projects showcase use of WebRTC on Android, signaling is done through Firebase.
-Your firebase setup should provide at least one IceServer - for best results you should provide at least one Turn server to be able to make connection when peer to peer connection fails. 
+## Chatguru setup
+For library setup currently you can reffer to sample.
 
 [WebRTC for Android](https://webrtc.org/native-code/android/)
 ## Development
-To run sample project you need to prepare firebase instance first.
+To run sample project you need to prepare Firebase instance first.
 ### Setting up Firebase
 1. Go to https://console.firebase.google.com/
 2. Create new project
@@ -40,21 +39,22 @@ To run sample project you need to prepare firebase instance first.
 4. Download google-services.json
 5. Place it in App folder
 
-Now we need to prepare Interactive Connectivity Establishment servers node. You will need your STUN/TURN servers credentials here.
+#### Setting up Interactive Connectivity Establishment servers node.
+You will need your STUN/TURN servers credentials here.
 
-6. Go to Database
-7. Add new child name it `ice_servers`
-8. Add new child to `ice_servers` named `0`
-9. Add child to `0`
-10. Insert ICE servers credentials
+1. Go to Database
+2. Add new child name it `ice_servers`
+3. Add new child to `ice_servers` named `0`
+4. Add child to `0`
+5. Insert ICE servers credentials
     - `uri : "turn:ipAddress"` or `uri : "stun:ipAddress"` in case of stun server
     
     optionally:
     
     - `username: "your username"`
     - `password: "your password"`
-11. You can add more ICE servers to be used by WebRTC
-12. This should be enough happy testing!
+ 6. You can add more ICE servers to be used by WebRTC
+ 7. This should be enough happy testing!
 
 ## STUN/TURN servers
 ### STUN (Session Traversal Utilities for NAT) 
@@ -66,11 +66,13 @@ TURN server is relay server which is used only when peer to peer connection cann
 If you want to learn more about how STUN and TURN works go on and watch : https://youtu.be/p2HzZkd2A40?t=1123
 
 ### Public STUN/TURN servers
-TBD
-
+You can find many public STUN servers on the web, you might also want to try out:
+- http://numb.viagenie.ca/
+Numb provides both STUN and TURN servers free of charge.
+Take in mind that using public servers might not be the best choice for production code.
 ### Private STUN/TURN servers
 #### External services
-TBD
+Many private services provides their STUN servers free of charge. You can also find free TURN servers with limited amount of bandwidth to use up.
 #### Set up your own STUN/TURN server
 There are various options available out there we've tested Coturn and setup is fairly easy, you can follow this guide https://github.com/coturn/coturn/wiki/CoturnConfig .
 
