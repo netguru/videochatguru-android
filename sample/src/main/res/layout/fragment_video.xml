@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/desc_switch_camera"
-            android:src="@drawable/ic_switch_video_white_24dp" />
+            app:srcCompat="@drawable/ic_switch_video_white_24dp" />
     </FrameLayout>
 
     <Button

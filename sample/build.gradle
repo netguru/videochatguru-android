@@ -13,6 +13,8 @@ android {
         targetSdkVersion versions.compileSdk
         versionCode globalVersionCode
         versionName globalVersionName
+
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
