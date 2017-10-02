@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -18,15 +19,21 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <ImageButton
-        android:id="@+id/switchCameraButton"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_margin="@dimen/margin_medium"
-        android:background="?selectableItemBackgroundBorderless"
-        android:contentDescription="@string/desc_switch_camera"
-        android:src="@drawable/ic_switch_video_white_24dp" />
+        android:background="?selectableItemBackgroundBorderless">
+
+        <ImageButton
+            android:id="@+id/switchCameraButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_switch_camera"
+            app:srcCompat="@drawable/ic_switch_video_white_24dp" />
+    </FrameLayout>
 
     <Button
         android:id="@+id/connectButton"
@@ -72,7 +79,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_small"
-            android:background="?selectableItemBackgroundBorderless"
             android:button="@drawable/ic_videocam_on_off_toggle"
             android:contentDescription="@string/desc_toggle_camera"
             android:minHeight="@dimen/toggle_button_min_size"

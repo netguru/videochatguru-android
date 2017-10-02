@@ -2,6 +2,7 @@ package co.netguru.chatroulette.app
 
 import android.app.Application
 import android.content.Context
+import android.support.v7.app.AppCompatDelegate
 import android.widget.Toast
 import co.netguru.chatroulette.BuildConfig
 import co.netguru.chatroulette.data.firebase.FirebaseModule
@@ -30,6 +31,10 @@ class App : Application() {
                 .applicationModule(ApplicationModule(this))
                 .firebaseModule(FirebaseModule())
                 .build()
+    }
+
+    init {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
 
     override fun onCreate() {
