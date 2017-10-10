@@ -16,4 +16,5 @@ interface VideoFragmentView : MvpView {
     fun showOtherPartyFinished()
     fun showConnectedMsg()
     fun showWillTryToRestartMsg()
+    fun hideConnectButtonWithAnimation()
 }

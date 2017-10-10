@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.view.View
+import android.view.animation.OvershootInterpolator
 import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
 import co.netguru.chatroulette.common.extension.areAllPermissionsGranted
@@ -33,6 +34,7 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         private const val KEY_IN_CHAT = "key:in_chat"
         private const val CHECK_PERMISSIONS_AND_CONNECT_REQUEST_CODE = 1
         private val NECESSARY_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+        private const val CONNECT_BUTTON_ANIMATION_DURATION_MS = 500L
     }
 
     private lateinit var serviceConnection: ServiceConnection
@@ -177,6 +179,20 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
 
     override fun showLookingForPartnerMessage() {
         showSnackbarMessage(R.string.msg_looking_for_partner, Snackbar.LENGTH_SHORT)
+    }
+
+    override fun hideConnectButtonWithAnimation() {
+        connectButton.animate().scaleX(0f).scaleY(0f)
+                .setInterpolator(OvershootInterpolator())
+                .setDuration(CONNECT_BUTTON_ANIMATION_DURATION_MS)
+                .withStartAction { connectButton.isClickable = false }
+                .withEndAction {
+                    connectButton.isClickable = true
+                    connectButton.visibility = View.GONE
+                    connectButton.scaleX = 1f
+                    connectButton.scaleY = 1f
+                }
+                .start()
     }
 
     override fun showOtherPartyFinished() {
