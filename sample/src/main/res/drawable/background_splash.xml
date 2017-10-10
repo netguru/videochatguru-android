@@ -7,12 +7,15 @@
                 android:angle="270"
                 android:centerColor="@color/white"
                 android:endColor="@color/light_blue"
-                android:startColor="@color/white" />
+                android:startColor="@color/white"/>
         </shape>
     </item>
 
     <item
         android:bottom="@dimen/splash_screen_vertical_margin"
-        android:drawable="@drawable/chatguru_logo"
-        android:gravity="center" />
+        android:gravity="center">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/chatguru_logo"/>
+    </item>
 </layer-list>
