@@ -27,14 +27,14 @@ import java.util.concurrent.atomic.AtomicInteger
  * @param offerAnswerConstraints enables overwriting default [OfferAnswerConstraints] used by client
  */
 open class WebRtcClient(context: Context,
-                   private val localVideoWidth: Int = 1280,
-                   private val localVideoHeight: Int = 720,
-                   private val localVideoFps: Int = 24,
-                   hardwareAcceleration: Boolean = true,
-                   booleanAudioConstraints: WebRtcConstraints<BooleanAudioConstraints, Boolean>? = null,
-                   integerAudioConstraints: WebRtcConstraints<IntegerAudioConstraints, Int>? = null,
-                   peerConnectionConstraints: WebRtcConstraints<PeerConnectionConstraints, Boolean>? = null,
-                   offerAnswerConstraints: WebRtcConstraints<OfferAnswerConstraints, Boolean>? = null) : RemoteVideoListener {
+                        private val localVideoWidth: Int = 1280,
+                        private val localVideoHeight: Int = 720,
+                        private val localVideoFps: Int = 24,
+                        hardwareAcceleration: Boolean = true,
+                        booleanAudioConstraints: WebRtcConstraints<BooleanAudioConstraints, Boolean>? = null,
+                        integerAudioConstraints: WebRtcConstraints<IntegerAudioConstraints, Int>? = null,
+                        peerConnectionConstraints: WebRtcConstraints<PeerConnectionConstraints, Boolean>? = null,
+                        offerAnswerConstraints: WebRtcConstraints<OfferAnswerConstraints, Boolean>? = null) : RemoteVideoListener {
 
     companion object {
         private const val INITIALIZE_AUDIO = true
