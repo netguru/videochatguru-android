@@ -19,7 +19,6 @@ ext {
             leakCanaryNoOp  : "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary",
             firebaseCore    : "com.google.firebase:firebase-core:$firebaseVersion",
             firebaseDatabase: "com.google.firebase:firebase-database:$firebaseVersion",
-            dexter          : "com.karumi:dexter:4.1.0"
     ]
 
     proc = [
@@ -28,9 +27,9 @@ ext {
     ]
 
     test = [
-            mockito        : "org.mockito:mockito-core:2.8.47",
-            mockitoKotlin  : "com.nhaarman:mockito-kotlin:1.5.0",
-            junit          : "junit:junit:4.12",
-            jsr305         : "com.google.code.findbugs:jsr305:3.0.1",
+            mockito      : "org.mockito:mockito-core:2.8.47",
+            mockitoKotlin: "com.nhaarman:mockito-kotlin:1.5.0",
+            junit        : "junit:junit:4.12",
+            jsr305       : "com.google.code.findbugs:jsr305:3.0.1",
     ]
 }

@@ -19,4 +19,5 @@
     <string name="desc_switch_camera">Switch camera</string>
     <string name="desc_toggle_microphone">Toggle microphone</string>
     <string name="desc_toggle_camera">Toggle camera</string>
+    <string name="error_permissions_couldnt_start_settings">Couldn\\\'t open app settings. To grant permissions please visit settings of this app.</string>
 </resources>

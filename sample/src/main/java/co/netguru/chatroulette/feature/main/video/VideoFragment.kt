@@ -1,8 +1,10 @@
 package co.netguru.chatroulette.feature.main.video
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
@@ -11,14 +13,11 @@ import android.support.design.widget.Snackbar
 import android.view.View
 import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
+import co.netguru.chatroulette.common.extension.areAllPermissionsGranted
+import co.netguru.chatroulette.common.extension.startAppSettings
 import co.netguru.chatroulette.feature.base.BaseMvpFragment
 import co.netguru.chatroulette.webrtc.service.WebRtcService
 import co.netguru.chatroulette.webrtc.service.WebRtcServiceListener
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
-import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener
-import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener
 import kotlinx.android.synthetic.main.fragment_video.*
 import org.webrtc.PeerConnection
 import timber.log.Timber
@@ -32,6 +31,8 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         fun newInstance() = VideoFragment()
 
         private const val KEY_IN_CHAT = "key:in_chat"
+        private const val CHECK_PERMISSIONS_AND_CONNECT_REQUEST_CODE = 1
+        private val NECESSARY_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
     }
 
     private lateinit var serviceConnection: ServiceConnection
@@ -93,6 +94,20 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     override fun onDestroy() {
         super.onDestroy()
         if (!activity.isChangingConfigurations) disconnect()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) = when (requestCode) {
+        CHECK_PERMISSIONS_AND_CONNECT_REQUEST_CODE -> {
+            val grantResult = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+            if (grantResult) {
+                checkPermissionsAndConnect()
+            } else {
+                showNoPermissionsSnackbar()
+            }
+        }
+        else -> {
+            error("Unknown permission request code $requestCode")
+        }
     }
 
     override fun attachService() {
@@ -197,20 +212,25 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
     }
 
     private fun checkPermissionsAndConnect() {
-        Dexter.withActivity(activity)
-                .withPermissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
-                .withListener(CompositeMultiplePermissionsListener(
-                        object : BaseMultiplePermissionsListener() {
-                            override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                                if (report.areAllPermissionsGranted()) getPresenter().connect()
-                            }
-                        },
-                        SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
-                                .with(coordinatorLayout, R.string.msg_permissions)
-                                .withOpenSettingsButton(R.string.action_settings)
-                                .withDuration(Snackbar.LENGTH_LONG)
-                                .build())
-                ).check()
+        if (context.areAllPermissionsGranted(*NECESSARY_PERMISSIONS)) {
+            getPresenter().connect()
+        } else {
+            requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO), CHECK_PERMISSIONS_AND_CONNECT_REQUEST_CODE)
+        }
+    }
+
+    private fun showNoPermissionsSnackbar() {
+        view?.let {
+            Snackbar.make(it, R.string.msg_permissions, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.action_settings) {
+                        try {
+                            context.startAppSettings()
+                        } catch (e: ActivityNotFoundException) {
+                            showSnackbarMessage(R.string.error_permissions_couldnt_start_settings, Snackbar.LENGTH_LONG)
+                        }
+                    }
+                    .show()
+        }
     }
 
     private fun onWebRtcServiceConnected(service: WebRtcService) {
