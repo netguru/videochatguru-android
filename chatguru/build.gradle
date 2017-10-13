@@ -43,7 +43,6 @@ dependencies {
 
     compile libs.kotlinStdlib
     compile libs.webRTC
-
 }
 repositories {
     mavenCentral()
