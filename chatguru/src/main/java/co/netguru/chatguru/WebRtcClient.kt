@@ -37,9 +37,9 @@ open class WebRtcClient(context: Context,
                         offerAnswerConstraints: WebRtcConstraints<OfferAnswerConstraints, Boolean>? = null) : RemoteVideoListener {
 
     companion object {
-        private const val INITIALIZE_AUDIO = true
-        private const val INITIALIZE_VIDEO = true
         private val TAG = WebRtcClient::class.java.simpleName
+        //Enabling internal tracer was causing crashes
+        private const val ENABLE_INTERNAL_TRACER = false
     }
 
     private val counter = AtomicInteger(0)
@@ -115,9 +115,12 @@ open class WebRtcClient(context: Context,
     private lateinit var answeringPartyHandler: WebRtcAnsweringPartyHandler
 
     init {
-        if (!PeerConnectionFactory.initializeAndroidGlobals(context.applicationContext, INITIALIZE_AUDIO, INITIALIZE_VIDEO, hardwareAcceleration)) {
-            error("WebRtc failed to initializeAndroidGlobals")
-        }
+        PeerConnectionFactory.initialize(
+                PeerConnectionFactory.InitializationOptions.builder(context)
+                        .setEnableInternalTracer(ENABLE_INTERNAL_TRACER)
+                        .setEnableVideoHwAcceleration(hardwareAcceleration)
+                        .createInitializationOptions()
+        )
         booleanAudioConstraints?.let {
             audioBooleanConstraints += it
         }

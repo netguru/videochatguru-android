@@ -19,6 +19,8 @@ ext {
             leakCanaryNoOp  : "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary",
             firebaseCore    : "com.google.firebase:firebase-core:$firebaseVersion",
             firebaseDatabase: "com.google.firebase:firebase-database:$firebaseVersion",
+            webRTC          : "org.webrtc:google-webrtc:1.0.20284"
+
     ]
 
     proc = [
