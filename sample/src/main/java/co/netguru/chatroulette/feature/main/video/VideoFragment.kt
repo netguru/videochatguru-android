@@ -20,7 +20,6 @@ import co.netguru.chatroulette.webrtc.service.WebRtcService
 import co.netguru.chatroulette.webrtc.service.WebRtcServiceListener
 import kotlinx.android.synthetic.main.fragment_video.*
 import org.webrtc.PeerConnection
-import org.webrtc.voiceengine.WebRtcAudioUtils
 import timber.log.Timber
 
 
