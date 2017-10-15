@@ -4,6 +4,7 @@ ext {
     daggerVersion = '2.10'
     leakCanary = '1.5.1'
     firebaseVersion = '11.2.0'
+    webRTCVersion = '1.0.20284'
 
     libs = [
             kotlinStdlib    : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin",
@@ -19,6 +20,7 @@ ext {
             leakCanaryNoOp  : "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanary",
             firebaseCore    : "com.google.firebase:firebase-core:$firebaseVersion",
             firebaseDatabase: "com.google.firebase:firebase-database:$firebaseVersion",
+            webRTC          : "org.webrtc:google-webrtc:$webRTCVersion"
     ]
 
     proc = [
