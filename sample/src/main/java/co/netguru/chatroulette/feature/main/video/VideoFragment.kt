@@ -78,6 +78,18 @@ class VideoFragment : BaseMvpFragment<VideoFragmentView, VideoFragmentPresenter>
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        service?.hideBackgroundWorkWarning()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (!activity.isChangingConfigurations) {
+            service?.showBackgroundWorkWarning()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         service?.let {

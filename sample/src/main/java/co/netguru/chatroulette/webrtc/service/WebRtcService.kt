@@ -1,12 +1,17 @@
 package co.netguru.chatroulette.webrtc.service
 
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Binder
-import android.os.IBinder
+import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
+import co.netguru.chatroulette.R
 import co.netguru.chatroulette.app.App
+import co.netguru.chatroulette.common.extension.getColorCompat
 import co.netguru.chatroulette.feature.base.service.BaseServiceWithFacade
+import co.netguru.chatroulette.feature.main.MainActivity
 import org.webrtc.SurfaceViewRenderer
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,19 +27,32 @@ class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceCo
         fun bindService(context: Context, connection: ServiceConnection) {
             context.bindService(Intent(context, WebRtcService::class.java), connection, 0)
         }
+
+        private val BACKGROUND_WORK_NOTIFICATION_ID = 1
+        private val PENDING_INTENT_REQUEST_CODE = 1
     }
 
     @Inject lateinit var webRtcServiceController: WebRtcServiceController
 
     private val binder = LocalBinder()
 
-    override fun onBind(intent: Intent): IBinder = binder
+    private val notificationManager by lazy {
+        NotificationManagerCompat.from(this)
+    }
+
+    override fun onBind(intent: Intent) = binder
 
     override fun onCreate() {
         App.getApplicationComponent(this).webRtcServiceComponent().inject(this)
         Timber.d("WebRtc service created")
         super.onCreate()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        hideBackgroundWorkWarning()
+    }
+
 
     override fun retrieveController(): WebRtcServiceController = webRtcServiceController
 
@@ -79,6 +97,28 @@ class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceCo
     }
 
     fun isMicrophoneEnabled() = webRtcServiceController.isMicrophoneEnabled()
+
+    fun showBackgroundWorkWarning() {
+        val mainActivityIntent = Intent(this, MainActivity::class.java).apply {
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        }
+        val pendingMainActivityIntent = PendingIntent.getActivity(this, PENDING_INTENT_REQUEST_CODE, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val notification = NotificationCompat.Builder(this, App.BACKGROUND_WORK_NOTIFICATIONS_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification_small_logo)
+                .setContentTitle(getString(R.string.ongoing_call_notification_title))
+                .setContentText(getString(R.string.ongoing_call_notification_text))
+                .setColor(getColorCompat(R.color.accent))
+                .setContentIntent(pendingMainActivityIntent)
+                .setOngoing(true)
+                .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                .build()
+        notificationManager.notify(BACKGROUND_WORK_NOTIFICATION_ID, notification)
+    }
+
+    fun hideBackgroundWorkWarning() {
+        notificationManager.cancel(BACKGROUND_WORK_NOTIFICATION_ID)
+    }
 
     inner class LocalBinder : Binder() {
         val service: WebRtcService
