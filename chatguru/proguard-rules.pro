@@ -28,3 +28,5 @@
 -keep class org.webrtc.** { *; }
 #Missing classes not provided with webrtc library
 -dontwarn org.chromium.build.**
+#Referenced class is not provided and is unused
+-dontwarn org.webrtc.Logging**
