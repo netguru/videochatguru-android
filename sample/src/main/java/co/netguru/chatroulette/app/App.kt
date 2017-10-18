@@ -4,11 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.support.v7.app.AppCompatDelegate
 import android.widget.Toast
-import co.netguru.chatroulette.BuildConfig
-import co.netguru.chatroulette.data.firebase.FirebaseModule
 import co.netguru.chatguru.disableWebRtcLogs
 import co.netguru.chatguru.enableInternalWebRtclogs
 import co.netguru.chatguru.enableWebRtcLogs
+import co.netguru.chatroulette.BuildConfig
+import co.netguru.chatroulette.data.firebase.FirebaseModule
 import com.squareup.leakcanary.LeakCanary
 import org.webrtc.Logging
 import timber.log.Timber

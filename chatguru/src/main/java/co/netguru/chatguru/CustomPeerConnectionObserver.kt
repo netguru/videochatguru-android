@@ -1,10 +1,7 @@
 package co.netguru.chatguru
 
 import co.netguru.chatguru.util.Logger
-import org.webrtc.DataChannel
-import org.webrtc.IceCandidate
-import org.webrtc.MediaStream
-import org.webrtc.PeerConnection
+import org.webrtc.*
 
 internal interface CustomPeerConnectionObserver : PeerConnection.Observer {
 
@@ -50,5 +47,9 @@ internal interface CustomPeerConnectionObserver : PeerConnection.Observer {
 
     override fun onRenegotiationNeeded() {
         Logger.d(TAG, "onRenegotiationNeeded() called")
+    }
+
+    override fun onAddTrack(rtpReceiver: RtpReceiver?, mediaStreams: Array<out MediaStream>?) {
+        Logger.d(TAG, "onAddTrack() called with args rtpReceiver:$rtpReceiver, mediaStreams: $mediaStreams")
     }
 }
