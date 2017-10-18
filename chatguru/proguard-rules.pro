@@ -26,3 +26,5 @@
 
 #WebRtc
 -keep class org.webrtc.** { *; }
+#Missing classes not provided with webrtc library
+-dontwarn org.chromium.build.**
