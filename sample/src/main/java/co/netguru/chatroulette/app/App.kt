@@ -65,7 +65,7 @@ class App : Application() {
     }
 
     private fun createNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= 26) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(BACKGROUND_WORK_NOTIFICATIONS_CHANNEL_ID,
                     getString(R.string.background_work_notifications_channel),

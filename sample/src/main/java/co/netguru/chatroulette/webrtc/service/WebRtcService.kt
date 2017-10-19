@@ -53,7 +53,6 @@ class WebRtcService : BaseServiceWithFacade<WebRtcServiceFacade, WebRtcServiceCo
         hideBackgroundWorkWarning()
     }
 
-
     override fun retrieveController(): WebRtcServiceController = webRtcServiceController
 
     override fun stop() = stopSelf()
