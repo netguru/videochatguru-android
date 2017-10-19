@@ -2,6 +2,10 @@ package co.netguru.chatroulette.webrtc.service
 
 import android.os.Handler
 import android.os.Looper
+import co.netguru.chatguru.PeerConnectionListener
+import co.netguru.chatguru.WebRtcAnsweringPartyListener
+import co.netguru.chatguru.WebRtcClient
+import co.netguru.chatguru.WebRtcOfferingActionListener
 import co.netguru.chatroulette.common.extension.ChildEventAdded
 import co.netguru.chatroulette.common.util.RxUtils
 import co.netguru.chatroulette.data.firebase.FirebaseIceCandidates
@@ -9,10 +13,6 @@ import co.netguru.chatroulette.data.firebase.FirebaseIceServers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingAnswers
 import co.netguru.chatroulette.data.firebase.FirebaseSignalingOffers
 import co.netguru.chatroulette.feature.base.service.BaseServiceController
-import co.netguru.chatguru.PeerConnectionListener
-import co.netguru.chatguru.WebRtcAnsweringPartyListener
-import co.netguru.chatguru.WebRtcClient
-import co.netguru.chatguru.WebRtcOfferingActionListener
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy

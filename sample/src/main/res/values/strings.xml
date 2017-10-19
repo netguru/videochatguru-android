@@ -20,4 +20,8 @@
     <string name="desc_toggle_microphone">Toggle microphone</string>
     <string name="desc_toggle_camera">Toggle camera</string>
     <string name="error_permissions_couldnt_start_settings">Couldn\\\'t open app settings. To grant permissions please visit settings of this app.</string>
+    <string name="background_work_notifications_channel">Background work notification</string>
+    <string name="background_work_notification_channel_description">Warns about app working in the background</string>
+    <string name="ongoing_call_notification_title">Chatroulette is running</string>
+    <string name="ongoing_call_notification_text">Video chat call is still running in the background</string>
 </resources>
