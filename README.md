@@ -33,6 +33,7 @@ Chatroulette sample allows you to have a video chat with random stranger, projec
     - `PeerConnectionListener.onIceCandidate` and `PeerConnectionListener.onIceCandidatesRemoved` - those callbacks are called when WebRTC produces or removes ICE candidates, you are responsible to pass those to the other party through any other estabilished communication channel. Other party should handle those respectively by calling `addRemoteIceCandidate` or `removeRemoteIceCandidate`
     - `WebRtcOfferingActionListener` - callbacks launched for offering party - one which will initialize call using create offer. `LocalSessionDescription` object which is passed in `onOfferRemoteDescription` should be passed to the answering party and handled using `handleRemoteOffer` method.
     - `WebRtcAnsweringPartyListener` - callbacks launched for answering party - one which will call handleRemoteOffer method. `LocalSessionDescription` object which is passed in `onSuccess` should be passed to the offering party and handled using `handleRemoteAnswer` method.
+ - At this point `WebRtcClient` setup is done and you should initialize handshake process on one of the clients using `createOffer` method handling all the callbacks as described earlier.
     
  You can also reffer to the sample.
  
