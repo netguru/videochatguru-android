@@ -25,7 +25,21 @@
 Chatroulette sample allows you to have a video chat with random stranger, project showcase use of Chatguru WebRTC wrapper on Android. Signaling is done through Firebase. Your Firebase setup should provide at least one IceServer - for best results you should provide at least one Turn server to be able to make connection when peer to peer connection fails. 
 
 ## Chatguru setup
-For library setup currently you can reffer to sample.
+- Create layout for your Video Chat - you will need to provide two SurfaceViewRenderer views for remote and local video.
+- Create instance of `WebRtcClient` all params are optional and default ones should suffice most of use cases.
+- Attach views using `webRtcClient.attachRemoteView(view)` and `webRtcClient.attachLocalView(view)` respectiviely there are also methods which allows you to unbind those.
+- Initialize peer connection by calling `webRtcClient.initializePeerConnection(...)` method. Here you will need to provide list of Interactive Connectivity Establishment servers(read more below) and implementation for three listeners that are required to make everything work.
+    
+    - `PeerConnectionListener.onIceCandidate` and `PeerConnectionListener.onIceCandidatesRemoved` - those callbacks are called when WebRTC produces or removes ICE candidates, you are responsible to pass those to the other party through any other estabilished communication channel. Other party should handle those respectively by calling `addRemoteIceCandidate` or `removeRemoteIceCandidate`
+    - `WebRtcOfferingActionListener` - callbacks launched for offering party - one which will initialize call using create offer. `LocalSessionDescription` object which is passed in `onOfferRemoteDescription` should be passed to the answering party and handled using `handleRemoteOffer` method.
+    - `WebRtcAnsweringPartyListener` - callbacks launched for answering party - one which will call handleRemoteOffer method. `LocalSessionDescription` object which is passed in `onSuccess` should be passed to the offering party and handled using `handleRemoteAnswer` method.
+    
+ You can also reffer to the sample.
+ 
+ ## What this library won't do:
+WebRTC is signaling agnostic meaning that it's your responsibility to provide communication channell that will allow to go through handshake phase. You are free to use your own solutions based on for example: FCM, WebSockets, Pooling, Firebase and any other that allows you to exchange messages beetwen clients in real time.
+
+You can reffer to our sample for solution based on firebase that allowed us to create and implement Chat Roullette logic. Firebase will also allow you to easily observe handshake process in real time.
 
 [WebRTC for Android](https://webrtc.org/native-code/android/)
 ## Development
