@@ -23,7 +23,7 @@
 ## About
 VideoChatGuru is an open-source solution written entirely in Kotlin, based on a [WebRTC](https://webrtc.org/native-code/android/) implementation. It’s not bound with any service, and you are free to choose whether you are going to use an established service provider or host your own. VideoChatGuru prioritises peer-to-peer connections, thanks to which we reduce delays to a minimum.
 
-VideoChatGuru wraps the [WebRTC](https://webrtc.org/native-code/android/) API, providing a friendlier access to its features that you are going to need for implementing video chats. We also provide our Chatroulette example implementation, so that you can see VideoChatGuru in action. Thanks to the fact that we used Firebase for signalling, it should be much easier to learn and understand how webRTC signalling works by observing it unfold live.
+VideoChatGuru wraps the [WebRTC](https://webrtc.org/native-code/android/) API, providing a friendlier access to its features that you are going to need for implementing video chats. We also provide our Chat&Roll example implementation, so that you can see VideoChatGuru in action. Thanks to the fact that we used Firebase for signalling, it should be much easier to learn and understand how webRTC signalling works by observing it unfold live.
 
 ## VideoChatGuru setup
 - Create layout for your Video Chat - you will need to provide two SurfaceViewRenderer views for remote and local video.
@@ -44,7 +44,7 @@ WebRTC is signaling agnostic meaning that it's your responsibility to provide co
 You can reffer to our sample for solution based on Firebase that allowed us to create and implement Chat Roullette logic. Firebase will also allow you to easily observe handshake process in real time.
 
 ## Sample
-Chatroulette sample allows you to have a video chat with random stranger, project showcase use of VideoChatGuru WebRTC wrapper on Android. Signaling is done through Firebase. Your Firebase setup should provide at least one IceServer - for best results you should provide at least one Turn server to be able to make connection when peer to peer connection fails. 
+Chat&Roll sample allows you to have a video chat with random stranger, project showcase use of VideoChatGuru WebRTC wrapper on Android. Signaling is done through Firebase. Your Firebase setup should provide at least one IceServer - for best results you should provide at least one Turn server to be able to make connection when peer to peer connection fails. 
 
 ## Development
 To run sample project you need to prepare Firebase instance first.
