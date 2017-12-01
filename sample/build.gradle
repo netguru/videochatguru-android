@@ -8,7 +8,7 @@ android {
     buildToolsVersion versions.buildTools
 
     defaultConfig {
-        applicationId "co.netguru.android.chatroulette"
+        applicationId "co.netguru.android.chatandroll"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.compileSdk
         versionCode globalVersionCode

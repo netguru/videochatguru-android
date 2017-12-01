@@ -52,8 +52,8 @@ To run sample project you need to prepare Firebase instance first.
 1. Go to https://console.firebase.google.com/
 2. Create new project
 3. Add Firebase to your android app
-    - To setup debug version insert package name `co.netguru.android.chatroulette.debug`
-    - To setup release version insert package name `co.netguru.android.chatroulette`
+    - To setup debug version insert package name `co.netguru.android.chatandroll.debug`
+    - To setup release version insert package name `co.netguru.android.chatandroll`
 4. Download google-services.json
 5. Place it in App folder
 
