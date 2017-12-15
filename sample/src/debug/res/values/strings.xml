@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Debug: Chatroulette</string>
-    <string name="leak_canary_display_activity_label">Debug: Chatroulette leaks</string>
+    <string name="app_name">Chat&amp;Roll</string>
+    <string name="leak_canary_display_activity_label">Chat&amp;Roll leaks</string>
 </resources>

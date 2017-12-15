@@ -1,0 +1,31 @@
+ext {
+    bintrayRepo = 'maven'
+
+    // edit
+    bintrayName = 'VideoChatGuru'
+    artifact = 'videochatguru'
+    artifactGroupName = 'videochatguru' // can be the same as artifact
+    packageName = 'co.netguru'
+    libraryVersion = android.defaultConfig.versionName // optionally hardcode with 'x.y.z' format
+    publishedGroupId = "$packageName.$artifactGroupName"
+    libraryName = 'VideoChatGuru'
+    libraryDescription = 'VideoChatGuru is an open source library available under a standard licence. Everyone can access and leverage it in their applications and take video chatting to the next level. On top of that, you can have full control over what’s in the app as there is no default external integration unless you decide to use one.'
+
+    // repo
+    siteUrl = 'https://github.com/netguru/videochatguru-android'
+    gitUrl = 'https://github.com/netguru/videochatguru-android.git'
+
+    // leave
+    developerId = 'netguru'
+    developerName = 'netguru'
+    developerEmail = 'android@netguru.pl'
+
+    licenseName = 'GNU General Public License v3.0'
+    licenseUrl = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    allLicenses = ["GPL-3.0", "BSD 3-Clause"]
+}
+
+apply from: 'install.gradle'
+apply from: 'bintray.gradle'
+
+println "\nuploading '$publishedGroupId:$artifact:$libraryVersion' ...\n"
