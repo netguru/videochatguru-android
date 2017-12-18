@@ -16,6 +16,6 @@
         android:gravity="center">
         <bitmap
             android:gravity="center"
-            android:src="@drawable/chatguru_logo"/>
+            android:src="@drawable/chat_and_roll_logo"/>
     </item>
 </layer-list>
