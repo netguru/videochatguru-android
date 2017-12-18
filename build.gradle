@@ -10,7 +10,7 @@ ext {
 buildscript {
 
     ext.versions = [
-            kotlin    : '1.2.0',
+            kotlin    : '1.2.10',
             buildTools: '26.0.1',
             minSdk    : 16,
             compileSdk: 26,
