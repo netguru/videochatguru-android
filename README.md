@@ -126,7 +126,7 @@ allprojects {
 Just add the following dependency in your app's build.gradle:
 ```groovy
 dependencies {
-      compile 'co.netguru.videochatguru:videochatguru:0.1.1@aar'
+      compile 'co.netguru.videochatguru:videochatguru:0.1.2@aar'
 }
 ```
 
