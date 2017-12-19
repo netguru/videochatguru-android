@@ -15,9 +15,9 @@
 <!-- METADATA -->
 <!-- Add links to JIRA, Google Drive, mailing list and other relevant resources -->
 <!-- Add links to CI configs with build status and deployment environment, e.g.: -->
-| environment | deployment            | status             |
-|-------------|-----------------------|--------------------|
-| Android     | [HockeyApp](https://rink.hockeyapp.net/manage/apps/598839) | [![Build Status](https://www.bitrise.io/app/efa82287989764d2/status.svg?token=wB5901VLKALuCDo5ZAMuyA&branch=master)](https://www.bitrise.io/app/efa82287989764d2) |
+| environment | status             |
+|-------------|--------------------|
+| Android     | [![Build Status](https://www.bitrise.io/app/efa82287989764d2/status.svg?token=wB5901VLKALuCDo5ZAMuyA&branch=master)](https://www.bitrise.io/app/efa82287989764d2) |
 
 <!--- If applies, add link to app on Google Play -->
 ## About
