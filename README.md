@@ -46,6 +46,8 @@ You can reffer to our sample for solution based on Firebase that allowed us to c
 ## Sample
 Chat&Roll sample allows you to have a video chat with random stranger, project showcase use of VideoChatGuru WebRTC wrapper on Android. Signaling is done through Firebase. Your Firebase setup should provide at least one IceServer - for best results you should provide at least one Turn server to be able to make connection when peer to peer connection fails. 
 
+You can download Chat&Roll sample app from Google Play: https://play.google.com/store/apps/details?id=co.netguru.android.chatandroll
+
 ## Development
 To run sample project you need to prepare Firebase instance first.
 ### Setting up Firebase
