@@ -104,16 +104,12 @@ There are various options available out there we've tested Coturn and setup is f
 ## Contribution
 You're more than welcome to contribute or report an issue in case of any problems, questions or improvement proposals.
 
-### Build types
-<!-- List and describe build types -->
-#### debug
- - debuggable
- - disabled ProGuard
- 
-#### release
- - uses full ProGuard configuration
- - enables zipAlign, shrinkResources
- - non-debuggable
+### How to contribute
+* Fork it ( https://github.com/netguru/videochatguru-android/fork )
+* Create your feature branch (git checkout -b my-new-feature)
+* Commit your changes (git commit -am 'Add some feature')
+* Push to the branch (git push origin my-new-feature)
+* Create a new Pull Request
  
 ## Download
 To use this library in your project, place the following code in your top hierarchy build.gradle file:
