@@ -129,5 +129,3 @@ dependencies {
 ```
 
 Copyright © 2017 [Netguru](http://netguru.co).
-
-Licensed under the [GPLv3 License, BSD 3-Clause](LICENSE).
