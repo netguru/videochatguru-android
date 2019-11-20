@@ -35,35 +35,35 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '28.0.3'
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':videochatguru')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':videochatguru')
 
-    compile libs.appCompat
-    compile libs.design
+    implementation libs.appCompat
+    implementation libs.design
 
-    compile libs.dagger
+    implementation libs.dagger
     kapt proc.dagger
-    provided proc.javaxAnnotation
+    compileOnly proc.javaxAnnotation
 
-    compile libs.rxJava2
-    compile libs.rxAndroid2
-    compile libs.rxKotlin2
+    implementation libs.rxJava2
+    implementation libs.rxAndroid2
+    implementation libs.rxKotlin2
 
-    debugCompile libs.leakCanary
-    releaseCompile libs.leakCanaryNoOp
-    testCompile libs.leakCanaryNoOp
+    debugImplementation libs.leakCanary
+    releaseImplementation libs.leakCanaryNoOp
+    testImplementation libs.leakCanaryNoOp
 
-    compile libs.timber
+    implementation libs.timber
 
-    compile libs.firebaseDatabase
+    implementation libs.firebaseDatabase
 
-    testCompile test.junit
-    testCompile test.mockito
-    testCompile(test.mockitoKotlin) {
+    testImplementation test.junit
+    testImplementation test.mockito
+    testImplementation(test.mockitoKotlin) {
         exclude group: 'org.jetbrains.kotlin'
     }
 }
